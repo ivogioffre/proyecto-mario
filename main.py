@@ -231,19 +231,19 @@ def main_menu():
     font = pygame.font.SysFont(None, 48)
     small_font = pygame.font.SysFont(None, 32)
 
-    bg = pygame.image.load("assets/universo.png").convert()
-    bg = pygame.transform.scale(bg, (WIDTH, HEIGHT))
+    fondo = pygame.image.load("assets/universo.png").convert()
+    fondo = pygame.transform.scale(fondo, (WIDTH, HEIGHT))
 
     while True:
-        screen.blit(bg, (0, 0))
+        screen.blit(fondo, (0, 0))
 
-        title_text = font.render("Mario Bros con Pygame", True, (255, 255, 255))
-        play_text = small_font.render("Presiona ENTER para jugar", True, (255, 255, 255))
-        quit_text = small_font.render("Presiona ESC para salir", True, (255, 255, 255))
+        titulo = font.render("Mariano Bross", True, (255, 255, 255))
+        play = small_font.render("Presiona ENTER para jugar", True, (255, 255, 255))
+        salir = small_font.render("Presiona ESC para salir", True, (255, 255, 255))
 
-        screen.blit(title_text, (WIDTH//2 - title_text.get_width()//2, HEIGHT//2 - 100))
-        screen.blit(play_text, (WIDTH//2 - play_text.get_width()//2, HEIGHT//2))
-        screen.blit(quit_text, (WIDTH//2 - quit_text.get_width()//2, HEIGHT//2 + 40))
+        screen.blit(titulo, (WIDTH//2 - titulo.get_width()//2, HEIGHT//2 - 100))
+        screen.blit(play, (WIDTH//2 - play.get_width()//2, HEIGHT//2))
+        screen.blit(salir, (WIDTH//2 - salir.get_width()//2, HEIGHT//2 + 40))
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -265,7 +265,7 @@ def main():
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     clock = pygame.time.Clock()
-    pygame.display.set_caption("Mario Bross con Pygame (versión rápida)")
+    pygame.display.set_caption("Mario Bross  ")
 
     pygame.mixer.music.load("assets/musica/10 Shop.mp3")
     pygame.mixer.music.play(-1)  # -1 = loop infinito
