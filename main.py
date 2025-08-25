@@ -212,15 +212,25 @@ class Enemy(pygame.sprite.Sprite):
 class Camera:
     def __init__(self):
         self.offset = pygame.Vector2()
-
+        self.max_y = 0  # altura máxima alcanzada
     def apply(self, rect):
         return rect.move(-self.offset.x, -self.offset.y)
-
     def update(self, target):
-        self.offset.x = target.rect.centerx - WIDTH//2
-        self.offset.y = target.rect.centery - HEIGHT//2
-        if self.offset.x < 0: self.offset.x = 0
-        if self.offset.y < 0: self.offset.y = 0
+        self.offset.x = target.rect.centerx - WIDTH // 2
+        if self.offset.x < 0:
+            self.offset.x = 0
+
+
+        
+        desired_y = target.rect.centery - HEIGHT // 2
+        if desired_y < self.max_y:  
+            self.max_y = desired_y
+
+
+        self.offset.y = self.max_y
+        if self.offset.y < 0:
+            self.offset.y = 0
+
 #---------------- MENU -------------------
 def main_menu():
     pygame.init()
@@ -266,6 +276,7 @@ def main():
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     clock = pygame.time.Clock()
     pygame.display.set_caption("Mario Bros  ")
+    
     if not pygame.mixer.get_init():
         os.environ["SDL_AUDIODRIVER"] = "dummy"
 
@@ -274,7 +285,6 @@ def main():
         pygame.mixer.music.load("assets/musica/10 Shop.mp3")
         pygame.mixer.music.play(-1)
         pygame.mixer.music.set_volume(0.5)
-        print("Audio iniciado correctamente.")
     except Exception as e:
         print(f"No se pudo iniciar el audio. Continuando sin sonido. Error: {e}")
 
