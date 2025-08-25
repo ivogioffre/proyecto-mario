@@ -265,7 +265,10 @@ def main():
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     clock = pygame.time.Clock()
-    pygame.display.set_caption("Mario Bross  ")
+    pygame.display.set_caption("Mario Bros  ")
+    if not pygame.mixer.get_init():
+        os.environ["SDL_AUDIODRIVER"] = "dummy"
+
     try:
         pygame.mixer.init()
         pygame.mixer.music.load("assets/musica/10 Shop.mp3")
