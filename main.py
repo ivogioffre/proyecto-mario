@@ -11,11 +11,11 @@ TILE = 48
 LEVEL_MAP = [
     "X                                                                              ",
     "X                                                                              ",
-    "X                                                                              ",
-    "X                           MM                                                 ",
-    "X                      G                                          M            ",
+    "X        C                                                                     ",
+    "X                  C         MM                 C                               ",
+    "X                      G           C                     C         M          ",
     "X                 L                                                            ",
-    "X                GGG                    MMM                                    ",
+    "X     C           GGG                    MMM                                   ",
     "X                                                            GG                ",
     "X      P   L                                                L               L  ",
     "XGGGGGGGGGGGGGGGGGGG         GGGGG    GGGGGGG            GGGGGG     GGGGGGGGGGG",
@@ -259,6 +259,7 @@ def main_menu():
         pygame.display.flip()
         clock.tick(FPS)
 
+
 # ---------------- MAIN ----------------
 def main():
     pygame.init()
@@ -266,14 +267,13 @@ def main():
     clock = pygame.time.Clock()
     pygame.display.set_caption("Mario Bross  ")
     try:
-        pygame.mixer.init() 
-
+        pygame.mixer.init()
         pygame.mixer.music.load("assets/musica/10 Shop.mp3")
-        pygame.mixer.music.play(-1)  # -1 = loop infinito
-        pygame.mixer.music.set_volume(0.5)  # volumen de 0.0 a 1.0
+        pygame.mixer.music.play(-1)
+        pygame.mixer.music.set_volume(0.5)
+        print("Audio iniciado correctamente.")
     except Exception as e:
-        pass
-
+        print(f"No se pudo iniciar el audio. Continuando sin sonido. Error: {e}")
 
     player, solids, coins, enemies, plants ,clouds, grasses = load_level()
     camera = Camera()
