@@ -9,18 +9,18 @@ JUMP_VEL = -14
 TILE = 48
 
 LEVEL_MAP = [
-    "X                                                                              ",
-    "X                                                                              ",
-    "X        C                                                                     ",
-    "X                  C         MM                 C                               ",
-    "X                      G           C                     C         M          ",
-    "X                 L                                                            ",
-    "X     C           GGG                    MMM                                   ",
-    "X                                                            GG                ",
-    "X      P   L                                                L               L  ",
-    "XGGGGGGGGGGGGGGGGGGG         GGGGG    GGGGGGG            GGGGGG     GGGGGGGGGGG",
-    "XXXXXXXXXXXXXXXXXXXX   GGG   XXXXX  E XXXXXXX   GGG   E  XXXXXX  E  XXXXXXXXXXX",
-    "XXXXXXXXXXXXXXXXXXXX         XXXXX    XXXXXXX            XXXXXX     XXXXXXXXXXX",                   
+    "X                                                                                                                                                                       C ",
+    "X                                                                                                                                                        C         C                         C     ",
+    "X        C                                                                      C                                     C            C             C                          C           C        ",
+    "X                  C         MM                 C                                                                                         C             M     G      M                        ",
+    "X                      G           C                     C         M        C               C           C                 L                          L G     E                   C       G",
+    "X                 L                                                                                                       G         M                G            L                         ",
+    "X     C           GGG                    MMM                                                                        M            L     L L         G             GGG  M            M  M   ",
+    "X                                                            GG                   MM                                G    L       G   GGGG   E   G               XXX      G        L  L        FL       ",
+    "X      P   L                  L  L      L  L                 L         L  L           L   L            L   L             G   E   X   XXXX                                X   E   GGGGGGG     GGG                  ",
+    "XGGGGGGGGGGGGGGGGGGG         GGGGG    GGGGGGG            GGGGGG     GGGGGGGGGGG   E  GGGGGGGGG    E  GGGGGGG    GG                                                                XXXXXXX     ",
+    "XXXXXXXXXXXXXXXXXXXX   GGG   XXXXX  E XXXXXXX   GGG   E  XXXXXX  E  XXXXXXXXXXX      XXXXXXXXX       XXXXXXX    XX                                           ",
+    "XXXXXXXXXXXXXXXXXXXX         XXXXX    XXXXXXX            XXXXXX     XXXXXXXXXXX      XXXXXXXXX       XXXXXXX    XX                                         ",                   
 ]
 
 
@@ -36,6 +36,7 @@ def load_level():
     enemies = []
     plants = []
     clouds = []
+    flags =[]
     player = None
 
     for j, row in enumerate(LEVEL_MAP):
@@ -46,7 +47,7 @@ def load_level():
             elif ch == "G":
                 grasses.append(Grass((x, y)))
             elif ch == "P":
-                player = Player((x, y), solids, coins, enemies, plants,clouds,grasses)
+                player = Player((x, y), solids, coins, enemies, plants,clouds,grasses,flags)
             elif ch == "M":
                 coins.append(Coin((x, y)))
             elif ch == "E":
@@ -55,12 +56,14 @@ def load_level():
                 plants.append(Plant((x, y)))
             elif ch == "C":
                 clouds.append(cloud((x, y)))
+            elif ch == "F":
+                flags.append(Flag((x, y)))
 
-    return player, solids, coins, enemies, plants, clouds, grasses
+    return player, solids, coins, enemies, plants, clouds, grasses,flags
 
 # ---------------- ENTIDADES ----------------
 class Player(pygame.sprite.Sprite):
-    def __init__(self, pos, solids, coins, enemies, plants,clouds,grasses):
+    def __init__(self, pos, solids, coins, enemies, plants,clouds,grasses,flags):
         super().__init__()
         self.images = {
             "idle": [load_img("assets/player/idle.png")],
@@ -83,6 +86,7 @@ class Player(pygame.sprite.Sprite):
         self.plants = plants
         self.alive = True
         self.clouds = clouds
+        self.flags = flags
 
 
     def update(self, keys):
@@ -192,6 +196,12 @@ class cloud(pygame.sprite.Sprite):
         self.image = load_img("assets/items/cloud1.png")
         self.rect = self.image.get_rect(center=(pos[0]+TILE//2, pos[1]+TILE//2))
 
+class Flag(pygame.sprite.Sprite):
+    def __init__(self, pos):
+        super().__init__()
+        self.image = load_img("assets/items/flagRed.png")
+        self.rect = self.image.get_rect(center=(pos[0]+TILE//2, pos[1]+TILE//2))
+
 
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, pos, solids, grasses):
@@ -275,7 +285,7 @@ def main():
     except Exception as e:
         print(f"No se pudo iniciar el audio. Continuando sin sonido. Error: {e}")
 
-    player, solids, coins, enemies, plants ,clouds, grasses = load_level()
+    player, solids, coins, enemies, plants ,clouds, grasses,flags = load_level()
     camera = Camera()
     font = pygame.font.SysFont(None, 32)
     
@@ -297,7 +307,7 @@ def main():
         camera.update(player)
 
         if not player.alive:
-            player, solids, coins, enemies, plants ,clouds, grasses = load_level()
+            player, solids, coins, enemies, plants ,clouds, grasses, flags = load_level()
 
         screen.fill(color_fondo)
 
@@ -314,6 +324,8 @@ def main():
             screen.blit(plant.image, camera.apply(plant.rect))
         for cloud in clouds:
             screen.blit(cloud.image, camera.apply(cloud.rect))
+        for flag in flags:
+            screen.blit(flag.image, camera.apply(flag.rect))
         screen.blit(player.image, camera.apply(player.rect))
 
         # --- Puntaje ---
