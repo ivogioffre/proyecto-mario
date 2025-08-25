@@ -8,6 +8,9 @@ SPEED = 5
 JUMP_VEL = -14
 TILE = 48
 
+# Efectos de moneda que saltan al golpear un bloque
+COIN_POP_EFFECTS = []
+
 LEVEL_MAP = [
     "X                                                                              ",
     "X                                                                              ",
@@ -15,7 +18,7 @@ LEVEL_MAP = [
     "X                  C         MM                 C                               ",
     "X                      G           C                     C         M          ",
     "X                 L                                                            ",
-    "X     C           GGG                    MMM                                   ",
+    "X     C          BGGG                    MMM                                   ",
     "X                                                            GG                ",
     "X      P   L                                                L               L  ",
     "XGGGGGGGGGGGGGGGGGGG         GGGGG    GGGGGGG            GGGGGG     GGGGGGGGGGG",
@@ -55,6 +58,8 @@ def load_level():
                 plants.append(Plant((x, y)))
             elif ch == "C":
                 clouds.append(cloud((x, y)))
+            elif ch == "B":
+                grasses.append(LuckyBlock((x, y)))
 
     return player, solids, coins, enemies, plants, clouds, grasses
 
@@ -131,6 +136,9 @@ class Player(pygame.sprite.Sprite):
                 elif dy < 0:
                     self.rect.top = tile.rect.bottom
                     self.vy = 0
+                    if hasattr(tile, "hit"):
+                        tile.hit(self)
+
         # Colisión con monedas
         for coin in self.coins.copy():
             if self.rect.colliderect(coin.rect):
@@ -174,11 +182,46 @@ class Grass(pygame.sprite.Sprite):
         self.image = load_img("assets/tiles/grassMid.png")
         self.rect = self.image.get_rect(topleft=pos)
 
+
+class LuckyBlock(pygame.sprite.Sprite):
+    def __init__(self, pos):
+        super().__init__()
+        self.full_img = load_img("assets/tiles/boxItem.png")
+        self.empty_img = load_img("assets/tiles/boxItem_disabled.png")
+        self.image = self.full_img
+        self.rect = self.image.get_rect(topleft=pos)
+        self.used = False
+
+    def hit(self, player):
+        if self.used:
+            return
+        self.used = True
+        self.image = self.empty_img
+        # sumar moneda al jugador
+        player.score += 1
+        # crear efecto de moneda apareciendo
+        COIN_POP_EFFECTS.append(CoinPopEffect(self.rect.centerx, self.rect.top - 4))
+
 class Coin(pygame.sprite.Sprite):
     def __init__(self, pos):
         super().__init__()
         self.image = load_img("assets/items/coinGold.png", TILE//2)
         self.rect = self.image.get_rect(center=(pos[0]+TILE//2, pos[1]+TILE//2))
+
+# Efecto visual de moneda que salta y desaparece
+class CoinPopEffect(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        super().__init__()
+        self.image = load_img("assets/items/coinGold.png", TILE//2)
+        self.rect = self.image.get_rect(center=(x, y))
+        self.vy = -6
+        self.life = 22  
+
+    def update(self):
+        self.rect.y += self.vy
+        self.vy += 0.5  
+        self.life -= 1
+        return self.life > 0
 
 class Plant(pygame.sprite.Sprite):
     def __init__(self, pos):
@@ -216,6 +259,7 @@ class Camera:
     def apply(self, rect):
         return rect.move(-self.offset.x, -self.offset.y)
     def update(self, target):
+        
         self.offset.x = target.rect.centerx - WIDTH // 2
         if self.offset.x < 0:
             self.offset.x = 0
@@ -328,6 +372,11 @@ def main():
         for cloud in clouds:
             screen.blit(cloud.image, camera.apply(cloud.rect))
         screen.blit(player.image, camera.apply(player.rect))
+        for effect in COIN_POP_EFFECTS[:]:
+            if not effect.update():
+                COIN_POP_EFFECTS.remove(effect)
+            else:
+                screen.blit(effect.image, camera.apply(effect.rect))
 
         # --- Puntaje ---
         score_txt = font.render(f"Monedas: {player.score}", True, (255, 255, 255))
