@@ -261,23 +261,26 @@ def main_menu():
 
 # ---------------- MAIN ----------------
 def main():
-    pygame.mixer.init() 
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     clock = pygame.time.Clock()
     pygame.display.set_caption("Mario Bross  ")
+    try:
+        pygame.mixer.init() 
 
-    pygame.mixer.music.load("assets/musica/10 Shop.mp3")
-    pygame.mixer.music.play(-1)  # -1 = loop infinito
-    pygame.mixer.music.set_volume(0.5)  # volumen de 0.0 a 1.0
+        pygame.mixer.music.load("assets/musica/10 Shop.mp3")
+        pygame.mixer.music.play(-1)  # -1 = loop infinito
+        pygame.mixer.music.set_volume(0.5)  # volumen de 0.0 a 1.0
+    except Exception as e:
+        pass
+
 
     player, solids, coins, enemies, plants ,clouds, grasses = load_level()
     camera = Camera()
     font = pygame.font.SysFont(None, 32)
     
-    # --- Cargar fondo una sola vez ---
-    fondo = pygame.image.load("assets/universo.png").convert()
-    fondo = pygame.transform.scale(fondo, (WIDTH*3, HEIGHT*3))  # fondo más grande para mover
+    color_fondo = (135, 206, 235)  
+
 
     running = True
     while running:
@@ -296,10 +299,7 @@ def main():
         if not player.alive:
             player, solids, coins, enemies, plants ,clouds, grasses = load_level()
 
-        # --- Fondo parallax ---
-        bg_x = -camera.offset.x * 0.5
-        bg_y = -camera.offset.y * 0.5
-        screen.blit(fondo, (bg_x, bg_y))
+        screen.fill(color_fondo)
 
         # --- Dibujar sprites ---
         for tile in solids:
