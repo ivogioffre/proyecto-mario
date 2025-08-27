@@ -1,326 +1,19 @@
-import pygame, sys, json, os
+import pygame, sys, os
+from menu import main_menu
+from level import load_level
+from camera import Camera
+from entities import Player, COIN_POP_EFFECTS
 
-# ---------------- CONFIG ----------------
 WIDTH, HEIGHT = 960, 540
 FPS = 60
-GRAVITY = 0.5
-SPEED = 5
-JUMP_VEL = -15.5
-TILE = 48
+color_fondo = (135, 206, 235)
 
-COIN_POP_EFFECTS = []
-
-LEVEL_MAP = [
-    "                                                  C                                       C           C                       C                                         C                          C     ",
-    "            C                                C                        C           EE MM                           C       MMM                   C                                  C                     ",
-    "                      B                                   C                     GGGGGGGG   GGGB            B              GGG     GBBG                             C                        GG           ",
-    "                                                                                                                                                                                           GXX   MM      ",
-    "                                                                                                 MM                                              MM                                       GXXX       F   ",
-    "                                              MM                B                                                                                                                        GXXXX       F   ",
-    "                B   GBGBG                     XX         XX                  GBG            G    XB     B  B  B     G      MMM     GG                                   GGBG            GXXXXX       F   ",
-    "                            MM        XX      XX         XX       MM                                                                     G  G         GG  G       MM                   GXXXXXX       F   ",
-    "                            XX        XX      XX         XX                                                                             GX  XG       GXX  XG      XX                  GXXXXXXX       F   ",
-    " P                   E      XX        XX E    XX     EE  XX                    MM             EE           MMM              EE EE      GXX  XXG     GXXX  XXG     XX         EE    XXGXXXXXXXX  LL L G L ",
-    "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG  GGGGGGGGGGGGGGG   GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGXXX  XXXGGGGGXXXX  XXXGGGGGXXGGGGGGGGGGGGGGGXXXXXXXXXXXGGGGGGGXGGG",
-    "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  XXXXXXXXXXXXXXX   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  XXXXXXXXXXXX  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-]
-
-
-# ---------------- UTIL ----------------
-def load_img(path, scale=TILE):
-    img = pygame.image.load(path).convert_alpha()
-    return pygame.transform.scale(img, (scale, scale))
-
-def load_level():
-    solids = []
-    grasses = []
-    coins = []
-    enemies = []
-    plants = []
-    clouds = []
-    player = None
-
-    for j, row in enumerate(LEVEL_MAP):
-        for i, ch in enumerate(row):
-            x, y = i * TILE, j * TILE
-            if ch == "X":
-                solids.append(Tile((x, y)))
-            elif ch == "G":
-                grasses.append(Grass((x, y)))
-            elif ch == "P":
-                player = Player((x, y), solids, coins, enemies, plants,clouds,grasses)
-            elif ch == "M":
-                coins.append(Coin((x, y)))
-            elif ch == "E":
-                enemies.append(Enemy((x, y), solids, grasses))
-            elif ch == "L":
-                plants.append(Plant((x, y)))
-            elif ch == "C":
-                clouds.append(cloud((x, y)))
-            elif ch == "B":
-                grasses.append(LuckyBlock((x, y)))
-
-    return player, solids, coins, enemies, plants, clouds, grasses
-
-# ---------------- ENTIDADES ----------------
-class Player(pygame.sprite.Sprite):
-    def __init__(self, pos, solids, coins, enemies, plants,clouds,grasses):
-        super().__init__()
-        self.images = {
-            "idle": [load_img("assets/player/idle.png")],
-            "walk": [load_img("assets/player/walk1.png"),
-                     load_img("assets/player/walk2.png")],
-            "jump": [load_img("assets/player/jump.png")]
-        }
-        self.anim_state = "idle"
-        self.anim_frame = 0
-        self.image = self.images["idle"][0]
-        self.rect = self.image.get_rect(topleft=pos)
-        self.vx = 0
-        self.vy = 0
-        self.on_ground = False
-        self.solids = solids
-        self.grasses = grasses 
-        self.coins = coins
-        self.enemies = enemies
-        self.score = 0
-        self.plants = plants
-        self.alive = True
-        self.clouds = clouds
-
-
-    def update(self, keys):
-        # Movimiento
-        self.vx = ((keys[pygame.K_RIGHT] or keys[pygame.K_d]) - (keys[pygame.K_LEFT] or keys[pygame.K_a])) * SPEED
-        want_jump = keys[pygame.K_SPACE] or keys[pygame.K_UP] or keys[pygame.K_w]
-        if want_jump and self.on_ground:
-            self.vy = JUMP_VEL
-            self.on_ground = False
-
-        # Animación
-        if not self.on_ground:
-            self.anim_state = "jump"
-        elif self.vx != 0:
-            self.anim_state = "walk"
-        else:
-            self.anim_state = "idle"
-
-        self.vy += GRAVITY
-        if self.vy > 20: self.vy = 20
-
-        self.move_and_collide(self.vx, self.vy)
-        if self.rect.top > 2000:  
-            self.alive = False
-
-        self.animate()
-
-    def move_and_collide(self, dx, dy):
-        # Mover en X
-        self.rect.x += dx
-        for tile in self.solids + self.grasses:
-            if self.rect.colliderect(tile.rect):
-                if dx > 0:
-                    self.rect.right = tile.rect.left
-                elif dx < 0:
-                    self.rect.left = tile.rect.right
-        # Mover en Y
-        self.rect.y += dy
-        self.on_ground = False
-        for tile in self.solids + self.grasses:
-            if self.rect.colliderect(tile.rect):
-                if dy > 0:
-                    self.rect.bottom = tile.rect.top
-                    self.on_ground = True
-                    self.vy = 0
-                elif dy < 0:
-                    self.rect.top = tile.rect.bottom
-                    self.vy = 0
-                    if hasattr(tile, "hit"):
-                        tile.hit(self)
-
-        # Colisión con monedas
-        for coin in self.coins.copy():
-            if self.rect.colliderect(coin.rect):
-                self.coins.remove(coin)
-                self.score += 10
-
-        for plants in self.plants.copy():
-            if self.rect.colliderect(plants.rect):
-                pass
-
-        for cloud in self.clouds.copy():
-            if self.rect.colliderect(cloud.rect):
-                pass
-
-
-        # Colisión con enemigos
-        for enemy in self.enemies.copy():
-            if self.rect.colliderect(enemy.rect):
-                if self.vy > 0:
-                    self.enemies.remove(enemy)
-                    self.vy = JUMP_VEL * 0.7
-                    self.score += 50
-                else:
-                    self.alive = False
-
-    def animate(self):
-        frames = self.images[self.anim_state]
-        self.anim_frame += 0.15
-        if self.anim_frame >= len(frames):
-            self.anim_frame = 0
-        self.image = frames[int(self.anim_frame)]
-
-class Tile(pygame.sprite.Sprite):
-    def __init__(self, pos):
-        super().__init__()
-        self.image = load_img("assets/tiles/grassCenter.png")
-        self.rect = self.image.get_rect(topleft=pos)
-
-class Grass(pygame.sprite.Sprite):
-    def __init__(self, pos):
-        super().__init__()
-        self.image = load_img("assets/tiles/grassMid.png")
-        self.rect = self.image.get_rect(topleft=pos)
-
-
-class LuckyBlock(pygame.sprite.Sprite):
-    def __init__(self, pos):
-        super().__init__()
-        self.full_img = load_img("assets/tiles/boxItem.png")
-        self.empty_img = load_img("assets/tiles/boxItem_disabled.png")
-        self.image = self.full_img
-        self.rect = self.image.get_rect(topleft=pos)
-        self.used = False
-
-    def hit(self, player):
-        if self.used:
-            return
-        self.used = True
-        self.image = self.empty_img
-        # sumar moneda al jugador
-        player.score += 30
-        # crear efecto de moneda apareciendo
-        COIN_POP_EFFECTS.append(CoinPopEffect(self.rect.centerx, self.rect.top - 4))
-
-class Coin(pygame.sprite.Sprite):
-    def __init__(self, pos):
-        super().__init__()
-        self.image = load_img("assets/items/coinGold.png", TILE//2)
-        self.rect = self.image.get_rect(center=(pos[0]+TILE//2, pos[1]+TILE//2))
-
-# Efecto visual de moneda que salta y desaparece
-class CoinPopEffect(pygame.sprite.Sprite):
-    def __init__(self, x, y):
-        super().__init__()
-        self.image = load_img("assets/items/coinGold.png", TILE//2)
-        self.rect = self.image.get_rect(center=(x, y))
-        self.vy = -6
-        self.life = 22  
-
-    def update(self):
-        self.rect.y += self.vy
-        self.vy += 0.5  
-        self.life -= 1
-        return self.life > 0
-
-class Plant(pygame.sprite.Sprite):
-    def __init__(self, pos):
-        super().__init__()
-        self.image = load_img("assets/items/plant.png")
-        self.rect = self.image.get_rect(center=(pos[0]+TILE//2, pos[1]+TILE//2))
-
-class cloud(pygame.sprite.Sprite):
-    def __init__(self, pos):
-        super().__init__()
-        self.image = load_img("assets/items/cloud1.png")
-        self.rect = self.image.get_rect(center=(pos[0]+TILE//2, pos[1]+TILE//2))
-
-
-class Enemy(pygame.sprite.Sprite):
-    def __init__(self, pos, solids, grasses):
-        super().__init__()
-        self.image = load_img("assets/enemies/slimeWalk1.png")
-        self.rect = self.image.get_rect(topleft=pos)
-        self.vx = -2
-        self.solids = solids
-        self.grasses = grasses
-
-    def update(self):
-        self.rect.x += self.vx
-        for tile in self.solids + self.grasses:
-            if self.rect.colliderect(tile.rect):
-                self.vx *= -1
-
-# ---------------- CÁMARA ----------------
-class Camera:
-    def __init__(self):
-        self.offset = pygame.Vector2()
-        self.max_y = 0  # altura máxima alcanzada
-    def apply(self, rect):
-        return rect.move(-self.offset.x, -self.offset.y)
-    def update(self, target):
-        
-        self.offset.x = target.rect.centerx - WIDTH // 2
-        if self.offset.x < 0:
-            self.offset.x = 0
-
-
-        
-        desired_y = target.rect.centery - HEIGHT // 2
-        if desired_y < self.max_y:  
-            self.max_y = desired_y
-
-
-        self.offset.y = self.max_y
-        if self.offset.y < 0:
-            self.offset.y = 0
-
-#---------------- MENU -------------------
-def main_menu():
-    pygame.init()
-    screen = pygame.display.set_mode((WIDTH, HEIGHT))
-    pygame.display.set_caption("Menú Principal")
-    clock = pygame.time.Clock()
-
-    font = pygame.font.SysFont(None, 48)
-    small_font = pygame.font.SysFont(None, 32)
-
-    fondo = pygame.image.load("assets/universo.png").convert()
-    fondo = pygame.transform.scale(fondo, (WIDTH, HEIGHT))
-
-    while True:
-        screen.blit(fondo, (0, 0))
-
-        titulo = font.render("Mariano Bross", True, (255, 255, 255))
-        play = small_font.render("Presiona ENTER para jugar", True, (255, 255, 255))
-        salir = small_font.render("Presiona ESC para salir", True, (255, 255, 255))
-
-        screen.blit(titulo, (WIDTH//2 - titulo.get_width()//2, HEIGHT//2 - 100))
-        screen.blit(play, (WIDTH//2 - play.get_width()//2, HEIGHT//2))
-        screen.blit(salir, (WIDTH//2 - salir.get_width()//2, HEIGHT//2 + 40))
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RETURN:
-                    return  # salir del menú y continuar al juego
-                elif event.key == pygame.K_ESCAPE:
-                    pygame.quit()
-                    sys.exit()
-
-        pygame.display.flip()
-        clock.tick(FPS)
-
-
-# ---------------- MAIN ----------------
 def main():
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     clock = pygame.time.Clock()
-    pygame.display.set_caption("Mario Bros  ")
-    
+    pygame.display.set_caption("Mario Bros")
+
     if not pygame.mixer.get_init():
         os.environ["SDL_AUDIODRIVER"] = "dummy"
 
@@ -332,12 +25,9 @@ def main():
     except Exception as e:
         print(f"No se pudo iniciar el audio. Continuando sin sonido. Error: {e}")
 
-    player, solids, coins, enemies, plants ,clouds, grasses = load_level()
+    player, solids, coins, enemies, plants, clouds, grasses = load_level()
     camera = Camera()
     font = pygame.font.SysFont(None, 32)
-    
-    color_fondo = (135, 206, 235)  
-
 
     running = True
     while running:
@@ -354,31 +44,21 @@ def main():
         camera.update(player)
 
         if not player.alive:
-            player, solids, coins, enemies, plants ,clouds, grasses = load_level()
+            player, solids, coins, enemies, plants, clouds, grasses = load_level()
 
         screen.fill(color_fondo)
 
-        # --- Dibujar sprites ---
-        for tile in solids:
-            screen.blit(tile.image, camera.apply(tile.rect))
-        for grass in grasses:
-            screen.blit(grass.image, camera.apply(grass.rect))
-        for coin in coins:
-            screen.blit(coin.image, camera.apply(coin.rect))
-        for enemy in enemies:
-            screen.blit(enemy.image, camera.apply(enemy.rect))
-        for plant in plants:
-            screen.blit(plant.image, camera.apply(plant.rect))
-        for cloud in clouds:
-            screen.blit(cloud.image, camera.apply(cloud.rect))
+        for sprite_list in [solids, grasses, coins, enemies, plants, clouds]:
+            for sprite in sprite_list:
+                screen.blit(sprite.image, camera.apply(sprite.rect))
         screen.blit(player.image, camera.apply(player.rect))
+
         for effect in COIN_POP_EFFECTS[:]:
             if not effect.update():
                 COIN_POP_EFFECTS.remove(effect)
             else:
                 screen.blit(effect.image, camera.apply(effect.rect))
 
-        # --- Puntaje ---
         score_txt = font.render(f"Monedas: {player.score}", True, (255, 255, 255))
         screen.blit(score_txt, (20, 20))
 
