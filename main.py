@@ -3,27 +3,26 @@ import pygame, sys, json, os
 # ---------------- CONFIG ----------------
 WIDTH, HEIGHT = 960, 540
 FPS = 60
-GRAVITY = 0.6
+GRAVITY = 0.5
 SPEED = 5
-JUMP_VEL = -14
+JUMP_VEL = -15.5
 TILE = 48
 
-# Efectos de moneda que saltan al golpear un bloque
 COIN_POP_EFFECTS = []
 
 LEVEL_MAP = [
-    "X                                                                              ",
-    "X                                                                              ",
-    "X        C                                                                     ",
-    "X                  C         MM                 C                               ",
-    "X                      G           C                     C         M          ",
-    "X                 L                                                            ",
-    "X     C          BGGG                    MMM                                   ",
-    "X                                                            GG                ",
-    "X      P   L                                                L               L  ",
-    "XGGGGGGGGGGGGGGGGGGG         GGGGG    GGGGGGG            GGGGGG     GGGGGGGGGGG",
-    "XXXXXXXXXXXXXXXXXXXX   GGG   XXXXX  E XXXXXXX   GGG   E  XXXXXX  E  XXXXXXXXXXX",
-    "XXXXXXXXXXXXXXXXXXXX         XXXXX    XXXXXXX            XXXXXX     XXXXXXXXXXX",                   
+    "                                                  C                                       C           C                       C                                         C                          C     ",
+    "            C                                C                        C           EE MM                           C       MMM                   C                                  C                     ",
+    "                      B                                   C                     GGGGGGGG   GGGB            B              GGG     GBBG                             C                        GG           ",
+    "                                                                                                                                                                                           GXX   MM      ",
+    "                                                                                                 MM                                              MM                                       GXXX       F   ",
+    "                                              MM                B                                                                                                                        GXXXX       F   ",
+    "                B   GBGBG                     XX         XX                  GBG            G    XB     B  B  B     G      MMM     GG                                   GGBG            GXXXXX       F   ",
+    "                            MM        XX      XX         XX       MM                                                                     G  G         GG  G       MM                   GXXXXXX       F   ",
+    "                            XX        XX      XX         XX                                                                             GX  XG       GXX  XG      XX                  GXXXXXXX       F   ",
+    " P                   E      XX        XX E    XX     EE  XX                    MM             EE           MMM              EE EE      GXX  XXG     GXXX  XXG     XX         EE    XXGXXXXXXXX  LL L G L ",
+    "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG  GGGGGGGGGGGGGGG   GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGXXX  XXXGGGGGXXXX  XXXGGGGGXXGGGGGGGGGGGGGGGXXXXXXXXXXXGGGGGGGXGGG",
+    "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  XXXXXXXXXXXXXXX   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  XXXXXXXXXXXX  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
 ]
 
 
@@ -143,7 +142,7 @@ class Player(pygame.sprite.Sprite):
         for coin in self.coins.copy():
             if self.rect.colliderect(coin.rect):
                 self.coins.remove(coin)
-                self.score += 1
+                self.score += 10
 
         for plants in self.plants.copy():
             if self.rect.colliderect(plants.rect):
@@ -160,6 +159,7 @@ class Player(pygame.sprite.Sprite):
                 if self.vy > 0:
                     self.enemies.remove(enemy)
                     self.vy = JUMP_VEL * 0.7
+                    self.score += 50
                 else:
                     self.alive = False
 
@@ -198,7 +198,7 @@ class LuckyBlock(pygame.sprite.Sprite):
         self.used = True
         self.image = self.empty_img
         # sumar moneda al jugador
-        player.score += 1
+        player.score += 30
         # crear efecto de moneda apareciendo
         COIN_POP_EFFECTS.append(CoinPopEffect(self.rect.centerx, self.rect.top - 4))
 
