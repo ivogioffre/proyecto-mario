@@ -1,4 +1,4 @@
-from entities import Player, Tile, Grass, Coin, Enemy, Plant, cloud, LuckyBlock
+from entities import Player, Tile, Grass, Coin, Enemy, Plant, cloud, LuckyBlock, VerticalEnemy
 
 TILE = 48
 LEVEL_MAP = [
@@ -10,7 +10,7 @@ LEVEL_MAP = [
     "                                              MM                B                                                                                                                        GXXXX       F   ",
     "                B   GBGBG                     XX         XX                  GBG            G    XB     B  B  B     G      MMM     GG                                   GGBG            GXXXXX       F   ",
     "                            MM        XX      XX         XX       MM                                                                     G  G         GG  G       MM                   GXXXXXX       F   ",
-    "                            XX        XX      XX         XX                                                                             GX  XG       GXX  XG      XX                  GXXXXXXX       F   ",
+    "           V                XX        XX      XX         XX               V                         V                 V                 GX  XG       GXX  XG      XX                  GXXXXXXX       F   ",
     " P                   E      XX        XX E    XX     EE  XX                    MM             EE           MMM              EE EE      GXX  XXG     GXXX  XXG     XX         EE    XXGXXXXXXXX  LL L G L ",
     "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG  GGGGGGGGGGGGGGG   GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGXXX  XXXGGGGGXXXX  XXXGGGGGXXGGGGGGGGGGGGGGGXXXXXXXXXXXGGGGGGGXGGG",
     "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  XXXXXXXXXXXXXXX   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  XXXXXXXXXXXX  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
@@ -44,5 +44,7 @@ def load_level():
                 clouds.append(cloud((x, y)))
             elif ch == "B":
                 grasses.append(LuckyBlock((x, y)))
+            elif ch == "V":
+                enemies.append(VerticalEnemy((x, y), y - 330, y + 100))
 
     return player, solids, coins, enemies, plants, clouds, grasses

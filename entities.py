@@ -181,3 +181,15 @@ class Enemy(pygame.sprite.Sprite):
         for tile in self.solids + self.grasses:
             if self.rect.colliderect(tile.rect):
                 self.vx *= -1
+class VerticalEnemy(pygame.sprite.Sprite):
+    def __init__(self, pos, min_y, max_y, speed=4):
+        super().__init__()
+        self.image = load_img("assets/enemies/Dp.png")
+        self.rect = self.image.get_rect(topleft=pos)
+        self.vy = speed
+        self.min_y = min_y  # límite superior
+        self.max_y = max_y  # límite inferior
+    def update(self):
+        self.rect.y += self.vy
+        if self.rect.top <= self.min_y or self.rect.bottom >= self.max_y:
+            self.vy *= -1
