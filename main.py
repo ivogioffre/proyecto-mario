@@ -3,6 +3,7 @@ from menu import main_menu
 from level import load_level
 from camera import Camera
 from entities import Player, COIN_POP_EFFECTS
+from Items import FIREBALLS
 
 WIDTH, HEIGHT = 960, 540
 FPS = 60
@@ -47,6 +48,14 @@ def main():
             player, solids, coins, enemies, plants, clouds, grasses = load_level()
 
         screen.fill(color_fondo)
+
+
+        for fireball in FIREBALLS[:]:
+            if not fireball.update():
+                FIREBALLS.remove(fireball)
+            else:
+                screen.blit(fireball.image, camera.apply(fireball.rect))
+
 
         for sprite_list in [solids, grasses, coins, enemies, plants, clouds]:
             for sprite in sprite_list:

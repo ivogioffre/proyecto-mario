@@ -1,4 +1,5 @@
 from entities import Player, Tile, Grass, Coin, Enemy, Plant, cloud, LuckyBlock, VerticalEnemy
+from Items import FireFlower
 
 TILE = 48
 LEVEL_MAP = [
@@ -11,7 +12,7 @@ LEVEL_MAP = [
     "                B   GBGBG                     XX         XX                  GBG            G    XB     B  B  B     G      MMM     GG                                   GGBG            GXXXXX       F   ",
     "                            MM        XX      XX         XX       MM                                                                     G  G         GG  G       MM                   GXXXXXX       F   ",
     "           V                XX        XX      XX         XX               V                         V                 V                 GX  XG       GXX  XG      XX                  GXXXXXXX       F   ",
-    " P                   E      XX        XX E    XX     EE  XX                    MM             EE           MMM              EE EE      GXX  XXG     GXXX  XXG     XX         EE    XXGXXXXXXXX  LL L G L ",
+    " P                   E   F  XX        XX E    XX     EE  XX                    MM             EE           MMM              EE EE      GXX  XXG     GXXX  XXG     XX         EE    XXGXXXXXXXX  LL L G L ",
     "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG  GGGGGGGGGGGGGGG   GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGXXX  XXXGGGGGXXXX  XXXGGGGGXXGGGGGGGGGGGGGGGXXXXXXXXXXXGGGGGGGXGGG",
     "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  XXXXXXXXXXXXXXX   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  XXXXXXXXXXXX  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
 ]
@@ -46,5 +47,8 @@ def load_level():
                 grasses.append(LuckyBlock((x, y)))
             elif ch == "V":
                 enemies.append(VerticalEnemy((x, y), y - 330, y + 100))
+            elif ch == "F":
+                plants.append(FireFlower((x, y)))
+
 
     return player, solids, coins, enemies, plants, clouds, grasses
