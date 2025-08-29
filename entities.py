@@ -29,7 +29,6 @@ class Player(pygame.sprite.Sprite):
         self.score = 0
         self.plants = plants
         self.clouds = clouds
-        self.has_fire = False
         self.alive = True
 
     def update(self, keys):
@@ -53,11 +52,6 @@ class Player(pygame.sprite.Sprite):
         self.vy += GRAVITY
         if self.vy > 20: self.vy = 20
 
-        if self.has_fire and keys[pygame.K_f]:
-            from Items import Fireball, FIREBALLS
-            direction = 1 if self.vx >= 0 else -1
-            FIREBALLS.append(Fireball(self.rect.centerx, self.rect.centery, direction, self.solids + self.grasses, self.enemies))
-
         self.move_and_collide(self.vx, self.vy)
         if self.rect.top > 2000:
             self.alive = False
@@ -65,11 +59,6 @@ class Player(pygame.sprite.Sprite):
 
     def move_and_collide(self, dx, dy):
         JUMP_VEL = -15.5
-        for plant in self.plants.copy():
-            if self.rect.colliderect(plant.rect):
-                if hasattr(plant, "give_power"):
-                    plant.give_power(self)
-                    self.plants.remove(plant)
         for axis in ["x", "y"]:
             if axis == "x":
                 self.rect.x += dx
@@ -80,8 +69,6 @@ class Player(pygame.sprite.Sprite):
                             self.rect.right = tile.rect.left
                         elif dx < 0:
                             self.rect.left = tile.rect.right
-    
-
             else:
                 self.rect.y += dy
                 self.on_ground = False
