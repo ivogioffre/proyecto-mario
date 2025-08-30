@@ -19,7 +19,7 @@ def main():
 
     try:
         pygame.mixer.init()
-        pygame.mixer.music.load("assets/musica/10 Shop.mp3")
+        pygame.mixer.music.load("assets/musica/12. Overworld.mp3")
         pygame.mixer.music.play(-1)
         pygame.mixer.music.set_volume(0.5)
     except Exception as e:

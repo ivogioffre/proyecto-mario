@@ -88,14 +88,13 @@ class Player(pygame.sprite.Sprite):
         for coin in self.coins.copy():
             if self.rect.colliderect(coin.rect):
                 self.coins.remove(coin)
-                self.score += 10
+                self.score += 1
 
         for enemy in self.enemies.copy():
             if self.rect.colliderect(enemy.rect):
                 if self.vy > 0:
                     self.enemies.remove(enemy)
                     self.vy = JUMP_VEL * 0.7
-                    self.score += 50
                 else:
                     self.alive = False
 
@@ -132,7 +131,7 @@ class LuckyBlock(pygame.sprite.Sprite):
         if self.used: return
         self.used = True
         self.image = self.empty_img
-        player.score += 30
+        player.score += 1
         COIN_POP_EFFECTS.append(CoinPopEffect(self.rect.centerx, self.rect.top - 4))
 
 class Coin(pygame.sprite.Sprite):
