@@ -1,4 +1,4 @@
-import pygame, sys
+import pygame, sys, os
 
 WIDTH, HEIGHT = 960, 540
 
@@ -14,17 +14,22 @@ def main_menu():
     fondo = pygame.image.load("assets/universo.png").convert()
     fondo = pygame.transform.scale(fondo, (WIDTH, HEIGHT))
 
-    try:
-        pygame.mixer.init()
-        pygame.mixer.music.load("assets/musica/10 Shop.mp3")
-        pygame.mixer.music.play(-1)
-        pygame.mixer.music.set_volume(0.5)
-    except Exception as e:
-        print(f"No se pudo iniciar el audio en el menú. Continuando sin sonido. Error: {e}")
+    if not pygame.mixer.get_init():
+        musica = False
+        os.environ["SDL_AUDIODRIVER"] = "dummy"
+    if musica == False:
+        pass
+    else:
+        try:
+            pygame.mixer.music.load("assets/musica/10 Shop.mp3")
+            pygame.mixer.music.play(-1)
+            pygame.mixer.music.set_volume(0.5)
+        except Exception as e:
+            print(f"No se pudo iniciar el audio en el menú. Continuando sin sonido. Error: {e}")
 
     while True:
         screen.blit(fondo, (0, 0))
-        titulo = font.render("Mariano Bross", True, (255, 255, 255))
+        titulo = font.render("Mariano Bros", True, (255, 255, 255))
         play = small_font.render("Presiona ENTER para jugar", True, (255, 255, 255))
         salir = small_font.render("Presiona ESC para salir", True, (255, 255, 255))
 

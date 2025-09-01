@@ -9,21 +9,23 @@ FPS = 60
 color_fondo = (135, 206, 235)
 
 def main():
+    musica = load_level()
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     clock = pygame.time.Clock()
     pygame.display.set_caption("Mario Bros")
 
-    if not pygame.mixer.get_init():
-        os.environ["SDL_AUDIODRIVER"] = "dummy"
-
-    try:
-        pygame.mixer.init()
-        pygame.mixer.music.load("assets/musica/12. Overworld.mp3")
-        pygame.mixer.music.play(-1)
-        pygame.mixer.music.set_volume(0.5)
-    except Exception as e:
-        print(f"No se pudo iniciar el audio. Continuando sin sonido. Error: {e}")
+   
+    if musica == False:
+        pass
+    else:
+        try:
+            pygame.mixer.init()
+            pygame.mixer.music.load("assets/musica/12. Overworld.mp3")
+            pygame.mixer.music.play(-1)
+            pygame.mixer.music.set_volume(0.5)
+        except Exception as e:
+            print(f"No se pudo iniciar el audio. Continuando sin sonido. Error: {e}")
 
     player, solids, coins, enemies, plants, clouds, grasses = load_level()
     camera = Camera()
