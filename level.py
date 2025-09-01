@@ -41,7 +41,7 @@ def load_level():
             elif ch == "M":
                 coins.append(Coin((x, y)))
             elif ch == "E":
-                enemies.append(Enemy((x, y), solids, grasses))
+                enemies.append(Enemy((x, y), solids, grasses, None))  # <-- Pasa None por ahora
             elif ch == "L":
                 plants.append(Plant((x, y)))
             elif ch == "C":
@@ -50,5 +50,9 @@ def load_level():
                 grasses.append(LuckyBlock((x, y)))
             elif ch == "V":
                 enemies.append(VerticalEnemy((x, y), y - 330, y + 100))
+
+    # Asignar la lista completa de enemigos a cada enemigo para colisiones
+    for enemy in enemies:
+        enemy.enemies_group = enemies
 
     return player, solids, coins, enemies, plants, clouds, grasses

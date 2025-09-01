@@ -167,32 +167,53 @@ class cloud(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=(pos[0]+TILE//2, pos[1]+TILE//2))
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, pos, solids, grasses):
+    def __init__(self, pos, solids, grasses, enemies_group=None):
         super().__init__()
+        self.images_right = [load_img(f"assets/enemies/{i}.png") for i in range(1, 5)]  # Animación mirando derecha
+        self.images_left = [pygame.transform.flip(img, True, False) for img in self.images_right]  # Animación mirando izquierda
 
-        imgs = []
-        for i in range(1, 5):
-            img = load_img(f"assets/enemies/{i}.png")
-            imgs.append(img)
-        
-        self.images = imgs + imgs[-2:0:-1]
-
-        self.anim_frame = 0
-        self.image = self.images[0]
+        self.image = self.images_right[0]
         self.rect = self.image.get_rect(topleft=pos)
+
         self.vx = -2
         self.solids = solids
         self.grasses = grasses
+        self.enemies_group = enemies_group
+
+        self.anim_frame = 0
+        self.anim_forward = True
 
     def update(self):
         self.rect.x += self.vx
+
+        # Animación de ida y vuelta
+        if self.anim_forward:
+            self.anim_frame += 0.15
+            if self.anim_frame >= len(self.images_right) - 1:
+                self.anim_forward = False
+        else:
+            self.anim_frame -= 0.15
+            if self.anim_frame <= 0:
+                self.anim_forward = True
+
+        # Seleccionar imágenes según dirección
+        if self.vx > 0:
+            self.image = self.images_right[int(self.anim_frame)]
+        else:
+            self.image = self.images_left[int(self.anim_frame)]
+
+        # Colisiones con sólidos y hierbas
         for tile in self.solids + self.grasses:
             if self.rect.colliderect(tile.rect):
                 self.vx *= -1
-        self.anim_frame += 0.15
-        if self.anim_frame >= len(self.images):
-            self.anim_frame = 0
-        self.image = self.images[int(self.anim_frame)]
+                break
+
+        # Colisiones con otros enemigos
+        if self.enemies_group:
+            for other in self.enemies_group:
+                if other != self and self.rect.colliderect(other.rect):
+                    self.vx *= -1
+                    break
 class VerticalEnemy(pygame.sprite.Sprite):
     def __init__(self, pos, min_y, max_y, speed=4):
         super().__init__()
