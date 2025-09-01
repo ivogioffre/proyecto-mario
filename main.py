@@ -4,18 +4,19 @@ from level import load_level
 from camera import Camera
 from entities import Player, COIN_POP_EFFECTS
 
-WIDTH, HEIGHT = 960, 540
 FPS = 60
 color_fondo = (135, 206, 235)
 
 def main():
     musica = load_level()
     pygame.init()
-    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+
+    # Ventana pantalla completa
+    screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+    WIDTH, HEIGHT = screen.get_size()
     clock = pygame.time.Clock()
     pygame.display.set_caption("Mario Bros")
 
-   
     if musica == False:
         pass
     else:

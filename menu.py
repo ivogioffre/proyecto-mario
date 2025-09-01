@@ -1,25 +1,28 @@
-import pygame, sys, os
-
-WIDTH, HEIGHT = 960, 540
+import pygame
+import sys
+import os
 
 def main_menu():
     pygame.init()
-    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+
+    # Abrir ventana en pantalla completa
+    screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+    WIDTH, HEIGHT = screen.get_size()
     pygame.display.set_caption("Menú Principal")
     clock = pygame.time.Clock()
 
     font = pygame.font.SysFont(None, 48)
     small_font = pygame.font.SysFont(None, 32)
 
+    # Cargar y escalar fondo
     fondo = pygame.image.load("assets/universo.png").convert()
     fondo = pygame.transform.scale(fondo, (WIDTH, HEIGHT))
 
+    musica = True
     if not pygame.mixer.get_init():
         musica = False
         os.environ["SDL_AUDIODRIVER"] = "dummy"
-    if musica == False:
-        pass
-    else:
+    if musica:
         try:
             pygame.mixer.music.load("assets/musica/10 Shop.mp3")
             pygame.mixer.music.play(-1)

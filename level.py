@@ -2,6 +2,9 @@ from entities import Player, Tile, Grass, Coin, Enemy, Plant, cloud, LuckyBlock,
 
 TILE = 48
 LEVEL_MAP = [
+    "                                                                                                                                                                                                         ",
+    "                                                                                                                                                                                                         ",
+    "                                                                                                                                                                                                         ",
     "                                                  C                                       C           C                       C                                         C                          C     ",
     "            C                                C                        C           E  MM                           C       MMM                   C                                  C                     ",
     "                      B                                   C                     GGGGGGGG   GBG             B              GGG     GBBG                             C                        GG           ",
