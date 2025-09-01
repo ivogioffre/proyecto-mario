@@ -26,65 +26,6 @@ class Player(pygame.sprite.Sprite):
         self.grasses = grasses
         self.coins = coins
         self.enemies = enemies
-        self.score = 0
-        self.plants = plants
-        self.clouds = clouds
-        self.alive = True
-
-    def update(self, keys):
-        SPEED = 5
-        GRAVITY = 0.5
-        JUMP_VEL = -15.5
-
-        self.vx = ((keys[pygame.K_RIGHT] or keys[pygame.K_d]) - (keys[pygame.K_LEFT] or keys[pygame.K_a])) * SPEED
-        want_jump = keys[pygame.K_SPACE] or keys[pygame.K_UP] or keys[pygame.K_w]
-        if want_jump and self.on_ground:
-            self.vy = JUMP_VEL
-            self.on_ground = False
-
-        if not self.on_ground:
-            self.anim_state = "jump"
-        elif self.vx != 0:
-            self.anim_state = "walk"
-        else:
-            self.anim_state = "idle"
-
-        self.vy += GRAVITY
-        if self.vy > 20: self.vy = 20
-
-        self.move_and_collide(self.vx, self.vy)
-        if self.rect.top > 2000:
-            self.alive = False
-        self.animate()
-
-    def move_and_collide(self, dx, dy):
-        JUMP_VEL = -15.5
-        for axis in ["x", "y"]:
-            if axis == "x":
-                self.rect.x += dx
-                tiles = self.solids + self.grasses
-                for tile in tiles:
-                    if self.rect.colliderect(tile.rect):
-                        if dx > 0:
-                            self.rect.right = tile.rect.left
-                        elif dx < 0:
-                            self.rect.left = tile.rect.right
-            else:
-                self.rect.y += dy
-                self.on_ground = False
-                tiles = self.solids + self.grasses
-                for tile in tiles:
-                    if self.rect.colliderect(tile.rect):
-                        if dy > 0:
-                            self.rect.bottom = tile.rect.top
-                            self.on_ground = True
-                            self.vy = 0
-                        elif dy < 0:
-                            self.rect.top = tile.rect.bottom
-                            self.vy = 0
-                            if hasattr(tile, "hit"):
-                                tile.hit(self)
-
         for coin in self.coins.copy():
             if self.rect.colliderect(coin.rect):
                 self.coins.remove(coin)

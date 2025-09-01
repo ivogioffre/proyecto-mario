@@ -3,6 +3,7 @@ from menu import main_menu
 from level import load_level
 from camera import Camera
 from entities import Player, COIN_POP_EFFECTS
+from Items import FIREBALLS
 
 WIDTH, HEIGHT = 960, 540
 FPS = 60
@@ -53,14 +54,20 @@ def main():
                 screen.blit(sprite.image, camera.apply(sprite.rect))
         screen.blit(player.image, camera.apply(player.rect))
 
+        
+        for fireball in FIREBALLS[:]:
+            if not fireball.update():
+                FIREBALLS.remove(fireball)
+            else:
+                screen.blit(fireball.image, camera.apply(fireball.rect))
+        
         for effect in COIN_POP_EFFECTS[:]:
             if not effect.update():
                 COIN_POP_EFFECTS.remove(effect)
             else:
                 screen.blit(effect.image, camera.apply(effect.rect))
 
-        score_txt = font.render(f"Monedas: {player.score}", True, (255, 255, 255))
-        screen.blit(score_txt, (20, 20))
+
 
         pygame.display.flip()
 
