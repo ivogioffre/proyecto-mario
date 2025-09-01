@@ -169,7 +169,16 @@ class cloud(pygame.sprite.Sprite):
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, pos, solids, grasses):
         super().__init__()
-        self.image = load_img("assets/enemies/slimeWalk1.png")
+
+        imgs = []
+        for i in range(1, 5):
+            img = load_img(f"assets/enemies/{i}.png")
+            imgs.append(img)
+        
+        self.images = imgs + imgs[-2:0:-1]
+
+        self.anim_frame = 0
+        self.image = self.images[0]
         self.rect = self.image.get_rect(topleft=pos)
         self.vx = -2
         self.solids = solids
@@ -180,6 +189,10 @@ class Enemy(pygame.sprite.Sprite):
         for tile in self.solids + self.grasses:
             if self.rect.colliderect(tile.rect):
                 self.vx *= -1
+        self.anim_frame += 0.15
+        if self.anim_frame >= len(self.images):
+            self.anim_frame = 0
+        self.image = self.images[int(self.anim_frame)]
 class VerticalEnemy(pygame.sprite.Sprite):
     def __init__(self, pos, min_y, max_y, speed=4):
         super().__init__()

@@ -5,6 +5,7 @@ LEVEL_MAP = [
     "                                                                                                                                                                                                         ",
     "                                                                                                                                                                                                         ",
     "                                                                                                                                                                                                         ",
+    "                                                                                                                                                                                                         ",
     "                                                  C                                       C           C                       C                                         C                          C     ",
     "            C                                C                        C           E  MM                           C       MMM                   C                                  C                     ",
     "                      B                                   C                     GGGGGGGG   GBG             B              GGG     GBBG                             C                        GG           ",
