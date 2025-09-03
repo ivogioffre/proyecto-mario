@@ -9,7 +9,7 @@ def load_img(path, scale=TILE):
     return pygame.transform.scale(img, (scale, scale))
 
 class Player(pygame.sprite.Sprite):#configurar sprite, colisiones y movimiento del jugador
-    def __init__(self, pos, solids, coins, enemies, plants, clouds, grasses):
+    def __init__(self, pos, solids, coins, enemies, plants, clouds, grasses, flags):
         super().__init__()
         self.images = {
             "idle": [load_img("assets/player/idle.png")],
@@ -33,6 +33,7 @@ class Player(pygame.sprite.Sprite):#configurar sprite, colisiones y movimiento d
         self.score = 0
         self.plants = plants
         self.clouds = clouds
+        self.flags = flags
         self.alive = True
         
     def update(self, keys):
@@ -127,6 +128,12 @@ class Grass(pygame.sprite.Sprite):
     def __init__(self, pos):
         super().__init__()
         self.image = load_img("assets/tiles/grassMid.png")
+        self.rect = self.image.get_rect(topleft=pos)
+
+class Flag(pygame.sprite.Sprite):
+    def __init__(self, pos):
+        super().__init__()
+        self.image = load_img("assets/Items/flagBlue.png")
         self.rect = self.image.get_rect(topleft=pos)
 
 class LuckyBlock(pygame.sprite.Sprite):

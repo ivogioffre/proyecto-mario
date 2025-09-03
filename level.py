@@ -1,23 +1,23 @@
 #importamos todas las entidades
-from entities import Player, Tile, Grass, Coin, Enemy, Plant, cloud, LuckyBlock, VerticalEnemy
+from entities import Player, Tile, Grass, Coin, Enemy, Plant, cloud, LuckyBlock, VerticalEnemy , Flag
 
 #definimos el mapa del nivel
 TILE = 48 #definimos los pixeles de cada entidad
 LEVEL_MAP = [
     "                                                                                                                                                                                                         ",
     "                                                                                                                                                                                                         ",
+    "        C                     C                                   C        C                                 C                                      C                           C                        ",
     "                                                                                                                                                                                                         ",
-    "                                                                                                                                                                                                         ",
-    "                                                  C                                       C           C                       C                                         C                          C     ",
+    "   C                                               C                                       C           C                       C                                         C                          C    ",
     "            C                                C                        C           E  MM                           C       MMM                   C                                  C                     ",
     "                      B                                   C                     GGGGGGGG   GBG             B              GGG     GBBG                             C                        GG           ",
     "                                                                                                                                                                                           GXX   MM      ",
-    "                                                                                                 MM                                              MM                                       GXXX       F   ",
-    "                     E                        MM                B                                                                                                                        GXXXX       F   ",
-    "                B   GBGBG                     XX         XX                  GBG            G    XB     B  B  B     G      MMM     GG                                   GGBG            GXXXXX       F   ",
-    "                            MM        XX      XX         XX       MM                                                                     G  G         GG  G       MM                   GXXXXXX       F   ",
+    "                                                                                                 MM                                              MM                                       GXXX           ",
+    "                     E                        MM                B                                                                                                                        GXXXX           ",
+    "                B   GBGBG                     XX         XX                  GBG            G    XB     B  B  B     G      MMM     GG                                   GGBG            GXXXXX           ",
+    "                            MM        XX      XX         XX       MM                                                                     G  G         GG  G       MM                   GXXXXXX           ",
     "           V                XX        XX      XX         XX               V                         V                 V                 GX  XG       GXX  XG      XX                  GXXXXXXX       F   ",
-    " P                   E      XX        XX E    XX     E   XX                    MM              E           MMM               E  E      GXX  XXG     GXXX  XXG     XX          E    XXGXXXXXXXX  LL L G L ",
+    " P          L        E      XX        XX E    XX     E   XX                    MM              E           MMM               E  E      GXX  XXG     GXXX  XXG     XX          E    XXGXXXXXXXX  LL L G L ",
     "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG  GGGGGGGGGGGGGGG   GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGXXX  XXXGGGGGXXXX  XXXGGGGGXXGGGGGGGGGGGGGGGXXXXXXXXXXXGGGGGGGXGGG",
     "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  XXXXXXXXXXXXXXX   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  XXXXXXXXXXXX  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
 ]
@@ -29,6 +29,7 @@ def load_level():
     enemies = []
     plants = []
     clouds = []
+    flags = []
     player = None
 
     #recorremos las filas y columnas con "j" y "i" (filas y columnas)
@@ -41,7 +42,7 @@ def load_level():
             elif ch == "G":
                 grasses.append(Grass((x, y)))
             elif ch == "P":
-                player = Player((x, y), solids, coins, enemies, plants, clouds, grasses)#el jugador puede interactuar con otras entidades
+                player = Player((x, y), solids, coins, enemies, plants, clouds, grasses,flags)#el jugador puede interactuar con otras entidades
             elif ch == "M":
                 coins.append(Coin((x, y)))
             elif ch == "E":
@@ -54,10 +55,11 @@ def load_level():
                 grasses.append(LuckyBlock((x, y)))
             elif ch == "V":
                 enemies.append(VerticalEnemy((x, y), y - 330, y + 100))#el enemigo se mueve verticalmente
-
+            elif ch == "F":
+                flags.append(Flag((x, y)))
     # colisiones entre enemigos
     for enemy in enemies:
         enemy.enemies_group = enemies
 
     #devolvemos todo al main
-    return player, solids, coins, enemies, plants, clouds, grasses
+    return player, solids, coins, enemies, plants, clouds, grasses , flags
