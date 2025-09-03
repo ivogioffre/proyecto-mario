@@ -1,5 +1,6 @@
 #importamos todos los archivos
 import pygame, sys, os
+from puntaje import guardar_record
 from menu import main_menu
 from level import load_level
 from camera import Camera
@@ -60,6 +61,7 @@ def main():
         
         for flag in flags:
             if player.rect.colliderect(flag.rect):
+                guardar_record(player.score)  
                 main_puntaje(player.score)  # le pasamos el puntaje
                 return  # salir del juego
 
@@ -85,6 +87,8 @@ def main():
 
         # se actualiza la pantalla
         pygame.display.flip()
+    
+    guardar_record(player.score) # guarda hasta ahora la cantidad de monedas en un archivo txt aparte
     #se cierra pygame y el programa
     pygame.quit()
     sys.exit()
