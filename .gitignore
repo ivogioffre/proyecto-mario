@@ -1,1 +1,4 @@
 Entorno_virtual/
+__pycache__/
+*.py[cod]
+*$py.class

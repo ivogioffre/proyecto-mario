@@ -1,6 +1,8 @@
+#importamos todas las entidades
 from entities import Player, Tile, Grass, Coin, Enemy, Plant, cloud, LuckyBlock, VerticalEnemy
 
-TILE = 48
+#definimos el mapa del nivel
+TILE = 48 #definimos los pixeles de cada entidad
 LEVEL_MAP = [
     "                                                                                                                                                                                                         ",
     "                                                                                                                                                                                                         ",
@@ -11,7 +13,7 @@ LEVEL_MAP = [
     "                      B                                   C                     GGGGGGGG   GBG             B              GGG     GBBG                             C                        GG           ",
     "                                                                                                                                                                                           GXX   MM      ",
     "                                                                                                 MM                                              MM                                       GXXX       F   ",
-    "                                              MM                B                                                                                                                        GXXXX       F   ",
+    "                     E                        MM                B                                                                                                                        GXXXX       F   ",
     "                B   GBGBG                     XX         XX                  GBG            G    XB     B  B  B     G      MMM     GG                                   GGBG            GXXXXX       F   ",
     "                            MM        XX      XX         XX       MM                                                                     G  G         GG  G       MM                   GXXXXXX       F   ",
     "           V                XX        XX      XX         XX               V                         V                 V                 GX  XG       GXX  XG      XX                  GXXXXXXX       F   ",
@@ -19,7 +21,7 @@ LEVEL_MAP = [
     "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG  GGGGGGGGGGGGGGG   GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGXXX  XXXGGGGGXXXX  XXXGGGGGXXGGGGGGGGGGGGGGGXXXXXXXXXXXGGGGGGGXGGG",
     "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  XXXXXXXXXXXXXXX   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  XXXXXXXXXXXX  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
 ]
-
+#es una lista donde guardamos cada entidad del nivel
 def load_level():
     solids = []
     grasses = []
@@ -29,7 +31,9 @@ def load_level():
     clouds = []
     player = None
 
+    #recorremos las filas y columnas con "j" y "i" (filas y columnas)
     for j, row in enumerate(LEVEL_MAP):
+        # cada entidad es una letra
         for i, ch in enumerate(row):
             x, y = i * TILE, j * TILE
             if ch == "X":
@@ -37,11 +41,11 @@ def load_level():
             elif ch == "G":
                 grasses.append(Grass((x, y)))
             elif ch == "P":
-                player = Player((x, y), solids, coins, enemies, plants, clouds, grasses)
+                player = Player((x, y), solids, coins, enemies, plants, clouds, grasses)#el jugador puede interactuar con otras entidades
             elif ch == "M":
                 coins.append(Coin((x, y)))
             elif ch == "E":
-                enemies.append(Enemy((x, y), solids, grasses, None))  # <-- Pasa None por ahora
+                enemies.append(Enemy((x, y), solids, grasses, None))
             elif ch == "L":
                 plants.append(Plant((x, y)))
             elif ch == "C":
@@ -49,10 +53,11 @@ def load_level():
             elif ch == "B":
                 grasses.append(LuckyBlock((x, y)))
             elif ch == "V":
-                enemies.append(VerticalEnemy((x, y), y - 330, y + 100))
+                enemies.append(VerticalEnemy((x, y), y - 330, y + 100))#el enemigo se mueve verticalmente
 
-    # Asignar la lista completa de enemigos a cada enemigo para colisiones
+    # colisiones entre enemigos
     for enemy in enemies:
         enemy.enemies_group = enemies
 
+    #devolvemos todo al main
     return player, solids, coins, enemies, plants, clouds, grasses

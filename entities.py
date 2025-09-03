@@ -1,13 +1,14 @@
 import pygame
 
-TILE = 48
-COIN_POP_EFFECTS = []
+TILE = 48 #resolucion de cada entidad
+COIN_POP_EFFECTS = [] # Efectos de monedas
 
+#importamos las imagenes y la ponemos en escala (48x48)
 def load_img(path, scale=TILE):
     img = pygame.image.load(path).convert_alpha()
     return pygame.transform.scale(img, (scale, scale))
 
-class Player(pygame.sprite.Sprite):
+class Player(pygame.sprite.Sprite):#configurar sprite, colisiones y movimiento del jugador
     def __init__(self, pos, solids, coins, enemies, plants, clouds, grasses):
         super().__init__()
         self.images = {
@@ -15,13 +16,16 @@ class Player(pygame.sprite.Sprite):
             "walk": [load_img("assets/player/walk1.png"), load_img("assets/player/walk2.png")],
             "jump": [load_img("assets/player/jump.png")]
         }
+        #sprite para cada movimiento
         self.anim_state = "idle"
         self.anim_frame = 0
         self.image = self.images["idle"][0]
+        #fisica y colisiones
         self.rect = self.image.get_rect(topleft=pos)
-        self.vx = 0
-        self.vy = 0
-        self.on_ground = False
+        self.vx = 0 #x jugador
+        self.vy = 0 #y jugador
+        self.on_ground = False #si el jugador esta en el suelo
+        #interaccion con los objetos
         self.solids = solids
         self.grasses = grasses
         self.coins = coins
@@ -30,18 +34,21 @@ class Player(pygame.sprite.Sprite):
         self.plants = plants
         self.clouds = clouds
         self.alive = True
-
+        
     def update(self, keys):
+        # velocidad, gravedad y salto
         SPEED = 5
         GRAVITY = 0.5
         JUMP_VEL = -15.5
-
+        
+        #detecta las teclas que se presionan
         self.vx = ((keys[pygame.K_RIGHT] or keys[pygame.K_d]) - (keys[pygame.K_LEFT] or keys[pygame.K_a])) * SPEED
         want_jump = keys[pygame.K_SPACE] or keys[pygame.K_UP] or keys[pygame.K_w]
         if want_jump and self.on_ground:
             self.vy = JUMP_VEL
             self.on_ground = False
 
+        #cambia la animacion
         if not self.on_ground:
             self.anim_state = "jump"
         elif self.vx != 0:
@@ -49,14 +56,16 @@ class Player(pygame.sprite.Sprite):
         else:
             self.anim_state = "idle"
 
+        #se aplica la gravedad
         self.vy += GRAVITY
         if self.vy > 20: self.vy = 20
 
         self.move_and_collide(self.vx, self.vy)
-        if self.rect.top > 2000:
+        if self.rect.top > 2000: #si el jugador cae muy bajo muere
             self.alive = False
         self.animate()
 
+    #detecta colisiones y evita que quede atrapado dentro de bloques
     def move_and_collide(self, dx, dy):
         JUMP_VEL = -15.5
         for axis in ["x", "y"]:
@@ -85,11 +94,13 @@ class Player(pygame.sprite.Sprite):
                             if hasattr(tile, "hit"):
                                 tile.hit(self)
 
+        #suma puntos si agarra una moneda
         for coin in self.coins.copy():
             if self.rect.colliderect(coin.rect):
                 self.coins.remove(coin)
                 self.score += 1
 
+        #si cae encima de un enemigo lo mata
         for enemy in self.enemies.copy():
             if self.rect.colliderect(enemy.rect):
                 if self.vy > 0:
@@ -97,7 +108,7 @@ class Player(pygame.sprite.Sprite):
                     self.vy = JUMP_VEL * 0.7
                 else:
                     self.alive = False
-
+    #actualiza la animacion
     def animate(self):
         frames = self.images[self.anim_state]
         self.anim_frame += 0.15
@@ -105,7 +116,7 @@ class Player(pygame.sprite.Sprite):
             self.anim_frame = 0
         self.image = frames[int(self.anim_frame)]
 
-
+#armamos todas las entidades (bloques, enemigos monedas, etc.)
 class Tile(pygame.sprite.Sprite):
     def __init__(self, pos):
         super().__init__()
@@ -202,7 +213,7 @@ class Enemy(pygame.sprite.Sprite):
         else:
             self.image = self.images_left[int(self.anim_frame)]
 
-        # Colisiones con sólidos y hierbas
+        # Colisiones con bloques
         for tile in self.solids + self.grasses:
             if self.rect.colliderect(tile.rect):
                 self.vx *= -1
@@ -215,13 +226,14 @@ class Enemy(pygame.sprite.Sprite):
                     self.vx *= -1
                     break
 class VerticalEnemy(pygame.sprite.Sprite):
+    #si llega a los limite cambia de direccion
     def __init__(self, pos, min_y, max_y, speed=4):
         super().__init__()
         self.image = load_img("assets/enemies/Dp.png")
         self.rect = self.image.get_rect(topleft=pos)
         self.vy = speed
-        self.min_y = min_y  # límite superior
-        self.max_y = max_y  # límite inferior
+        self.min_y = min_y
+        self.max_y = max_y
     def update(self):
         self.rect.y += self.vy
         if self.rect.top <= self.min_y or self.rect.bottom >= self.max_y:
