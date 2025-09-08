@@ -3,62 +3,69 @@ import sys
 import os
 
 def main_menu():
-    # Inicializar Pygame
     pygame.init()
 
-    # Abrir ventana en pantalla completa
+    # Pantalla completa
     screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-    WIDTH, HEIGHT = screen.get_size()#toma la medida de la pantalla
-    pygame.display.set_caption("Menú Principal")#titulo de la ventana
+    WIDTH, HEIGHT = screen.get_size()
+    pygame.display.set_caption("Menú Principal")
     clock = pygame.time.Clock()
 
-    #fuentes para los titulos
-    font = pygame.font.SysFont(None, 48)
-    small_font = pygame.font.SysFont(None, 32)
-
-    # Cargar y escalar fondo
-    fondo = pygame.image.load("assets/universo.png").convert()
+    # Cargar fondo (la imagen que me diste)
+    fondo = pygame.image.load("assets/menu/fondo.png").convert()
     fondo = pygame.transform.scale(fondo, (WIDTH, HEIGHT))
 
-    # Configura la música de fondo
+    # Cargar botones desde archivos PNG
+    play_btn_img = pygame.image.load("assets/menu/play_button.png").convert_alpha()
+    quit_btn_img = pygame.image.load("assets/menu/quit_button.png").convert_alpha()
+
+    # Escalamos los botones
+    button_width, button_height = 300, 100
+    play_btn_img = pygame.transform.scale(play_btn_img, (button_width, button_height))
+    quit_btn_img = pygame.transform.scale(quit_btn_img, (button_width, button_height))
+
+    # Posiciones de los botones
+    play_btn_rect = play_btn_img.get_rect(center=(WIDTH // 2, HEIGHT // 2))
+    quit_btn_rect = quit_btn_img.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 120))
+
+    titulo_img = pygame.image.load("assets/menu/mariano_bros.png").convert_alpha()
+    titulo_width, titulo_height = 400,600  # puedes ajustar tamaño
+    titulo_img = pygame.transform.scale(titulo_img, (titulo_width, titulo_height))
+    titulo_rect = titulo_img.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 200)) 
+
+    # Música
     musica = True
     if not pygame.mixer.get_init():
         musica = False
         os.environ["SDL_AUDIODRIVER"] = "dummy"
-    #musica en bucle
     if musica:
         try:
             pygame.mixer.music.load("assets/musica/10 Shop.mp3")
-            pygame.mixer.music.play(-1) #infinito
+            pygame.mixer.music.play(-1)
             pygame.mixer.music.set_volume(0.5)
         except Exception as e:
             print(f"No se pudo iniciar el audio en el menú. Continuando sin sonido. Error: {e}")
 
-    #Bucle infinito hasta salir
+    # Bucle principal del menú
     while True:
         screen.blit(fondo, (0, 0))
-        titulo = font.render("Mariano Bros", True, (255, 255, 255))
-        play = small_font.render("Presiona ENTER para jugar", True, (255, 255, 255))
-        salir = small_font.render("Presiona ESC para salir", True, (255, 255, 255))
+        screen.blit(titulo_img, titulo_rect)
+        screen.blit(play_btn_img, play_btn_rect)
+        screen.blit(quit_btn_img, quit_btn_rect)
 
-        #centra el titulo en la pantalla
-        screen.blit(titulo, (WIDTH//2 - titulo.get_width()//2, HEIGHT//2 - 100))
-        screen.blit(play, (WIDTH//2 - play.get_width()//2, HEIGHT//2))
-        screen.blit(salir, (WIDTH//2 - salir.get_width()//2, HEIGHT//2 + 40))
-
-        #si sale del juego si se sierra la ventana
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-            #si el jugador presiona enter cierra el menu y empieza el juego
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RETURN:
-                    return
-                elif event.key == pygame.K_ESCAPE:
-                    pygame.quit()
-                    sys.exit()
 
-        #actualiza la pantalla todo el tiempo
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:  # Click izquierdo
+                    if play_btn_rect.collidepoint(event.pos):
+                        return  # Inicia el juego
+                    elif quit_btn_rect.collidepoint(event.pos):
+                        pygame.quit()
+                        sys.exit()
+
         pygame.display.flip()
         clock.tick(60)
+

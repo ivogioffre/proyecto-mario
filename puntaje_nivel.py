@@ -16,7 +16,7 @@ def main_puntaje(score):
     small_font = pygame.font.SysFont(None, 32)
 
     # Cargar y escalar fondo
-    fondo = pygame.image.load("assets/universo.png").convert()
+    fondo = pygame.image.load("assets/menu/fondo.png").convert()
     fondo = pygame.transform.scale(fondo, (WIDTH, HEIGHT))
 
     # Configura la música de fondo
