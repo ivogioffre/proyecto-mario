@@ -36,7 +36,7 @@ def main_puntaje(score):
     #Bucle infinito hasta salir
     while True:
         screen.blit(fondo, (0, 0))
-        titulo = font.render("Mariano Bros", True, (255, 255, 255))
+        titulo = font.render("Pasaste el nivel 1", True, (255, 0, 0))
 
         texto_puntaje = f"Tu puntuación: {score}"
         play = small_font.render(texto_puntaje, True, (255, 255, 255))
@@ -61,5 +61,36 @@ def main_puntaje(score):
                     sys.exit()
 
         #actualiza la pantalla todo el tiempo
+        pygame.display.flip()
+        clock.tick(60)
+
+def perdiste():
+    pygame.init()
+    screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+    WIDTH, HEIGHT = screen.get_size()
+    clock = pygame.time.Clock()
+    font = pygame.font.SysFont(None, 72)
+    small_font = pygame.font.SysFont(None, 40)
+
+    fondo = pygame.image.load("assets/menu/fondo.png").convert()
+    fondo = pygame.transform.scale(fondo, (WIDTH, HEIGHT))
+
+    while True:
+        screen.blit(fondo, (0, 0))
+        titulo = font.render("¡PERDISTE!", True, (255, 0, 0))
+        salir = small_font.render("Presiona ESC para salir", True, (255, 255, 255))
+
+        screen.blit(titulo, (WIDTH//2 - titulo.get_width()//2, HEIGHT//2 - 100))
+        screen.blit(salir, (WIDTH//2 - salir.get_width()//2, HEIGHT//2 + 40))
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    pygame.quit()
+                    sys.exit()
+
         pygame.display.flip()
         clock.tick(60)

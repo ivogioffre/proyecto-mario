@@ -245,3 +245,7 @@ class VerticalEnemy(pygame.sprite.Sprite):
         self.rect.y += self.vy
         if self.rect.top <= self.min_y or self.rect.bottom >= self.max_y:
             self.vy *= -1
+
+def cargar_heart(path, scale=48):
+    img = pygame.image.load(path).convert_alpha()
+    return pygame.transform.scale(img, (scale, scale))

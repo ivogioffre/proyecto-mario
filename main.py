@@ -5,7 +5,7 @@ from menu import main_menu
 from level import load_level
 from camera import Camera
 from entities import Player, COIN_POP_EFFECTS
-from puntaje_nivel import main_puntaje
+from puntaje_nivel import main_puntaje, perdiste
 
 #establecemos los fps y el color de fondo (celeste)
 FPS = 60
@@ -39,6 +39,12 @@ def main():
     player, solids, coins, enemies, plants, clouds, grasses, flags = load_level()
     camera = Camera() #ponemos la camara
     font = pygame.font.SysFont(None, 32)
+    vidas = 3  # vidas iniciales
+    heart_full = pygame.image.load("assets/items/corazon.png").convert_alpha()
+    heart_full = pygame.transform.scale(heart_full, (40, 40))
+    heart_broken = pygame.image.load("assets/items/corazon_roto.png").convert_alpha()
+    heart_broken = pygame.transform.scale(heart_broken, (40, 40))
+
 
     
     running = True #indica que el juego esta corriendo
@@ -57,7 +63,13 @@ def main():
 
         #si el jugador muere se reinicia el nivel
         if not player.alive:
-            player, solids, coins, enemies, plants, clouds, grasses , flags  = load_level()
+            vidas -= 1
+            if vidas > 0:
+                player, solids, coins, enemies, plants, clouds, grasses , flags  = load_level()
+            else:
+                perdiste()  # Pantalla de game over
+                return
+
         
         for flag in flags:
             if player.rect.colliderect(flag.rect):
@@ -84,6 +96,14 @@ def main():
         #muestra la puntuacion de las monedas
         score_txt = font.render(f"Monedas: {player.score}", True, (255, 255, 255))
         screen.blit(score_txt, (20, 20))
+
+        # Dibujar vidas es decir corazon completoy roto
+        for i in range(3):
+            if i < vidas:
+                screen.blit(heart_full, (20 + i * 50, 60))# carga corazon completo
+            else:
+                screen.blit(heart_broken, (20 + i * 50, 60))# carga corazon roto
+
 
         # se actualiza la pantalla
         pygame.display.flip()

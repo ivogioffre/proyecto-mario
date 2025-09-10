@@ -5,13 +5,13 @@ import os
 def main_menu():
     pygame.init()
 
-    # Pantalla completa
+    # Se establece Pantalla completa
     screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
     WIDTH, HEIGHT = screen.get_size()
     pygame.display.set_caption("Menú Principal")
-    clock = pygame.time.Clock()
+    clock = pygame.time.Clock() # Controla los FPS
 
-    # Cargar fondo (la imagen que me diste)
+    # Carga el  fondo
     fondo = pygame.image.load("assets/menu/fondo.png").convert()
     fondo = pygame.transform.scale(fondo, (WIDTH, HEIGHT))
 
@@ -27,13 +27,13 @@ def main_menu():
     # Posiciones de los botones
     play_btn_rect = play_btn_img.get_rect(center=(WIDTH // 2, HEIGHT // 2))
     quit_btn_rect = quit_btn_img.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 120))
-
+    # Cargar y escalar el título
     titulo_img = pygame.image.load("assets/menu/mariano_bros.png").convert_alpha()
-    titulo_width, titulo_height = 400,600  # puedes ajustar tamaño
+    titulo_width, titulo_height = 400,600  # ajustamos el tamaño del título
     titulo_img = pygame.transform.scale(titulo_img, (titulo_width, titulo_height))
     titulo_rect = titulo_img.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 200)) 
 
-    # Música
+    #Intentamos cargar musica, de no ser posible variable musica es falsa y se incia sin musica
     musica = True
     if not pygame.mixer.get_init():
         musica = False
@@ -58,12 +58,12 @@ def main_menu():
                 pygame.quit()
                 sys.exit()
 
-            elif event.type == pygame.MOUSEBUTTONDOWN:
+            elif event.type == pygame.MOUSEBUTTONDOWN: # Detecta click del mouse
                 if event.button == 1:  # Click izquierdo
                     if play_btn_rect.collidepoint(event.pos):
                         return  # Inicia el juego
                     elif quit_btn_rect.collidepoint(event.pos):
-                        pygame.quit()
+                        pygame.quit() # Sale del juego
                         sys.exit()
 
         pygame.display.flip()
