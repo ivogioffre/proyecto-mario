@@ -2,7 +2,8 @@
 import pygame, sys, os
 from puntaje import guardar_record
 from menu import main_menu
-from level import load_level
+from level import load_level       # nivel 1
+from level2 import load_level_2    # nivel 2
 from camera import Camera
 from entities import Player, COIN_POP_EFFECTS
 from puntaje_nivel import main_puntaje, perdiste
@@ -11,108 +12,122 @@ from puntaje_nivel import main_puntaje, perdiste
 FPS = 60
 color_fondo = (135, 206, 235)
 
-#ejecutamos el main
+# -------- MAIN --------
 def main():
-    # Cargamos la música
-    musica = load_level()
     pygame.init()
 
     # Ventana pantalla completa
     screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-    WIDTH, HEIGHT = screen.get_size() # Obtener dimensiones de la pantalla
+    WIDTH, HEIGHT = screen.get_size()
     clock = pygame.time.Clock()
-    pygame.display.set_caption("Mario Bros") # Título de la ventana
+    pygame.display.set_caption("Mario Bros")
 
-    # ponemos musica de foindo
-    if musica == False:
-        pass
+    # Ejecutamos nivel 1
+    vidas, monedas = ejecutar_nivel(screen, WIDTH, HEIGHT, clock, 1)
+
+    if vidas > 0:  # Si completaste nivel 1
+        # Ejecutamos nivel 2
+        vidas, monedas = ejecutar_nivel(screen, WIDTH, HEIGHT, clock, 2, vidas, monedas)
+
+        if vidas > 0:  # Si completaste nivel 2
+            guardar_record(monedas)
+            main_puntaje(monedas)
+
+    pygame.quit()
+    sys.exit()
+
+# -------- FUNCION EJECUTAR NIVEL --------
+def ejecutar_nivel(screen, WIDTH, HEIGHT, clock, nivel, vidas_iniciales=3, monedas_iniciales=0):
+    # Cargar el nivel correspondiente
+    if nivel == 1:
+        color_fondo = (135, 206, 235)
+        player, solids, coins, enemies, plants, clouds, grasses, flags = load_level()
     else:
-        try:
-            pygame.mixer.init()
-            pygame.mixer.music.load("assets/musica/12. Overworld.mp3") #establecemos la musica
-            pygame.mixer.music.play(-1) #bucle
-            pygame.mixer.music.set_volume(0.5) #ajuste volumen
-        except Exception as e:
-            print(f"No se pudo iniciar el audio. Continuando sin sonido. Error: {e}")
+        color_fondo = (10, 15, 40)
+        player, solids, coins, enemies, plants, clouds, grasses, flags = load_level_2()
 
-    #carga del nivel
-    player, solids, coins, enemies, plants, clouds, grasses, flags = load_level()
-    camera = Camera() #ponemos la camara
+    camera = Camera()
     font = pygame.font.SysFont(None, 32)
-    vidas = 3  # vidas iniciales
+
+    # Configurar jugador con datos acumulados
+    player.score = monedas_iniciales
+    vidas = vidas_iniciales
+
+    # Cargar imágenes de corazones
     heart_full = pygame.image.load("assets/items/corazon.png").convert_alpha()
     heart_full = pygame.transform.scale(heart_full, (40, 40))
     heart_broken = pygame.image.load("assets/items/corazon_roto.png").convert_alpha()
     heart_broken = pygame.transform.scale(heart_broken, (40, 40))
 
-
-    
-    running = True #indica que el juego esta corriendo
+    running = True
     while running:
         clock.tick(FPS)
         for e in pygame.event.get():
-            if e.type == pygame.QUIT: running = False
+            if e.type == pygame.QUIT:
+                guardar_record(player.score)  # guardar si se sale con X
+                return 0, player.score
             if e.type == pygame.KEYDOWN and e.key == pygame.K_ESCAPE:
-                running = False #salir si se aprieta escape
+                guardar_record(player.score)  # guardar si se sale con ESC
+                return 0, player.score
 
-        keys = pygame.key.get_pressed() # reconoce las teclas que se presionan
-        player.update(keys) # actualizamos al jugador
+        keys = pygame.key.get_pressed()
+        player.update(keys)
         for enemy in enemies:
-            enemy.update()#los enemigos se mueven con animaciones
-        camera.update(player) #la camara se mueve con el jugador
+            enemy.update()
+        camera.update(player)
 
-        #si el jugador muere se reinicia el nivel
+        # Si el jugador muere
         if not player.alive:
             vidas -= 1
             if vidas > 0:
-                player, solids, coins, enemies, plants, clouds, grasses , flags  = load_level()
+                if nivel == 1:
+                    player, solids, coins, enemies, plants, clouds, grasses, flags = load_level()
+                else:
+                    player, solids, coins, enemies, plants, clouds, grasses, flags = load_level_2()
+                player.score = monedas_iniciales  # mantiene monedas acumuladas
             else:
-                perdiste()  # Pantalla de game over
-                return
+                perdiste()
+                return 0, player.score
 
-        
+        # Si toca la bandera (nivel completado)
         for flag in flags:
             if player.rect.colliderect(flag.rect):
-                guardar_record(player.score)  
-                main_puntaje(player.score)  # le pasamos el puntaje
-                return  # salir del juego
+                return vidas, player.score
 
-        #todo el fondo celeste
+        # Pintar fondo
         screen.fill(color_fondo)
 
-        #agrega todos los sprites y se acomodan
-        for sprite_list in [solids, grasses, coins, enemies, plants, clouds , flags]:
+        # Dibujar entidades
+        for sprite_list in [solids, grasses, coins, enemies, plants, clouds, flags]:
             for sprite in sprite_list:
                 screen.blit(sprite.image, camera.apply(sprite.rect))
         screen.blit(player.image, camera.apply(player.rect))
 
-        # el efecto de las monedas
+        # Efecto monedas
         for effect in COIN_POP_EFFECTS[:]:
             if not effect.update():
                 COIN_POP_EFFECTS.remove(effect)
             else:
                 screen.blit(effect.image, camera.apply(effect.rect))
 
-        #muestra la puntuacion de las monedas
+        # Mostrar HUD
         score_txt = font.render(f"Monedas: {player.score}", True, (255, 255, 255))
+        nivel_txt = font.render(f"Nivel: {nivel}", True, (255, 255, 255))
         screen.blit(score_txt, (20, 20))
+        screen.blit(nivel_txt, (20, 50))
 
-        # Dibujar vidas es decir corazon completoy roto
+        # Dibujar vidas
         for i in range(3):
             if i < vidas:
-                screen.blit(heart_full, (20 + i * 50, 60))# carga corazon completo
+                screen.blit(heart_full, (20 + i * 50, 90))
             else:
-                screen.blit(heart_broken, (20 + i * 50, 60))# carga corazon roto
+                screen.blit(heart_broken, (20 + i * 50, 90))
 
-
-        # se actualiza la pantalla
         pygame.display.flip()
-    
-    guardar_record(player.score) # guarda hasta ahora la cantidad de monedas en un archivo txt aparte
-    #se cierra pygame y el programa
-    pygame.quit()
-    sys.exit()
-#se ejecuta main, primero el menu y despues el juego
+
+    return vidas, player.score
+
+# -------- EJECUCION --------
 if __name__ == "__main__":
     main_menu()
     main()
