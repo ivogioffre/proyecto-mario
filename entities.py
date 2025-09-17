@@ -245,7 +245,15 @@ class VerticalEnemy(pygame.sprite.Sprite):
         self.rect.y += self.vy
         if self.rect.top <= self.min_y or self.rect.bottom >= self.max_y:
             self.vy *= -1
+class cloud_level2(pygame.sprite.Sprite):
+    def __init__(self, pos):
+        super().__init__()
+        self.image = load_img("assets/items/nube_violeta.png")
+        self.rect = self.image.get_rect(center=(pos[0]+TILE//2, pos[1]+TILE//2))
+
 
 def cargar_heart(path, scale=48):
     img = pygame.image.load(path).convert_alpha()
     return pygame.transform.scale(img, (scale, scale))
+
+
