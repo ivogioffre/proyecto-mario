@@ -39,8 +39,8 @@ def main_puntaje(score):
         titulo = font.render("Pasaste el nivel 1", True, (255, 0, 0))
 
         texto_puntaje = f"Tu puntuación: {score}"
-        play = small_font.render(texto_puntaje, True, (255, 255, 255))
-        salir = small_font.render("Presiona ESC para salir", True, (255, 255, 255))
+        play = small_font.render(texto_puntaje, True, (0, 0, 0))
+        salir = small_font.render("Presiona ESC para salir", True, (0, 0, 0))
 
         #centra el titulo en la pantalla
         screen.blit(titulo, (WIDTH//2 - titulo.get_width()//2, HEIGHT//2 - 100))
@@ -78,7 +78,7 @@ def perdiste():
     while True:
         screen.blit(fondo, (0, 0))
         titulo = font.render("¡PERDISTE!", True, (255, 0, 0))
-        salir = small_font.render("Presiona ESC para salir", True, (255, 255, 255))
+        salir = small_font.render("Presiona ESC para salir", True, (0, 0, 0))
 
         screen.blit(titulo, (WIDTH//2 - titulo.get_width()//2, HEIGHT//2 - 100))
         screen.blit(salir, (WIDTH//2 - salir.get_width()//2, HEIGHT//2 + 40))
