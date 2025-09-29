@@ -20,3 +20,4 @@
  Fecha y hora : 2025-09-29 10:54:28 - Monedas Obtenidas: 2/ 42  
  Fecha y hora : 2025-09-29 10:56:03 - Monedas Obtenidas: 0/ 42  
  Fecha y hora : 2025-09-29 11:05:31 - Monedas Obtenidas: 15/ 42  
+ Fecha y hora : 2025-09-29 11:14:32 - Monedas Obtenidas: 2/ 42  

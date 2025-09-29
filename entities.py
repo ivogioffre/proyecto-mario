@@ -267,7 +267,7 @@ class HeartPowerUp(pygame.sprite.Sprite):
     """Power-up que permite aguantar 2 hits."""
     def __init__(self, pos):
         super().__init__()
-        self.image = load_img("assets/items/Broco3.webp", TILE)
+        self.image = load_img("assets/items/Broco3.png", TILE)
         self.rect = self.image.get_rect(center=(pos[0] + TILE // 2, pos[1] + TILE // 2))
    
     def apply(self, player):
