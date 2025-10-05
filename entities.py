@@ -1,10 +1,14 @@
-# entities.py 
+# entities.py
 import pygame
 import os
 
 
+
+
 TILE = 48  # Resolución de cada entidad
 COIN_POP_EFFECTS = []  # Efectos de monedas
+
+
 
 
 def load_img(path, scale=TILE):
@@ -28,6 +32,8 @@ def load_img(path, scale=TILE):
         img = pygame.Surface((scale, scale), pygame.SRCALPHA)
         img.fill((255, 0, 0, 128))
         return img
+
+
 
 
 class Player(pygame.sprite.Sprite):
@@ -160,7 +166,7 @@ class Player(pygame.sprite.Sprite):
                     # CORREGIDO: Mejor detección de saltar encima del enemigo
                     player_bottom = self.rect.bottom
                     enemy_top = enemy.rect.top
-                    
+                   
                     # Si el jugador está cayendo Y su parte inferior está cerca de la parte superior del enemigo
                     if self.vy > 0 and player_bottom - self.vy <= enemy_top + 10:
                         # Eliminar enemigo saltando encima
@@ -170,6 +176,7 @@ class Player(pygame.sprite.Sprite):
                     else:
                         # Recibir daño
                         self.take_hit()
+
 
         # CORREGIDO: Colisión con banderas
         for flag in self.flags:
@@ -219,12 +226,16 @@ class Player(pygame.sprite.Sprite):
             self.image = frames[int(self.anim_frame)]
 
 
+
+
 class Tile(pygame.sprite.Sprite):
     """Bloque sólido básico."""
     def __init__(self, pos):
         super().__init__()
         self.image = load_img("assets/tiles/grassCenter.png")
         self.rect = self.image.get_rect(topleft=pos)
+
+
 
 
 class Grass(pygame.sprite.Sprite):
@@ -235,12 +246,16 @@ class Grass(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft=pos)
 
 
+
+
 class Flag(pygame.sprite.Sprite):
     """Bandera de meta del nivel."""
     def __init__(self, pos):
         super().__init__()
         self.image = load_img("assets/Items/flagBlue.png")
         self.rect = self.image.get_rect(topleft=pos)
+
+
 
 
 class LuckyBlock(pygame.sprite.Sprite):
@@ -263,6 +278,8 @@ class LuckyBlock(pygame.sprite.Sprite):
         COIN_POP_EFFECTS.append(CoinPopEffect(self.rect.centerx, self.rect.top - 4))
 
 
+
+
 class HeartPowerUp(pygame.sprite.Sprite):
     """Power-up que permite aguantar 2 hits."""
     def __init__(self, pos):
@@ -275,12 +292,16 @@ class HeartPowerUp(pygame.sprite.Sprite):
         player.give_powerup()
 
 
+
+
 class Coin(pygame.sprite.Sprite):
     """Moneda coleccionable."""
     def __init__(self, pos):
         super().__init__()
         self.image = load_img("assets/items/coinGold.png", TILE//2)
         self.rect = self.image.get_rect(center=(pos[0]+TILE//2, pos[1]+TILE//2))
+
+
 
 
 class CoinPopEffect(pygame.sprite.Sprite):
@@ -300,12 +321,16 @@ class CoinPopEffect(pygame.sprite.Sprite):
         return self.life > 0
 
 
+
+
 class Plant(pygame.sprite.Sprite):
     """Decoración de planta."""
     def __init__(self, pos):
         super().__init__()
         self.image = load_img("assets/items/plant.png")
         self.rect = self.image.get_rect(center=(pos[0]+TILE//2, pos[1]+TILE//2))
+
+
 
 
 class cloud(pygame.sprite.Sprite):
@@ -316,12 +341,16 @@ class cloud(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=(pos[0]+TILE//2, pos[1]+TILE//2))
 
 
+
+
 class cloud_level2(pygame.sprite.Sprite):
     """Nube para nivel 2."""
     def __init__(self, pos):
         super().__init__()
         self.image = load_img("assets/items/nube_violeta.png")
         self.rect = self.image.get_rect(center=(pos[0]+TILE//2, pos[1]+TILE//2))
+
+
 
 
 class Enemy(pygame.sprite.Sprite):
@@ -398,6 +427,8 @@ class Enemy(pygame.sprite.Sprite):
                     break
 
 
+
+
 class VerticalEnemy(pygame.sprite.Sprite):
     """Enemigo que se mueve verticalmente entre límites."""
     def __init__(self, pos, min_y, max_y, speed=3):  # CORREGIDO: speed=3 (igual al horizontal)
@@ -413,3 +444,5 @@ class VerticalEnemy(pygame.sprite.Sprite):
         self.rect.y += self.vy
         if self.rect.top <= self.min_y or self.rect.bottom >= self.max_y:
             self.vy *= -1
+
+
