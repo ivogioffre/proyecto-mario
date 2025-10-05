@@ -11,15 +11,14 @@ COIN_POP_EFFECTS = []  # Efectos de monedas
 
 
 
-def load_img(path, scale=TILE):
-    """Carga una imagen con manejo de errores y fallback."""
+def load_img(path, scale=TILE): # Carga una imagen con manejo de errores
     full_path = os.path.join(os.path.dirname(__file__), path)
    
     if not os.path.isfile(full_path):
-        print(f"[WARNING] No se encontró el archivo: {full_path}")
-        # Crear placeholder para que no falle
+        print(f" No se encontró el archivo: {full_path}")
+        # Crear una imagen X para que no tire error 
         img = pygame.Surface((scale, scale), pygame.SRCALPHA)
-        img.fill((255, 0, 0, 128))  # Rojo semitransparente
+        img.fill((255, 0, 0, 128))  # imagen de Rojo semitransparente
         return img
    
     try:
@@ -27,8 +26,8 @@ def load_img(path, scale=TILE):
         img = pygame.transform.scale(img, (scale, scale))
         return img
     except pygame.error as e:
-        print(f"[ERROR] Error loading image: {full_path} - {e}")
-        # Fallback
+        print(f"ERROR en cargar imagen: {full_path} - {e}")
+        
         img = pygame.Surface((scale, scale), pygame.SRCALPHA)
         img.fill((255, 0, 0, 128))
         return img
@@ -36,16 +35,16 @@ def load_img(path, scale=TILE):
 
 
 
-class Player(pygame.sprite.Sprite):
-    """Jugador con sistema de vidas y hits mejorado."""
-    def __init__(self, pos, solids, coins, enemies, plants, clouds, grasses, flags):
+class Player(pygame.sprite.Sprite): # personaje principal con velocidades coliciones y capacidad de movimiento con teclado y uso de power ups
+    
+    def __init__(self, pos, solids, coins, enemies, plants, clouds, grasses, flags): # metodo que construye la clase player con atributos, animaciones, fisicas y referencias a otros objetos del nivel
         super().__init__()
        
-        # Sistema de vidas mejorado
+        # Sistema de vidas
         self.total_lives = 3      # Vidas totales (se manejan en main)
         self.current_hits = 1     # Hits que puede aguantar actualmente (1 o 2 con power-up)
        
-        # Sprites y animaciones
+        # Sprites y animaciones del personaje 
         self.images = {
             "idle": [load_img("assets/player/idle.png")],
             "walk": [load_img("assets/player/walk1.png"), load_img("assets/player/walk2.png")],
@@ -55,7 +54,7 @@ class Player(pygame.sprite.Sprite):
         self.anim_frame = 0
         self.image = self.images["idle"][0]
        
-        # Física y posición
+        # Física y posicion
         self.rect = self.image.get_rect(topleft=pos)
         self.vx = 0  # Velocidad X
         self.vy = 0  # Velocidad Y
@@ -73,19 +72,18 @@ class Player(pygame.sprite.Sprite):
         # Estado del jugador
         self.score = 0
         self.alive = True
-        self.level_completed = False  # NUEVO: para detectar si completó el nivel
+        self.level_completed = False  #para detectar si completó el nivel
        
         # Sistema de invencibilidad temporal
         self.invulnerable = False
         self.invulnerable_timer = 0
         self.invulnerable_duration = 120  # 2 segundos a 60 FPS
        
-    def update(self, keys):
-        """Actualiza el jugador con física y controles."""
+    def update(self, keys):# actualiza movimiento y edtado del personaje 
         # Constantes de física
-        SPEED = 5
-        GRAVITY = 0.5
-        JUMP_VEL = -15.5
+        SPEED = 5 # constante de velocidad 
+        GRAVITY = 0.5 # constante de gravedad 
+        JUMP_VEL = -15.5 # velocidad de salto 
        
         # Actualizar invulnerabilidad
         if self.invulnerable:
@@ -125,7 +123,7 @@ class Player(pygame.sprite.Sprite):
            
         self.animate()
    
-    def move_and_collide(self, dx, dy):
+    def move_and_collide(self, dx, dy): # Detecta colisiones con bloques, enemigos, monedas y banderas
         JUMP_VEL = -15.5
        
         # Movimiento horizontal
@@ -153,17 +151,17 @@ class Player(pygame.sprite.Sprite):
                     if hasattr(tile, "hit"):
                         tile.hit(self)
        
-        # Colisión con monedas
+        # Colision con monedas
         for coin in self.coins.copy():
             if self.rect.colliderect(coin.rect):
                 self.coins.remove(coin)
                 self.score += 1
        
-        # CORREGIDO: Colisión con enemigos - mejor detección de salto
+        # Colisión con enemigos 
         if not self.invulnerable:
             for enemy in self.enemies.copy():
                 if self.rect.colliderect(enemy.rect):
-                    # CORREGIDO: Mejor detección de saltar encima del enemigo
+                    # Mejor detección de saltar encima del enemigo
                     player_bottom = self.rect.bottom
                     enemy_top = enemy.rect.top
                    
@@ -172,46 +170,43 @@ class Player(pygame.sprite.Sprite):
                         # Eliminar enemigo saltando encima
                         self.enemies.remove(enemy)
                         self.vy = JUMP_VEL * 0.7  # Rebote al eliminar enemigo
-                        print("¡Enemigo eliminado!")
+                        print("Enemigo eliminado")
                     else:
                         # Recibir daño
                         self.take_hit()
 
 
-        # CORREGIDO: Colisión con banderas
+        #  Colisión con banderas
         for flag in self.flags:
             if self.rect.colliderect(flag.rect):
                 self.level_completed = True  # Marcar nivel como completado
                 print("¡Nivel completado!")
    
-    def take_hit(self):
-        """Sistema de hits: puede sobrevivir con power-up."""
+    def take_hit(self): # Maneja daño recibido o muerte.
         if self.current_hits > 1:
             # Tiene power-up: lo pierde pero sobrevive
             self.current_hits = 1
             self.activate_invulnerability()
-            print("¡Perdiste el power-up!")
+            print("Perdiste el power-up")
         else:
             # Sin power-up: muere
             self.alive = False
-            print("¡Mario murió!")
+            print("Mario murió")
    
-    def activate_invulnerability(self):
-        """Activa invulnerabilidad temporal tras recibir daño."""
+    def activate_invulnerability(self): # Activa invencibilidad temporal tras daño.
         self.invulnerable = True
         self.invulnerable_timer = self.invulnerable_duration
         # Empuje hacia atrás y arriba
         self.rect.y -= 30
         self.vy = -8
    
-    def give_powerup(self):
-        """Otorga power-up al jugador."""
+    def give_powerup(self): # otorga power-up al  jugador
         if self.current_hits < 2:
             self.current_hits = 2
-            print("¡Power-up obtenido! Ahora puedes aguantar 2 hits.")
+            print("Power-up obtenido! Ahora puedes aguantar 2 hits")
    
-    def animate(self):
-        """Maneja las animaciones del jugador."""
+    def animate(self):# maneja animaciones del jugador
+
         frames = self.images[self.anim_state]
         self.anim_frame += 0.15
         if self.anim_frame >= len(frames):
@@ -228,8 +223,7 @@ class Player(pygame.sprite.Sprite):
 
 
 
-class Tile(pygame.sprite.Sprite):
-    """Bloque sólido básico."""
+class Tile(pygame.sprite.Sprite):# Bloque solido basico 
     def __init__(self, pos):
         super().__init__()
         self.image = load_img("assets/tiles/grassCenter.png")
@@ -238,8 +232,7 @@ class Tile(pygame.sprite.Sprite):
 
 
 
-class Grass(pygame.sprite.Sprite):
-    """Bloque de pasto."""
+class Grass(pygame.sprite.Sprite): #Bloque solido de pasto 
     def __init__(self, pos):
         super().__init__()
         self.image = load_img("assets/tiles/grassMid.png")
@@ -248,8 +241,7 @@ class Grass(pygame.sprite.Sprite):
 
 
 
-class Flag(pygame.sprite.Sprite):
-    """Bandera de meta del nivel."""
+class Flag(pygame.sprite.Sprite):# bandera donde finaliza el nivel 
     def __init__(self, pos):
         super().__init__()
         self.image = load_img("assets/Items/flagBlue.png")
@@ -258,8 +250,7 @@ class Flag(pygame.sprite.Sprite):
 
 
 
-class LuckyBlock(pygame.sprite.Sprite):
-    """Bloque de pregunta que da monedas."""
+class LuckyBlock(pygame.sprite.Sprite): #luckyblock que suelta monedas si le pegas de abajo
     def __init__(self, pos):
         super().__init__()
         self.full_img = load_img("assets/tiles/boxItem.png")
@@ -268,8 +259,8 @@ class LuckyBlock(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft=pos)
         self.used = False
    
-    def hit(self, player):
-        """Se activa cuando el jugador golpea el bloque."""
+    def hit(self, player):# se activa cuando el jugador le pega de abajo 
+        
         if self.used:
             return
         self.used = True
@@ -280,22 +271,20 @@ class LuckyBlock(pygame.sprite.Sprite):
 
 
 
-class HeartPowerUp(pygame.sprite.Sprite):
-    """Power-up que permite aguantar 2 hits."""
+class HeartPowerUp(pygame.sprite.Sprite):# power - up que permite al personaje principal aguantar dos hits de enemigos 
     def __init__(self, pos):
         super().__init__()
         self.image = load_img("assets/items/Broco3.png", TILE)
         self.rect = self.image.get_rect(center=(pos[0] + TILE // 2, pos[1] + TILE // 2))
    
-    def apply(self, player):
-        """Aplica el power-up al jugador."""
+    def apply(self, player): # aplica power - up al personaje 
+
         player.give_powerup()
 
 
 
 
-class Coin(pygame.sprite.Sprite):
-    """Moneda coleccionable."""
+class Coin(pygame.sprite.Sprite): # moneda coleccionable por el personaje
     def __init__(self, pos):
         super().__init__()
         self.image = load_img("assets/items/coinGold.png", TILE//2)
@@ -304,8 +293,7 @@ class Coin(pygame.sprite.Sprite):
 
 
 
-class CoinPopEffect(pygame.sprite.Sprite):
-    """Efecto visual cuando aparece una moneda del bloque."""
+class CoinPopEffect(pygame.sprite.Sprite): # effecto visual de la moneda cuando sale del luckyblock 
     def __init__(self, x, y):
         super().__init__()
         self.image = load_img("assets/items/coinGold.png", TILE//2)
@@ -313,8 +301,7 @@ class CoinPopEffect(pygame.sprite.Sprite):
         self.vy = -6
         self.life = 22
    
-    def update(self):
-        """Actualiza el efecto de la moneda."""
+    def update(self): # actualiza movimiento de moneda 
         self.rect.y += self.vy
         self.vy += 0.5
         self.life -= 1
@@ -323,8 +310,8 @@ class CoinPopEffect(pygame.sprite.Sprite):
 
 
 
-class Plant(pygame.sprite.Sprite):
-    """Decoración de planta."""
+class Plant(pygame.sprite.Sprite): # decoracion de planta 
+
     def __init__(self, pos):
         super().__init__()
         self.image = load_img("assets/items/plant.png")
@@ -333,8 +320,8 @@ class Plant(pygame.sprite.Sprite):
 
 
 
-class cloud(pygame.sprite.Sprite):
-    """Decoración de nube."""
+class cloud(pygame.sprite.Sprite):#Decoración de nube 
+
     def __init__(self, pos):
         super().__init__()
         self.image = load_img("assets/items/cloud1.png")
@@ -343,8 +330,7 @@ class cloud(pygame.sprite.Sprite):
 
 
 
-class cloud_level2(pygame.sprite.Sprite):
-    """Nube para nivel 2."""
+class cloud_level2(pygame.sprite.Sprite): # decoracion de nube nivel 2 
     def __init__(self, pos):
         super().__init__()
         self.image = load_img("assets/items/nube_violeta.png")
@@ -354,50 +340,99 @@ class cloud_level2(pygame.sprite.Sprite):
 
 
 class Enemy(pygame.sprite.Sprite):
-    """Enemigo básico que se mueve horizontalmente."""
-    def __init__(self, pos, solids, grasses, enemies_group=None):
+    #Enemigo básico que se mueve horizontalmente.
+    # si idle salta encima del mismo este muere
+   
+    
+    def __init__(self, pos, solids, grasses, enemies_group=None, scale_factor=1.3):
         super().__init__()
-        # Cargar sprites de animación
-        self.images_right = [load_img(f"assets/enemies/{i}.png") for i in range(1, 5)]
+
+        #  Cargar imágenes (load_img devuelve por defecto tamaño TILE) 
+        raw_imgs = [load_img(f"assets/enemies/{i}.png") for i in range(1, 4)] # nombre de imagen 1 - 2 - 3
+        # Escaladas para dibujado (visual)
+        self.images_right = [
+            pygame.transform.scale(img, (int(img.get_width()*scale_factor), int(img.get_height()*scale_factor)))
+            for img in raw_imgs
+        ]
         self.images_left = [pygame.transform.flip(img, True, False) for img in self.images_right]
-       
+
+        # Hitbox de colisión Fija en tamaño TILE 
+        # pos viene como topleft de la celda  usamos esa posicion para la hitbox
+        self.collision_rect = pygame.Rect(pos[0], pos[1], TILE, TILE)
+
+        # Rect / image para dibujado
+        # Alineamos la imagen escalada de modo que su midbottom coincida con la base de la hitbox
         self.image = self.images_right[0]
-        self.rect = self.image.get_rect(topleft=pos)
-       
-        # Movimiento
-        self.vx = -3  # Velocidad reducida para mejor jugabilidad
+        self.rect = self.image.get_rect(midbottom=self.collision_rect.midbottom)
+
+        # Movimiento / grupos
+        self.vx = -3
         self.solids = solids
         self.grasses = grasses
         self.enemies_group = enemies_group
-       
+
         # Animación
-        self.anim_frame = 0
+        self.anim_frame = 0.0
         self.anim_forward = True
-   
+
     def update(self):
-        """Actualiza movimiento y animación del enemigo."""
-        # Verificar si hay suelo adelante
-        next_x = self.rect.x + self.vx
+        # Actualiza movimiento y animación del enemigo.
+        
+        # Calculamos la posicion tentativa (en coordenadas de la hitbox)
+        attempted_x = self.collision_rect.x + self.vx
+
+        # ground_check basado en la hitbox (TILE)   asi no depende del tamaño visual
         ground_check = pygame.Rect(
-            next_x + (self.rect.width // 2),
-            self.rect.bottom,
+            attempted_x + TILE // 2,       # mirar justo delante (centro de la celda adelantada)
+            self.collision_rect.bottom,    # justo debajo de la hitbox
             1,
-            48
+            6                               # poca profundidad; suficiente para detectar piso
         )
-       
+
         has_ground = False
         for tile in self.solids + self.grasses:
             if ground_check.colliderect(tile.rect):
                 has_ground = True
                 break
-       
-        # Cambiar dirección si no hay suelo adelante
+
+        # Si no hay suelo  gira (no nos movemos hacia adelante)
         if not has_ground:
             self.vx *= -1
+            attempted_x = self.collision_rect.x  # cancelar el intento de avance
+        # Si hay suelo attempted_x mantiene el avance
+
+        # Comprobacion de colision lateral contra bloques 
+        new_hitbox = self.collision_rect.copy()
+        new_hitbox.x = attempted_x
+
+        collided = False
+        for tile in self.solids + self.grasses:
+            if new_hitbox.colliderect(tile.rect):
+                collided = True
+                break
+
+        # Colisión con otros enemigos (usar su collision_rect si existe)
+        if self.enemies_group:
+            for other in self.enemies_group:
+                if other is self:
+                    continue
+                other_hit = getattr(other, "collision_rect", other.rect)
+                if new_hitbox.colliderect(other_hit):
+                    collided = True
+                    break
+
+        # Si colisiono giramos y no aplicamos movimiento; sino, aplicamos movimiento
+        if collided:
+            self.vx *= -1
         else:
-            self.rect.x += self.vx
-       
-        # Animación suave
+            # Aplicar movimiento a la hitbox
+            self.collision_rect.x = attempted_x
+
+        #  Ajuste visual: bajar un poco la imagen para que parezca tocar el suelo
+        self.rect = self.image.get_rect(midbottom=(self.collision_rect.midbottom[0],
+                                           self.collision_rect.midbottom[1] + 7))
+
+        # Animación suave 
         if self.anim_forward:
             self.anim_frame += 0.1
             if self.anim_frame >= len(self.images_right) - 1:
@@ -406,41 +441,26 @@ class Enemy(pygame.sprite.Sprite):
             self.anim_frame -= 0.1
             if self.anim_frame <= 0:
                 self.anim_forward = True
-       
-        # Seleccionar sprite según dirección
+
+        # Seleccionar sprite segun direccion
         if self.vx > 0:
             self.image = self.images_right[int(self.anim_frame)]
         else:
             self.image = self.images_left[int(self.anim_frame)]
-       
-        # Colisiones con bloques
-        for tile in self.solids + self.grasses:
-            if self.rect.colliderect(tile.rect):
-                self.vx *= -1
-                break
-       
-        # Colisiones con otros enemigos
-        if self.enemies_group:
-            for other in self.enemies_group:
-                if other != self and self.rect.colliderect(other.rect):
-                    self.vx *= -1
-                    break
 
 
 
 
-class VerticalEnemy(pygame.sprite.Sprite):
-    """Enemigo que se mueve verticalmente entre límites."""
-    def __init__(self, pos, min_y, max_y, speed=3):  # CORREGIDO: speed=3 (igual al horizontal)
+class VerticalEnemy(pygame.sprite.Sprite):# enemigo con movimiento vertical 
+    def __init__(self, pos, min_y, max_y, speed=3): # speed=3 (igual al horizontal)
         super().__init__()
         self.image = load_img("assets/enemies/Dp.png")
         self.rect = self.image.get_rect(topleft=pos)
-        self.vy = speed  # CORREGIDO: Ahora speed=3
+        self.vy = speed  # Ahora speed=3
         self.min_y = min_y
         self.max_y = max_y
    
-    def update(self):
-        """Actualiza movimiento vertical."""
+    def update(self):# actualiza el movimiento vertical dl enemigo 
         self.rect.y += self.vy
         if self.rect.top <= self.min_y or self.rect.bottom >= self.max_y:
             self.vy *= -1
