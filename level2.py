@@ -1,4 +1,5 @@
 # level2.py - CORRECCIÓN
+
 # importamos todas las entidades
 from entities import Player, Tile, Grass, Coin, Enemy, Plant, LuckyBlock, VerticalEnemy, Flag, cloud_level2, HeartPowerUp
 
@@ -68,6 +69,8 @@ def load_level_2():
                 flags.append(Flag((x, y)))
             elif ch == "H":
                 hearts.append(HeartPowerUp((x, y)))
+
+
 
 
     # para que los enemigos choquen entre sí

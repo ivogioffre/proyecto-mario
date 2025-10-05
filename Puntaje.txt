@@ -47,3 +47,14 @@
  Fecha y hora : 2025-10-05 14:55:13 - Monedas Obtenidas: 2/ 84  
  Fecha y hora : 2025-10-05 14:56:26 - Monedas Obtenidas: 0/ 84  
  Fecha y hora : 2025-10-05 14:57:59 - Monedas Obtenidas: 34/ 84  
+ Fecha y hora : 2025-10-05 16:37:26 - Monedas Obtenidas: 22/ 84  
+ Fecha y hora : 2025-10-05 16:41:47 - Monedas Obtenidas: 30/ 84  
+ Fecha y hora : 2025-10-05 17:21:20 - Monedas Obtenidas: 32/ 84  
+ Fecha y hora : 2025-10-05 17:23:03 - Monedas Obtenidas: 33/ 84  
+ Fecha y hora : 2025-10-05 17:33:24 - Monedas Obtenidas: 0/ 84  
+ Fecha y hora : 2025-10-05 17:35:10 - Monedas Obtenidas: 18/ 84  
+ Fecha y hora : 2025-10-05 17:36:58 - Monedas Obtenidas: 18/ 84  
+ Fecha y hora : 2025-10-05 17:39:45 - Monedas Obtenidas: 18/ 84  
+ Fecha y hora : 2025-10-05 17:43:42 - Monedas Obtenidas: 24/ 84  
+ Fecha y hora : 2025-10-05 17:47:22 - Monedas Obtenidas: 36/ 84  
+ Fecha y hora : 2025-10-05 18:47:54 - Monedas Obtenidas: 17/ 84  
