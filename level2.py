@@ -19,7 +19,7 @@ LEVEL_MAP_2 =[
     "                                                    XX        XX   X    XX          MMMMMM                                                                              ",
     "                                                    XX        XX   X    XX                                                                                 XXX          ",
     "                                       X XXXX X     XX        XX   X    XX          XXXXXX                                                  XXX                         ",
-    "                             V         XMX  XMX     XX        XX   XMX  XX  E E     XXXXXX                                                                              ",
+    "                             V         X X  X X     XX        XX   XMX  XX  E E     XXXXXX                                                                              ",
     "                       X X             XXX  XXX     XXXX  XXXXXX   XXX  XX  XXXX                             XX           XX            XX       XXXXXX               F ",
     "                     X X X X   X                      XX                                               XX    XX    XX     XX           XXX                      XXXXXXXX",
     "                   X X X X X   X X                    XX                                               XX    XX    XX     XX          XXXX                      XXXXXXXX",
