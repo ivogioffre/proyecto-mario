@@ -239,6 +239,20 @@ class Grass(pygame.sprite.Sprite): #Bloque solido de pasto
         self.rect = self.image.get_rect(topleft=pos)
 
 
+class TileLevel2(pygame.sprite.Sprite):#bloque solido para el nivel 2 
+    def __init__(self, pos):
+        super().__init__()
+        self.image = load_img("assets/Tiles/piedra.png")
+        self.rect = self.image.get_rect(topleft=pos)
+
+
+class GrassLevel2(pygame.sprite.Sprite):# vendria siendo como el pasto pero en el nivel 2
+    def __init__(self, pos):
+        super().__init__()
+        self.image = load_img("assets/Tiles/piedra2.png")
+        self.rect = self.image.get_rect(topleft=pos)
+
+
 
 
 class Flag(pygame.sprite.Sprite):# bandera donde finaliza el nivel 
@@ -430,7 +444,7 @@ class Enemy(pygame.sprite.Sprite):
 
         #  Ajuste visual: bajar un poco la imagen para que parezca tocar el suelo
         self.rect = self.image.get_rect(midbottom=(self.collision_rect.midbottom[0],
-                                           self.collision_rect.midbottom[1] + 7))
+                                           self.collision_rect.midbottom[1] + 11))
 
         # Animación suave 
         if self.anim_forward:
@@ -466,3 +480,17 @@ class VerticalEnemy(pygame.sprite.Sprite):# enemigo con movimiento vertical
             self.vy *= -1
 
 
+
+
+class TuboArriba(pygame.sprite.Sprite):#parte de arriba del tubo
+    def __init__(self, pos):
+        super().__init__()
+        self.image = load_img("assets/items/tubos/tubo1.png")
+        self.rect = self.image.get_rect(topleft=pos)
+
+
+class TuboAbajo(pygame.sprite.Sprite):#parte de abajo del tubo
+    def __init__(self, pos):
+        super().__init__()
+        self.image = load_img("assets/items/tubos/tubo2.png")
+        self.rect = self.image.get_rect(topleft=pos)

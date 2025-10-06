@@ -1,4 +1,4 @@
-from entities import Player, Tile, Grass, Coin, Enemy, Plant, cloud, LuckyBlock, VerticalEnemy , Flag, HeartPowerUp
+from entities import Player, Tile, Grass, Coin, Enemy, Plant, cloud, LuckyBlock, VerticalEnemy , Flag, HeartPowerUp ,TuboArriba, TuboAbajo
 #definimos el mapa del nivel
 TILE = 48 #definimos los pixeles de cada entidad
 LEVEL_MAP = [
@@ -8,16 +8,16 @@ LEVEL_MAP = [
     "                                                                                                                                                                                                         ",
     "   C                                               C                                       C           C                       C                                         C                          C    ",
     "            C                                C                        C              MM                           C       MMM                   C                                  C                     ",
-    "                      B                                   C                     GGGGGGGG   GBG             B              GGG     GBBG                             C                        GG           ",
-    "                                                                                                                                                                                           GXX   MM      ",
-    "                                                                                                 MM                                              MM                                       GXXX           ",
-    "                      H                       MM                B                                                                                                                        GXXXX           ",
-    "                B   GBGBG                     XX         XX                  GBG            G    XB     B  B  B     G      MMM     GG                                   GGBG            GXXXXX           ",
-    "                            MM        XX      XX         XX       MM                                                                     G  G         GG  G       MM                   GXXXXXX           ",
-    "           V                XX        XX      XX         XX               V                         V                 V                 GX  XG       GXX  XG      XX                  GXXXXXXX       F   ",
-    " P          L        E      XX        XX E    XX     E   XX                    MM              E           MMM               E  E      GXX  XXG     GXXX  XXG     XX          E    XXGXXXXXXXX  LL L G L ",
-    "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG  GGGGGGGGGGGGGGG   GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGXXX  XXXGGGGGXXXX  XXXGGGGGXXGGGGGGGGGGGGGGGXXXXXXXXXXXGGGGGGGXGGG",
-    "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  XXXXXXXXXXXXXXX   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  XXXXXXXXXXXX  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+    "                      B                                   C                     GGGGGGGG   GBG             B              GGG     GBBG                             C                       GG           ",
+    "                                                                                                                                                                                          GXX   MM      ",
+    "                                                                                                 MM                                              MM                                      GXXX          ",
+    "                      H                      M                 B                                                                                                                        GXXXX           ",
+    "                B   GBGBG                    T          T                   GBG            G    XB     B  B  B     G      MMM     GG                                   GGBG            GXXXXX           ",
+    "                            T        T       t          t        MM                                                                     G  G         GG  G       MM                   GXXXXXX           ",
+    "           V                t        t       t          t                V                         V                 V                 GX  XG       GXX  XG      XX                  GXXXXXXX       F   ",
+    " P          L        E      t  MM    t  E    t      E M t                     MM              E           MMM               E  E      GXX  XXG     GXXX  XXG     XX          E       GXXXXXXX  LL L G L ",
+    "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG GGGGGGGGGGGGGGG   GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGXXX  XXXGGGGGXXXX  XXXGGGGGXXGGGGGGGGGGGGGGGXXXXXXXXXXXGGGGGGGXGGG",
+    "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX XXXXXXXXXXXXXXX   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  XXXXXXXXXXXX  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
 ]
 #es una lista donde guardamos cada entidad del nivel
 def load_level():
@@ -59,6 +59,10 @@ def load_level():
                 flags.append(Flag((x, y)))
             elif ch == "H":
                 hearts.append(HeartPowerUp((x, y)))
+            elif ch == "T":
+                solids.append(TuboArriba((x, y)))
+            elif ch == "t":
+                solids.append(TuboAbajo((x, y)))
 
 
     # colisiones entre enemigos

@@ -13,7 +13,9 @@ from ejecutar_nivel_1_2 import ejecutar_nivel
 # Frames por segundo (FPS)
 FPS = 60
 
-def main():
+def main():# Es la función principal del juego, la que se encarga de iniciar todo y controlar el flujo general
+    #Inicializa Pygame y la ventana del juego
+    # Llama a la función ejecutar_nivel() para jugar nivel 1 y 2
     pygame.init()
 
     # Ventana pantalla completa

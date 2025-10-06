@@ -1,7 +1,7 @@
 # level2.py - CORRECCIÓN
 
 # importamos todas las entidades
-from entities import Player, Tile, Grass, Coin, Enemy, Plant, LuckyBlock, VerticalEnemy, Flag, cloud_level2, HeartPowerUp
+from entities import Player, TileLevel2, GrassLevel2, Coin, Enemy, Plant, LuckyBlock, VerticalEnemy, Flag, cloud_level2, HeartPowerUp ,TuboArriba, TuboAbajo
 
 
 # tamaño en pixeles de cada tile
@@ -14,18 +14,18 @@ LEVEL_MAP_2 =[
     "",
     "",
     "",
-    "                                                      XX  XXXXXX  XXXX      XXXX                                                                                        ",
-    "                                                      XX  XXXXXX  XXXX      XXXX                                                                                        ",
+    "                                                      XX  XXXXXX  XXXX                                                                                                  ",
+    "                                                    XXXX  XXXXXX  XXXX                                                                                                  ",
     "                                                    XX        XX   X    XX          MMMMMM                                                                              ",
-    "                                                    XX        XX   X    XX                                                                                 XXX          ",
-    "                                       X XXXX X     XX        XX   X    XX          XXXXXX                                                  XXX                         ",
-    "                             V         X X  X X     XX        XX   XMX  XX  E E     XXXXXX                                                                              ",
-    "                       X X             XXX  XXX     XXXX  XXXXXX   XXX  XX  XXXX                             XX           XX            XX       XXXXXX               F ",
-    "                     X X X X   X                      XX                                               XX    XX    XX     XX           XXX                      XXXXXXXX",
-    "                   X X X X X   X X                    XX                                               XX    XX    XX     XX          XXXX                      XXXXXXXX",
-    " P               X X X X X X E X X                         E  E E                                      XX    XX    XX     XX         XXXXX                      XXXXXXXX",
-    "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG   GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG  GG  GGGGGGGGGGGG  XXX  GGGGGGGG  XXX  XXXXXXXX",
-    "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  XX  XXXXXXXXXXXX       XXXXXXXX       XXXXXXXX",
+    "                                         X          XX        XX   X    XX                                                                                 XXX          ",
+    "                                       X X  X X     XX        XX   X    XX          XXXXXX                                                  XXX                         ",
+    "                             V         X X HX X     XX      MMXX   XM   XX    E     XXXXXX                                                                              ",
+    "                       XXX M           XXX  XXX     XXXX  XXXXXX   XXX  XX  XXXXXX                           XX           XX            XX       XXXXXX               F ",
+    "                     X XXX X   X                      XX     B                                         XX    XX    XX     XX           XXX                      XXXXXXXX",
+    "                   X X XXX X   X X                    BX                                               XX    XX    XX     XX          XXXX                      XXXXXXXX",
+    " P               X X X XXX X E X X                         E  E E                             E        XX    XX    XX     XX         XXXXX                      XXXXXXXX",
+    "GGGGGGGGGGGGGGGGGX X X XXX XGGGXGXGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG   GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG  GG  GGGGGGGGGGGG  XXX  GGGGGGGG  XXX  XXXXXXXX",
+    "XXXXXXXXXXXXXXXXXX X X XXX XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  XX  XXXXXXXXXXXX       XXXXXXXX       XXXXXXXX",
 ]
 
 
@@ -46,11 +46,10 @@ def load_level_2():
         for i, ch in enumerate(row):
             x, y = i * TILE, j * TILE
             if ch == "X":
-                solids.append(Tile((x, y)))
+                solids.append(TileLevel2((x, y)))
             elif ch == "G":
-                grasses.append(Grass((x, y)))
+                grasses.append(GrassLevel2((x, y)))
             elif ch == "P":
-                # CORREGIDO: eliminar el parámetro "powerups" que no existe
                 player = Player((x, y), solids, coins, enemies, plants, clouds, grasses, flags)
             elif ch == "M":
                 coins.append(Coin((x, y)))
@@ -63,7 +62,7 @@ def load_level_2():
             elif ch == "B":
                 grasses.append(LuckyBlock((x, y)))
             elif ch == "V":
-                # CORREGIDO: velocidad aumentada de 2 a 3 para igualar al enemigo horizontal
+                # velocidad aumentada de 2 a 3 para igualar al enemigo horizontal
                 enemies.append(VerticalEnemy((x, y), y - 330, y + 100, speed=3))
             elif ch == "F":
                 flags.append(Flag((x, y)))
@@ -78,4 +77,4 @@ def load_level_2():
         enemy.enemies_group = enemies
 
 
-    return player, solids, coins, enemies, plants, clouds, grasses, flags, hearts
+    return player, solids, coins, enemies, plants, clouds, grasses, flags, hearts,
