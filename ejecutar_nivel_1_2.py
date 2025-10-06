@@ -1,10 +1,12 @@
-import pygame 
+import pygame
 from level import load_level
 from level2 import load_level_2
 from camera import Camera
 from entities import Player, COIN_POP_EFFECTS, load_img
 from puntaje_nivel import perdiste
 from puntaje import guardar_record
+
+
 
 
 def ejecutar_nivel(screen, WIDTH, HEIGHT, clock, nivel, vidas_iniciales=3, monedas_iniciales=0):
@@ -26,6 +28,7 @@ def ejecutar_nivel(screen, WIDTH, HEIGHT, clock, nivel, vidas_iniciales=3, moned
             print("No se pudo cargar fondo.png, se usará negro")
             fondo_img = None
 
+
         # Cargar luna estática con parallax
         try:
             luna_img = load_img("assets/Tiles/luna_nivel2.png", 150)  # tamaño ajustable
@@ -34,10 +37,13 @@ def ejecutar_nivel(screen, WIDTH, HEIGHT, clock, nivel, vidas_iniciales=3, moned
         except:
             print("No se pudo cargar luna_nivel.png")
 
+
         player, solids, coins, enemies, plants, clouds, grasses, flags, hearts = load_level_2()
+
 
     # Configurar cámara
     camera = Camera()
+
 
     # Configurar jugador con datos acumulados
     player.score = monedas_iniciales
@@ -45,9 +51,12 @@ def ejecutar_nivel(screen, WIDTH, HEIGHT, clock, nivel, vidas_iniciales=3, moned
     player.current_hits = 1  # Empieza con 1 hit por defecto
     vidas = vidas_iniciales
 
+
     # Fuente y cantidad maxima de corazones
     font = pygame.font.SysFont(None, 32)
     max_vidas = 3
+
+
 
 
     # Cargar imagenes de corazones
@@ -55,9 +64,12 @@ def ejecutar_nivel(screen, WIDTH, HEIGHT, clock, nivel, vidas_iniciales=3, moned
     heart_broken = pygame.transform.scale(load_img("assets/items/corazon_roto.png"), (30, 30))
     heart_powerup = pygame.transform.scale(load_img("assets/items/corazon_dorado.png"), (40, 40))
 
+
     running = True
     while running:
         clock.tick(FPS) # control de FPS
+
+
 
 
         # Eventos
@@ -70,16 +82,20 @@ def ejecutar_nivel(screen, WIDTH, HEIGHT, clock, nivel, vidas_iniciales=3, moned
                 guardar_record(player.score)
                 return 0, player.score
 
+
         # Input del jugador
         keys = pygame.key.get_pressed()
         player.update(keys)
+
 
         # Actualizar enemigos
         for enemy in enemies:
             enemy.update()
 
+
         # Actualizar cámara
         camera.update(player)
+
 
         # Si el jugador muere
         if not player.alive:
@@ -100,6 +116,8 @@ def ejecutar_nivel(screen, WIDTH, HEIGHT, clock, nivel, vidas_iniciales=3, moned
                 return 0, player.score
 
 
+
+
         # Manejar power-ups de corazon
         for heart in hearts[:]:
             if player.rect.colliderect(heart.rect):
@@ -107,10 +125,13 @@ def ejecutar_nivel(screen, WIDTH, HEIGHT, clock, nivel, vidas_iniciales=3, moned
                 hearts.remove(heart)
 
 
+
+
         # Nivel completado
         if player.level_completed:
             print(f"¡Nivel {nivel} completado!")
             return vidas, player.score
+
 
         # Renderizado
         if fondo_img:
@@ -118,9 +139,13 @@ def ejecutar_nivel(screen, WIDTH, HEIGHT, clock, nivel, vidas_iniciales=3, moned
         else:
             screen.fill((0, 0, 0) if nivel == 2 else color_fondo)
 
+
         # Dibujar luna fija en el fondo
         if luna_img:
             screen.blit(luna_img, (luna_rect.x - camera.offset.x * 0.05, luna_rect.y))
+
+
+
 
 
 
@@ -130,12 +155,16 @@ def ejecutar_nivel(screen, WIDTH, HEIGHT, clock, nivel, vidas_iniciales=3, moned
                 screen.blit(sprite.image, camera.apply(sprite.rect))
 
 
+
+
         # Dibujar corazones en el mapa
         for heart in hearts:
             screen.blit(heart.image, camera.apply(heart.rect))
 
+
         # Dibujar jugador
         screen.blit(player.image, camera.apply(player.rect))
+
 
         # Actualizar efectos de monedas
         for effect in COIN_POP_EFFECTS[:]:
@@ -144,11 +173,13 @@ def ejecutar_nivel(screen, WIDTH, HEIGHT, clock, nivel, vidas_iniciales=3, moned
             else:
                 screen.blit(effect.image, camera.apply(effect.rect))
 
+
         # UI - Score y nivel
         score_txt = font.render(f"Monedas: {player.score}", True, (255, 255, 255))
         nivel_txt = font.render(f"Nivel: {nivel}", True, (255, 255, 255))
         screen.blit(score_txt, (20, 20))
         screen.blit(nivel_txt, (20, 50))
+
 
         # Mostrar vidas como corazones llenos/rotos
         for i in range(max_vidas):
@@ -158,6 +189,8 @@ def ejecutar_nivel(screen, WIDTH, HEIGHT, clock, nivel, vidas_iniciales=3, moned
                 screen.blit(heart_broken, (20 + i * 35, 90))
 
 
+
+
         # Mostrar vida extra (power-up) como corazon dorado grande
         if player.current_hits >= 2:
             extra_player = pygame.transform.scale(player.images["idle"][0], (30, 30))
@@ -165,7 +198,9 @@ def ejecutar_nivel(screen, WIDTH, HEIGHT, clock, nivel, vidas_iniciales=3, moned
             status_txt = font.render("x1", True, (255, 255, 0))
             screen.blit(status_txt, (25 + (max_vidas + 1) * 35, 95))
 
+
         pygame.display.flip()
+
 
     return vidas, player.score
 
