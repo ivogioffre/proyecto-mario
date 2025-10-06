@@ -10,22 +10,22 @@ TILE = 48
 
 # mapa del nivel 2
 LEVEL_MAP_2 =[
-    "                                                                                                                                                                                                         ",
-    "                                                                                                                                                                                                         ",
-    "        C                     C                                   C        C                                 C                                      C                           C                        ",
-    "                                                                                                                                                                                                         ",
-    "   C                                               C                                       C           C                       C                                         C                          C    ",
-    "            C                                C                        C              MM                           C       MMM                   C                                  C                     ",
-    "                      B                                   C                     GGGGGGGG   GBG             B              GGG     GBBG                             C                        GG           ",
-    "                                                                                                                                                                                           GXX   MM      ",
-    "                                                                                                 MM                                              MM                                       GXXX           ",
-    "                                              MM                B                                                                                                                        GXXXX           ",
-    "                B   GBGBG                     XX         XX                  GBG            G    XB     B  B  B     G      MMM     GG                                   GGBG            GXXXXX           ",
-    "                            MM        XX      XX         XX       MM                                                                     G  G         GG  G       MM                   GXXXXXX           ",
-    "           V                XX        XX      XX         XX               V                         V                 V                 GX  XG       GXX  XG      XX                  GXXXXXXX       F   ",
-    " P          L        E      XX        XX E    XX     E   XX                    MM              E           MMM               E  E      GXX  XXG     GXXX  XXG     XX          E    XXGXXXXXXXX  LL L G L ",
-    "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG  GGGGGGGGGGGGGGG   GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGXXX  XXXGGGGGXXXX  XXXGGGGGXXGGGGGGGGGGGGGGGXXXXXXXXXXXGGGGGGGXGGG",
-    "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  XXXXXXXXXXXXXXX   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  XXXXXXXXXXXX  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+    "",
+    "",
+    "",
+    "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+    "                                                      XX  XXXXXX  XXXX      XXXX                                                                                        ",
+    "                                                      XX  XXXXXX  XXXX      XXXX                                                                                        ",
+    "                                                    XX        XX   X    XX          MMMMMM                                                                              ",
+    "                                                    XX        XX   X    XX                                                                                 XXX          ",
+    "                                       X XXXX X     XX        XX   X    XX          XXXXXX                                                  XXX                         ",
+    "                             V         XMX  XMX     XX        XX   XMX  XX  E E     XXXXXX                                                                              ",
+    "                       X X             XXX  XXX     XXXX  XXXXXX   XXX  XX  XXXX                             XX           XX            XX       XXXXXX               F ",
+    "                     X X X X   X                      XX                                               XX    XX    XX     XX           XXX                      XXXXXXXX",
+    "                   X X X X X   X X                    XX                                               XX    XX    XX     XX          XXXX                      XXXXXXXX",
+    " P               X X X X X X E X X                         E  E E                                      XX    XX    XX     XX         XXXXX                      XXXXXXXX",
+    "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG   GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG  GG  GGGGGGGGGGGG  XXX  GGGGGGGG  XXX  XXXXXXXX",
+    "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  XX  XXXXXXXXXXXX       XXXXXXXX       XXXXXXXX",
 ]
 
 
