@@ -13,7 +13,7 @@ LEVEL_MAP_2 =[
     "",
     "",
     "",
-    "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+    "",
     "                                                      XX  XXXXXX  XXXX      XXXX                                                                                        ",
     "                                                      XX  XXXXXX  XXXX      XXXX                                                                                        ",
     "                                                    XX        XX   X    XX          MMMMMM                                                                              ",
