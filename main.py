@@ -1,4 +1,4 @@
-# main.py 
+# main.py   - Archivo principal del juego que inicia la ejecución y controla el flujo general.      
 import pygame
 import sys
 from puntaje import guardar_record

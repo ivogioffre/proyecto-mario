@@ -1,5 +1,5 @@
 # entities.py
-import pygame
+import pygame   
 import os
 
 
@@ -35,14 +35,14 @@ def load_img(path, scale=TILE): # Carga una imagen con manejo de errores
 
 
 
-class Player(pygame.sprite.Sprite): # personaje principal con velocidades coliciones y capacidad de movimiento con teclado y uso de power ups
+class Player(pygame.sprite.Sprite):
     
-    def __init__(self, pos, solids, coins, enemies, plants, clouds, grasses, flags): # metodo que construye la clase player con atributos, animaciones, fisicas y referencias a otros objetos del nivel
+    def __init__(self, pos, solids, coins, enemies, plants, clouds, grasses, flags):
         super().__init__()
        
         # Sistema de vidas
-        self.total_lives = 3      # Vidas totales (se manejan en main)
-        self.current_hits = 1     # Hits que puede aguantar actualmente (1 o 2 con power-up)
+        self.total_lives = 3
+        self.current_hits = 1
        
         # Sprites y animaciones del personaje 
         self.images = {
@@ -53,11 +53,14 @@ class Player(pygame.sprite.Sprite): # personaje principal con velocidades colici
         self.anim_state = "idle"
         self.anim_frame = 0
         self.image = self.images["idle"][0]
+        
+        # Nueva variable para controlar la dirección
+        self.facing_right = True
        
         # Física y posicion
         self.rect = self.image.get_rect(topleft=pos)
-        self.vx = 0  # Velocidad X
-        self.vy = 0  # Velocidad Y
+        self.vx = 0
+        self.vy = 0
         self.on_ground = False
        
         # Interacciones con objetos
@@ -72,18 +75,17 @@ class Player(pygame.sprite.Sprite): # personaje principal con velocidades colici
         # Estado del jugador
         self.score = 0
         self.alive = True
-        self.level_completed = False  #para detectar si completó el nivel
+        self.level_completed = False
        
         # Sistema de invencibilidad temporal
         self.invulnerable = False
         self.invulnerable_timer = 0
-        self.invulnerable_duration = 120  # 2 segundos a 60 FPS
+        self.invulnerable_duration = 120
        
-    def update(self, keys):# actualiza movimiento y edtado del personaje 
-        # Constantes de física
-        SPEED = 5 # constante de velocidad 
-        GRAVITY = 0.5 # constante de gravedad 
-        JUMP_VEL = -15.5 # velocidad de salto 
+    def update(self, keys):
+        SPEED = 5
+        GRAVITY = 0.5
+        JUMP_VEL = -15.5
        
         # Actualizar invulnerabilidad
         if self.invulnerable:
@@ -94,6 +96,13 @@ class Player(pygame.sprite.Sprite): # personaje principal con velocidades colici
         # Controles de movimiento
         self.vx = ((keys[pygame.K_RIGHT] or keys[pygame.K_d]) -
                   (keys[pygame.K_LEFT] or keys[pygame.K_a])) * SPEED
+        
+        # Actualizar dirección del personaje
+        if self.vx > 0:
+            self.facing_right = True
+        elif self.vx < 0:
+            self.facing_right = False
+            
         want_jump = keys[pygame.K_SPACE] or keys[pygame.K_UP] or keys[pygame.K_w]
        
         # Salto
@@ -123,7 +132,7 @@ class Player(pygame.sprite.Sprite): # personaje principal con velocidades colici
            
         self.animate()
    
-    def move_and_collide(self, dx, dy): # Detecta colisiones con bloques, enemigos, monedas y banderas
+    def move_and_collide(self, dx, dy):
         JUMP_VEL = -15.5
        
         # Movimiento horizontal
@@ -141,11 +150,11 @@ class Player(pygame.sprite.Sprite): # personaje principal con velocidades colici
         self.on_ground = False
         for tile in tiles:
             if self.rect.colliderect(tile.rect):
-                if dy > 0:  # Cayendo
+                if dy > 0:
                     self.rect.bottom = tile.rect.top
                     self.on_ground = True
                     self.vy = 0
-                elif dy < 0:  # Golpeando desde abajo
+                elif dy < 0:
                     self.rect.top = tile.rect.bottom
                     self.vy = 0
                     if hasattr(tile, "hit"):
@@ -161,65 +170,58 @@ class Player(pygame.sprite.Sprite): # personaje principal con velocidades colici
         if not self.invulnerable:
             for enemy in self.enemies.copy():
                 if self.rect.colliderect(enemy.rect):
-                    # Mejor detección de saltar encima del enemigo
                     player_bottom = self.rect.bottom
                     enemy_top = enemy.rect.top
                    
-                    # Si el jugador está cayendo Y su parte inferior está cerca de la parte superior del enemigo
                     if self.vy > 0 and player_bottom - self.vy <= enemy_top + 10:
-                        # Eliminar enemigo saltando encima
                         self.enemies.remove(enemy)
-                        self.vy = JUMP_VEL * 0.7  # Rebote al eliminar enemigo
-                        print("Enemigo eliminado")
+                        self.vy = JUMP_VEL * 0.7
                     else:
-                        # Recibir daño
                         self.take_hit()
 
-
-        #  Colisión con banderas
+        # Colisión con banderas
         for flag in self.flags:
             if self.rect.colliderect(flag.rect):
-                self.level_completed = True  # Marcar nivel como completado
-                print("¡Nivel completado!")
+                self.level_completed = True
    
-    def take_hit(self): # Maneja daño recibido o muerte.
+    def take_hit(self):
         if self.current_hits > 1:
-            # Tiene power-up: lo pierde pero sobrevive
             self.current_hits = 1
             self.activate_invulnerability()
-            print("Perdiste el power-up")
         else:
-            # Sin power-up: muere
             self.alive = False
-            print("Mario murió")
+
    
-    def activate_invulnerability(self): # Activa invencibilidad temporal tras daño.
+    def activate_invulnerability(self):
         self.invulnerable = True
         self.invulnerable_timer = self.invulnerable_duration
-        # Empuje hacia atrás y arriba
         self.rect.y -= 30
         self.vy = -8
    
-    def give_powerup(self): # otorga power-up al  jugador
+    def give_powerup(self):
         if self.current_hits < 2:
             self.current_hits = 2
-            print("Power-up obtenido! Ahora puedes aguantar 2 hits")
    
-    def animate(self):# maneja animaciones del jugador
-
+    def animate(self):
         frames = self.images[self.anim_state]
         self.anim_frame += 0.15
         if self.anim_frame >= len(frames):
             self.anim_frame = 0
+        
+        # Obtener la imagen base
+        base_image = frames[int(self.anim_frame)]
+        
+        # Voltear la imagen si mira a la izquierda
+        if not self.facing_right:
+            base_image = pygame.transform.flip(base_image, True, False)
        
         # Efecto de parpadeo durante invulnerabilidad
         if self.invulnerable and self.invulnerable_timer % 10 < 5:
-            temp_image = frames[int(self.anim_frame)].copy()
-            temp_image.set_alpha(128)  # Semitransparente
+            temp_image = base_image.copy()
+            temp_image.set_alpha(128)
             self.image = temp_image
         else:
-            self.image = frames[int(self.anim_frame)]
-
+            self.image = base_image
 
 
 
@@ -468,7 +470,7 @@ class Enemy(pygame.sprite.Sprite):
 class VerticalEnemy(pygame.sprite.Sprite):# enemigo con movimiento vertical 
     def __init__(self, pos, min_y, max_y, speed=3): # speed=3 (igual al horizontal)
         super().__init__()
-        self.image = load_img("assets/enemies/Dp.png")
+        self.image = load_img("assets/enemies/Papaenem.png")
         self.rect = self.image.get_rect(topleft=pos)
         self.vy = speed  # Ahora speed=3
         self.min_y = min_y
