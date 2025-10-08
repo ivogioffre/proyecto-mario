@@ -303,7 +303,7 @@ class HeartPowerUp(pygame.sprite.Sprite):# power - up que permite al personaje p
 class Coin(pygame.sprite.Sprite): # moneda coleccionable por el personaje
     def __init__(self, pos):
         super().__init__()
-        self.image = load_img("assets/items/coinGold.png", TILE//2)
+        self.image = load_img("assets/items/zanahoria.png", TILE//2)
         self.rect = self.image.get_rect(center=(pos[0]+TILE//2, pos[1]+TILE//2))
 
 
@@ -312,7 +312,7 @@ class Coin(pygame.sprite.Sprite): # moneda coleccionable por el personaje
 class CoinPopEffect(pygame.sprite.Sprite): # effecto visual de la moneda cuando sale del luckyblock 
     def __init__(self, x, y):
         super().__init__()
-        self.image = load_img("assets/items/coinGold.png", TILE//2)
+        self.image = load_img("assets/items/zanahoria.png", TILE//2)
         self.rect = self.image.get_rect(center=(x, y))
         self.vy = -6
         self.life = 22

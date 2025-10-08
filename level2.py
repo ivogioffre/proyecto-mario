@@ -17,13 +17,13 @@ LEVEL_MAP_2 =[
     "                                                    XXXX  XXXXXX  XXXX                                                                                                  ",
     "                                                    XXXX  XXXXXX  XXXX                                                                                                  ",
     "                                                    XX        XX   X    XX          MMMMMM                                                                              ",
-    "                                         X          XX        XX   X    XX                                                                                 XXX          ",
+    "                                         X          XX        XX   X    XX                                                                   M             XXX          ",
     "                                       X X  X X     XX        XX   X    XX          XXXXXX                                                  XXX                         ",
-    "                             V         X X HX X     XX      MMXX   XM   XX    E     XXXXXX                                                                              ",
-    "                       XXX M           XXX  XXX     XXXX  XXXXXX   XXX  XX  XXXXXX                           XX           XX            XX       XXXXXX               F ",
-    "                     X XXX X   X                      BX     B                                         XX    XX    XX     XX           XXX                      XXXXXXXX",
-    "                   X X XXX X   X X                                                                     XX    XX    XX     XX          XXXX                      XXXXXXXX",
-    " P               X X X XXX X E X X                         E  E E                             E        XX    XX    XX     XX         XXXXX                      XXXXXXXX",
+    "                             V         X X HX X     XX      MMXX   XM   XX    E     XXXXXX                                 M                       E                    ",
+    "                       XXX M           XXX  XXX     XXXX  XXXXXX   XXX  XX  XXXXXX                            T           XX            XX       XXXXXX               F ",
+    "                     X XXX X   X                      BX     B                                          T     t     T     XX           XXX                      XXXXXXXX",
+    "                   X X XXX X   X X                                                                      t     t     t     XX          XXXX                      XXXXXXXX",
+    " P               X X X XXX X E X X                         E  E E                             E    M    t   E t  E  t     XX         XXXXX            MM        XXXXXXXX",
     "GGGGGGGGGGGGGGGGGX X X XXX XGGGXGXGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG   GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG  GG  GGGGGGGGGGGG  XXX  GGGGGGGG  XXX  XXXXXXXX",
     "XXXXXXXXXXXXXXXXXX X X XXX XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  XX  XXXXXXXXXXXX       XXXXXXXX       XXXXXXXX",
 ]
@@ -68,6 +68,11 @@ def load_level_2():
                 flags.append(Flag((x, y)))
             elif ch == "H":
                 hearts.append(HeartPowerUp((x, y)))
+            elif ch == "T":
+                solids.append(TuboArriba((x, y)))
+            elif ch == "t":
+                solids.append(TuboAbajo((x, y)))
+
 
 
 
