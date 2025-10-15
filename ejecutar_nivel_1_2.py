@@ -42,6 +42,13 @@ def ejecutar_nivel(screen, WIDTH, HEIGHT, clock, nivel, vidas_iniciales=3, moned
     font = pygame.font.SysFont(None, 32)
     max_vidas = 3
 
+<<<<<<< HEAD
+=======
+
+
+
+    # Cargar imagenes de corazones
+>>>>>>> 9bc5d7d5b45e131af0f4f84fd3d96fb21c5632d7
     heart_full = pygame.transform.scale(load_img("assets/items/corazon.png"), (30, 30))
     heart_broken = pygame.transform.scale(load_img("assets/items/corazon_roto.png"), (30, 30))
     heart_powerup = pygame.transform.scale(load_img("assets/items/corazon_dorado.png"), (40, 40))
