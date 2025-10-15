@@ -1,11 +1,12 @@
-# level2.py - CORRECCIÓN
-
-# importamos todas las entidades
 from entities import Player, TileLevel2, GrassLevel2, Coin, Enemy, Plant, LuckyBlock, VerticalEnemy, Flag, cloud_level2, HeartPowerUp ,TuboArriba, TuboAbajo
+
+
 
 
 # tamaño en pixeles de cada tile
 TILE = 48  
+
+
 
 
 # mapa del nivel 2
@@ -29,9 +30,12 @@ LEVEL_MAP_2 =[
 ]
 
 
+
+
 # función que devuelve los objetos del nivel 2
 def load_level_2():
     solids = []
+    fire_powers = []
     grasses = []
     coins = []
     enemies = []
@@ -40,6 +44,8 @@ def load_level_2():
     flags = []
     hearts = []
     player = None
+
+
 
 
     for j, row in enumerate(LEVEL_MAP_2):
@@ -72,6 +78,13 @@ def load_level_2():
                 solids.append(TuboArriba((x, y)))
             elif ch == "t":
                 solids.append(TuboAbajo((x, y)))
+            elif ch == "Q":  # NUEVA ENTIDAD
+                fire_powers.append(FirePowerUp((x, y)))
+
+
+
+
+
 
 
 
@@ -82,4 +95,6 @@ def load_level_2():
         enemy.enemies_group = enemies
 
 
-    return player, solids, coins, enemies, plants, clouds, grasses, flags, hearts,
+
+
+    return player, solids, coins, enemies, plants, clouds, grasses, flags, hearts, fire_powers

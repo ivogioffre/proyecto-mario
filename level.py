@@ -1,6 +1,9 @@
-from entities import Player, Tile, Grass, Coin, Enemy, Plant, cloud, LuckyBlock, VerticalEnemy , Flag, HeartPowerUp ,TuboArriba, TuboAbajo
-#definimos el mapa del nivel
-TILE = 48 #definimos los pixeles de cada entidad
+from entities import (Player, Tile, Grass, Coin, Enemy, Plant, cloud,
+                     LuckyBlock, VerticalEnemy, Flag, HeartPowerUp,
+                     TuboArriba, TuboAbajo, FirePowerUp)
+
+
+TILE=48
 LEVEL_MAP = [
     "                                                                                                                                                                                                         ",
     "                                                                                                                                                                                                         ",
@@ -15,13 +18,17 @@ LEVEL_MAP = [
     "                B   GBGBG                    T          T                   GBG            G    XB     B  B  B     G      MMM     GG                                   GGBG            GXXXXX           ",
     "                            T        T       t          t        MM                                                                     G  G         GG  G       MM                   GXXXXXX           ",
     "           V                t        t       t          t                V                         V                 V                 GX  XG       GXX  XG      XX                  GXXXXXXX       F   ",
-    " P          L        E      t  MM    t  E    t      E M t                     MM              E           MMM               E  E      GXX  XXG     GXXX  XXG     XX          E       GXXXXXXX  LL L G L ",
+    " P          L        E    Q t  MM    t  E    t      E M t                     MM              E           MMM               E  E      GXX  XXG     GXXX  XXG     XX          E      GXXXXXXXX LL L G L ",
     "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG GGGGGGGGGGGGGGG   GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGXXX  XXXGGGGGXXXX  XXXGGGGGXXGGGGGGGGGGGGGGGXXXXXXXXXXXGGGGGGGXGGG",
     "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX XXXXXXXXXXXXXXX   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  XXXXXXXXXXXX  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
 ]
-#es una lista donde guardamos cada entidad del nivel
+
+
+
+
 def load_level():
     hearts = []
+    fire_powers = []  
     solids = []
     grasses = []
     coins = []
@@ -32,9 +39,7 @@ def load_level():
     player = None
 
 
-    #recorremos las filas y columnas con "j" y "i" (filas y columnas)
     for j, row in enumerate(LEVEL_MAP):
-        # cada entidad es una letra
         for i, ch in enumerate(row):
             x, y = i * TILE, j * TILE
             if ch == "X":
@@ -42,7 +47,7 @@ def load_level():
             elif ch == "G":
                 grasses.append(Grass((x, y)))
             elif ch == "P":
-                player = Player((x, y), solids, coins, enemies, plants, clouds, grasses,flags)#el jugador puede interactuar con otras entidades
+                player = Player((x, y), solids, coins, enemies, plants, clouds, grasses, flags)
             elif ch == "M":
                 coins.append(Coin((x, y)))
             elif ch == "E":
@@ -54,21 +59,20 @@ def load_level():
             elif ch == "B":
                 grasses.append(LuckyBlock((x, y)))
             elif ch == "V":
-                enemies.append(VerticalEnemy((x, y), y - 330, y + 100))#el enemigo se mueve verticalmente
+                enemies.append(VerticalEnemy((x, y), y - 330, y + 100))
             elif ch == "F":
                 flags.append(Flag((x, y)))
             elif ch == "H":
                 hearts.append(HeartPowerUp((x, y)))
+            elif ch == "Q":  
+                fire_powers.append(FirePowerUp((x, y)))
             elif ch == "T":
                 solids.append(TuboArriba((x, y)))
             elif ch == "t":
                 solids.append(TuboAbajo((x, y)))
 
 
-    # colisiones entre enemigos
     for enemy in enemies:
         enemy.enemies_group = enemies
 
-
-    #devolvemos todo al main
-    return player, solids, coins, enemies, plants, clouds, grasses , flags, hearts
+    return player, solids, coins, enemies, plants, clouds, grasses, flags, hearts, fire_powers
