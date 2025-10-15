@@ -58,7 +58,6 @@ def ejecutar_nivel(screen, WIDTH, HEIGHT, clock, nivel, vidas_iniciales=3, moned
 
 
 
-
     # Cargar imagenes de corazones
     heart_full = pygame.transform.scale(load_img("assets/items/corazon.png"), (30, 30))
     heart_broken = pygame.transform.scale(load_img("assets/items/corazon_roto.png"), (30, 30))
