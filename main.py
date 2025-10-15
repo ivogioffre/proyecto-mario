@@ -49,13 +49,6 @@ def main():# Es la función principal del juego, la que se encarga de iniciar to
 
     # Ejecutamos nivel 1
     vidas, monedas = ejecutar_nivel(screen, WIDTH, HEIGHT, clock, 1)
-<<<<<<< HEAD
-
-
-=======
->>>>>>> 9bc5d7d5b45e131af0f4f84fd3d96fb21c5632d7
-
-
     #Si aun quedan vidas al terminar nivel 1 pasamos al 2
     if vidas > 0:  
         # Ejecutamos nivel 2
@@ -96,12 +89,3 @@ def main():# Es la función principal del juego, la que se encarga de iniciar to
 if __name__ == "__main__":
     main_menu()
     main()
-
-
-
-
-<<<<<<< HEAD
-
-
-=======
->>>>>>> 9bc5d7d5b45e131af0f4f84fd3d96fb21c5632d7
