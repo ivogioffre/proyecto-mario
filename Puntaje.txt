@@ -122,3 +122,8 @@
  Fecha y hora : 2025-10-15 11:20:24 - Monedas Obtenidas: 16/ 84  
 =======
 >>>>>>> 9bc5d7d5b45e131af0f4f84fd3d96fb21c5632d7
+ Fecha y hora : 2025-10-15 11:30:45 - Monedas Obtenidas: 8/ 84  
+ Fecha y hora : 2025-10-15 11:33:16 - Monedas Obtenidas: 0/ 84  
+ Fecha y hora : 2025-10-15 11:34:20 - Monedas Obtenidas: 0/ 84  
+ Fecha y hora : 2025-10-15 11:38:53 - Monedas Obtenidas: 2/ 84  
+ Fecha y hora : 2025-10-15 11:45:23 - Monedas Obtenidas: 13/ 84  

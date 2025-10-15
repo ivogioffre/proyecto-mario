@@ -46,9 +46,9 @@ class Player(pygame.sprite.Sprite):
        
         # Sprites y animaciones del personaje
         self.images = {
-            "idle": [load_img("assets/player/idle.png")],
-            "walk": [load_img("assets/player/walk1.png"), load_img("assets/player/walk2.png")],
-            "jump": [load_img("assets/player/jump.png")]
+            "idle": [load_img("assets/player/mariano/marioidle.png")],
+            "walk": [load_img("assets/player/mariano/mario1.png"), load_img("assets/player/mariano/mario2.png")],
+            "jump": [load_img("assets/player/mariano/mariojump.png")]
         }
         self.anim_state = "idle"
         self.anim_frame = 0
