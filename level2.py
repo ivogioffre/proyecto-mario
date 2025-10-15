@@ -1,28 +1,33 @@
-#importamos todas las entidades
-from entities import Player, Tile, Grass, Coin, Enemy, Plant, LuckyBlock, VerticalEnemy, Flag, cloud_level2
+# level2.py - CORRECCIÓN
+
+# importamos todas las entidades
+from entities import Player, TileLevel2, GrassLevel2, Coin, Enemy, Plant, LuckyBlock, VerticalEnemy, Flag, cloud_level2, HeartPowerUp ,TuboArriba, TuboAbajo
+
 
 # tamaño en pixeles de cada tile
 TILE = 48  
 
+
 # mapa del nivel 2
 LEVEL_MAP_2 =[
-    "                                                                                                                                                                                                         ",
-    "                                                                                                                                                                                                         ",
-    "        C                     C                                   C        C                                 C                                      C                           C                        ",
-    "                                                                                                                                                                                                         ",
-    "   C                                               C                                       C           C                       C                                         C                          C    ",
-    "            C                                C                        C              MM                           C       MMM                   C                                  C                     ",
-    "                      B                                   C                     GGGGGGGG   GBG             B              GGG     GBBG                             C                        GG           ",
-    "                                                                                                                                                                                           GXX   MM      ",
-    "                                                                                                 MM                                              MM                                       GXXX           ",
-    "                                              MM                B                                                                                                                        GXXXX           ",
-    "                B   GBGBG                     XX         XX                  GBG            G    XB     B  B  B     G      MMM     GG                                   GGBG            GXXXXX           ",
-    "                            MM        XX      XX         XX       MM                                                                     G  G         GG  G       MM                   GXXXXXX           ",
-    "           V                XX        XX      XX         XX               V                         V                 V                 GX  XG       GXX  XG      XX                  GXXXXXXX       F   ",
-    " P          L        E      XX        XX E    XX     E   XX                    MM              E           MMM               E  E      GXX  XXG     GXXX  XXG     XX          E    XXGXXXXXXXX  LL L G L ",
-    "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG  GGGGGGGGGGGGGGG   GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGXXX  XXXGGGGGXXXX  XXXGGGGGXXGGGGGGGGGGGGGGGXXXXXXXXXXXGGGGGGGXGGG",
-    "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  XXXXXXXXXXXXXXX   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  XXXXXXXXXXXX  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+    "",
+    "",
+    "",
+    "",
+    "                                                    XXXX  XXXXXX  XXXX                                                                                                  ",
+    "                                                    XXXX  XXXXXX  XXXX                                                                                                  ",
+    "                                                    XX        XX   X    XX          MMMMMM                                                                              ",
+    "                                         X          XX        XX   X    XX                                                                   M             XXX          ",
+    "                                       X X  X X     XX        XX   X    XX          XXXXXX                                                  XXX                         ",
+    "                             V         X X HX X     XX      MMXX   XM   XX    E     XXXXXX                                 M                       E                    ",
+    "                       XXX M           XXX  XXX     XXXX  XXXXXX   XXX  XX  XXXXXX                            T           XX            XX       XXXXXX               F ",
+    "                     X XXX X   X                      BX     B                                          T     t     T     XX           XXX                      XXXXXXXX",
+    "                   X X XXX X   X X                                                                      t     t     t     XX          XXXX                      XXXXXXXX",
+    " P               X X X XXX X E X X                         E  E E                             E    M    t   E t  E  t     XX         XXXXX            MM        XXXXXXXX",
+    "GGGGGGGGGGGGGGGGGX X X XXX XGGGXGXGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG   GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG  GG  GGGGGGGGGGGG  XXX  GGGGGGGG  XXX  XXXXXXXX",
+    "XXXXXXXXXXXXXXXXXX X X XXX XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  XX  XXXXXXXXXXXX       XXXXXXXX       XXXXXXXX",
 ]
+
 
 # función que devuelve los objetos del nivel 2
 def load_level_2():
@@ -33,15 +38,17 @@ def load_level_2():
     plants = []
     clouds = []
     flags = []
+    hearts = []
     player = None
+
 
     for j, row in enumerate(LEVEL_MAP_2):
         for i, ch in enumerate(row):
             x, y = i * TILE, j * TILE
             if ch == "X":
-                solids.append(Tile((x, y)))
+                solids.append(TileLevel2((x, y)))
             elif ch == "G":
-                grasses.append(Grass((x, y)))
+                grasses.append(GrassLevel2((x, y)))
             elif ch == "P":
                 player = Player((x, y), solids, coins, enemies, plants, clouds, grasses, flags)
             elif ch == "M":
@@ -55,12 +62,24 @@ def load_level_2():
             elif ch == "B":
                 grasses.append(LuckyBlock((x, y)))
             elif ch == "V":
-                enemies.append(VerticalEnemy((x, y), y - 330, y + 100))
+                # velocidad aumentada de 2 a 3 para igualar al enemigo horizontal
+                enemies.append(VerticalEnemy((x, y), y - 330, y + 100, speed=3))
             elif ch == "F":
                 flags.append(Flag((x, y)))
+            elif ch == "H":
+                hearts.append(HeartPowerUp((x, y)))
+            elif ch == "T":
+                solids.append(TuboArriba((x, y)))
+            elif ch == "t":
+                solids.append(TuboAbajo((x, y)))
+
+
+
+
 
     # para que los enemigos choquen entre sí
     for enemy in enemies:
         enemy.enemies_group = enemies
 
-    return player, solids, coins, enemies, plants, clouds, grasses, flags
+
+    return player, solids, coins, enemies, plants, clouds, grasses, flags, hearts,

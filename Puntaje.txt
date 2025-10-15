@@ -15,7 +15,6 @@
  Fecha y hora : 2025-09-17 10:38:34 - Monedas Obtenidas: 42/ 42  
  Fecha y hora : 2025-09-17 10:45:42 - Monedas Obtenidas: 0/ 42  
  Fecha y hora : 2025-09-17 11:06:02 - Monedas Obtenidas: 0/ 42  
-<<<<<<< HEAD
  Fecha y hora : 2025-09-29 10:52:10 - Monedas Obtenidas: 1/ 42  
  Fecha y hora : 2025-09-29 10:53:37 - Monedas Obtenidas: 7/ 42  
  Fecha y hora : 2025-09-29 10:54:28 - Monedas Obtenidas: 2/ 42  
@@ -96,5 +95,3 @@
  Fecha y hora : 2025-10-15 07:43:42 - Monedas Obtenidas: 0/ 84  
  Fecha y hora : 2025-10-15 07:47:55 - Monedas Obtenidas: 11/ 84  
  Fecha y hora : 2025-10-15 07:54:29 - Monedas Obtenidas: 3/ 84  
-=======
->>>>>>> ab30fb974ead2ef2d763fefadd153b1e334ee838
