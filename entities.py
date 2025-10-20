@@ -1,35 +1,37 @@
 import pygame  
 import os
 
-
 TILE = 48  # Resolución de cada entidad
 COIN_POP_EFFECTS = []  # Efectos de monedas
 
-
-def load_img(path, scale=TILE): # Carga una imagen con manejo de errores
+def load_img(path, scale=TILE, keep_aspect=False):
+    """Carga una imagen con manejo de errores y opción para mantener proporciones."""
     full_path = os.path.join(os.path.dirname(__file__), path)
    
     if not os.path.isfile(full_path):
         print(f" No se encontró el archivo: {full_path}")
-        # Crear una imagen X para que no tire error
         img = pygame.Surface((scale, scale), pygame.SRCALPHA)
-        img.fill((255, 0, 0, 128))  # imagen de Rojo semitransparente
+        img.fill((255, 0, 0, 128))
         return img
    
     try:
         img = pygame.image.load(full_path).convert_alpha()
-        img = pygame.transform.scale(img, (scale, scale))
+        if keep_aspect:
+            width, height = img.get_size()
+            aspect_ratio = height / width
+            new_height = int(scale * aspect_ratio)
+            img = pygame.transform.scale(img, (scale, new_height))
+        else:
+            img = pygame.transform.scale(img, (scale, scale))
         return img
     except pygame.error as e:
         print(f"ERROR en cargar imagen: {full_path} - {e}")
-       
         img = pygame.Surface((scale, scale), pygame.SRCALPHA)
         img.fill((255, 0, 0, 128))
         return img
 
 
 class Player(pygame.sprite.Sprite):
-   
     def __init__(self, pos, solids, coins, enemies, plants, clouds, grasses, flags):
         super().__init__()
        
@@ -42,28 +44,33 @@ class Player(pygame.sprite.Sprite):
         self.fireballs = []
         self.fire_shots_remaining = 0
         self.fire_cooldown = 0
-        self.fire_cooldown_max = 60 
+        self.fire_cooldown_max = 60
        
-        # Sprites y animaciones del personaje
+        SCALE_PLAYER = int(TILE * 0.85)  # 85% del tamaño base
+
         self.images = {
-            "idle": [load_img("assets/player/mariano/marioidle.png")],
-            "walk": [load_img("assets/player/mariano/mario1.png"), load_img("assets/player/mariano/mario2.png")],
-            "jump": [load_img("assets/player/mariano/mariojump.png")]
-        }
+            "idle": [load_img("assets/player/mariano/marioidle.png", SCALE_PLAYER, keep_aspect=True)],
+            "walk": [load_img("assets/player/mariano/mario1.png", SCALE_PLAYER, keep_aspect=True),
+             load_img("assets/player/mariano/mario2.png", SCALE_PLAYER, keep_aspect=True)],
+            "jump": [load_img("assets/player/mariano/mariojump.png", SCALE_PLAYER, keep_aspect=True)]
+}
+
+
         self.anim_state = "idle"
         self.anim_frame = 0
         self.image = self.images["idle"][0]
        
-        # Nueva variable para controlar la dirección
+        # Dirección
         self.facing_right = True
        
-        # Física y posicion
+        # Física y posición
         self.rect = self.image.get_rect(topleft=pos)
+        self.rect.y += 8  
         self.vx = 0
         self.vy = 0
         self.on_ground = False
        
-        # Interacciones con objetos
+        # Interacciones
         self.solids = solids
         self.grasses = grasses
         self.coins = coins
@@ -72,12 +79,12 @@ class Player(pygame.sprite.Sprite):
         self.clouds = clouds
         self.flags = flags
        
-        # Estado del jugador
+        # Estado general
         self.score = 0
         self.alive = True
         self.level_completed = False
        
-        # Sistema de invencibilidad temporal
+        # Invulnerabilidad temporal
         self.invulnerable = False
         self.invulnerable_timer = 0
         self.invulnerable_duration = 120
@@ -87,40 +94,38 @@ class Player(pygame.sprite.Sprite):
         GRAVITY = 0.5
         JUMP_VEL = -15.5
        
-        # Actualizar invulnerabilidad
+        # Invulnerabilidad
         if self.invulnerable:
             self.invulnerable_timer -= 1
             if self.invulnerable_timer <= 0:
                 self.invulnerable = False
        
-        # Actualizar cooldown de disparo
+        # Cooldown del disparo
         if self.fire_cooldown > 0:
             self.fire_cooldown -= 1
        
-        # Controles de movimiento
+        # Movimiento horizontal
         self.vx = ((keys[pygame.K_RIGHT] or keys[pygame.K_d]) -
-                  (keys[pygame.K_LEFT] or keys[pygame.K_a])) * SPEED
+                   (keys[pygame.K_LEFT] or keys[pygame.K_a])) * SPEED
        
-        # Actualizar dirección del personaje
+        # Dirección
         if self.vx > 0:
             self.facing_right = True
         elif self.vx < 0:
             self.facing_right = False
        
-        # Disparo de bolas de fuego (Ctrl o X)
+        # Disparo (Ctrl o R)
         if (keys[pygame.K_LCTRL] or keys[pygame.K_r]) and self.has_fire_power:
-            if self.fire_cooldown == 0: 
+            if self.fire_cooldown == 0:
                 self.shoot_fireball()
                 self.fire_cooldown = self.fire_cooldown_max
-           
-        want_jump = keys[pygame.K_SPACE] or keys[pygame.K_UP] or keys[pygame.K_w]
        
-        # Salto
+        want_jump = keys[pygame.K_SPACE] or keys[pygame.K_UP] or keys[pygame.K_w]
         if want_jump and self.on_ground:
             self.vy = JUMP_VEL
             self.on_ground = False
        
-        # Estados de animación
+        # Estado de animación
         if not self.on_ground:
             self.anim_state = "jump"
         elif self.vx != 0:
@@ -128,12 +133,12 @@ class Player(pygame.sprite.Sprite):
         else:
             self.anim_state = "idle"
        
-        # Aplicar gravedad
+        # Gravedad
         self.vy += GRAVITY
         if self.vy > 20:
             self.vy = 20
        
-        # Movimiento y colisiones
+        # Movimiento + colisiones
         self.move_and_collide(self.vx, self.vy)
        
         # Muerte por caída
@@ -150,8 +155,6 @@ class Player(pygame.sprite.Sprite):
    
     def move_and_collide(self, dx, dy):
         JUMP_VEL = -15.5
-       
-        # Movimiento horizontal
         self.rect.x += dx
         tiles = self.solids + self.grasses
         for tile in tiles:
@@ -161,7 +164,6 @@ class Player(pygame.sprite.Sprite):
                 elif dx < 0:
                     self.rect.left = tile.rect.right
        
-        # Movimiento vertical
         self.rect.y += dy
         self.on_ground = False
         for tile in tiles:
@@ -176,27 +178,20 @@ class Player(pygame.sprite.Sprite):
                     if hasattr(tile, "hit"):
                         tile.hit(self)
        
-        # Colision con monedas
         for coin in self.coins.copy():
             if self.rect.colliderect(coin.rect):
                 self.coins.remove(coin)
                 self.score += 1
        
-        # Colisión con enemigos
         if not self.invulnerable:
             for enemy in self.enemies.copy():
                 if self.rect.colliderect(enemy.rect):
-                    player_bottom = self.rect.bottom
-                    enemy_top = enemy.rect.top
-                   
-                    if self.vy > 0 and player_bottom - self.vy <= enemy_top + 10:
+                    if self.vy > 0 and self.rect.bottom - self.vy <= enemy.rect.top + 10:
                         self.enemies.remove(enemy)
                         self.vy = JUMP_VEL * 0.7
                     else:
                         self.take_hit()
 
-
-        # Colisión con banderas
         for flag in self.flags:
             if self.rect.colliderect(flag.rect):
                 self.level_completed = True
@@ -208,8 +203,6 @@ class Player(pygame.sprite.Sprite):
         else:
             self.alive = False
 
-
-   
     def activate_invulnerability(self):
         self.invulnerable = True
         self.invulnerable_timer = self.invulnerable_duration
@@ -221,52 +214,41 @@ class Player(pygame.sprite.Sprite):
             self.current_hits = 2
    
     def give_fire_power(self):
-        """Otorga el poder de fuego al jugador"""
         self.has_fire_power = True
         self.fire_shots_remaining = 3  
-
- 
         print("¡Poder de fuego obtenido!")
    
     def shoot_fireball(self):
-        """Dispara una bola de fuego en la dirección que mira el jugador"""
-        # Verificar si aún tiene disparos disponibles
         if self.fire_shots_remaining <= 0:
             return
-        
+       
         direction = 1 if self.facing_right else -1
         fireball = Fireball(self.rect.centerx, self.rect.centery, direction,
-                           self.solids, self.grasses, self.enemies)
+                            self.solids, self.grasses, self.enemies)
         self.fireballs.append(fireball)
-        
-        # Reducir disparos disponibles
+       
         self.fire_shots_remaining -= 1
         print(f"Disparos restantes: {self.fire_shots_remaining}")
-        
-        # Si se acabaron los disparos, remover el poder
+       
         if self.fire_shots_remaining <= 0:
             self.has_fire_power = False
             print("¡Poder de fuego agotado!")
+
     def animate(self):
         frames = self.images[self.anim_state]
         self.anim_frame += 0.15
         if self.anim_frame >= len(frames):
             self.anim_frame = 0
-       
-        # Obtener la imagen base
         base_image = frames[int(self.anim_frame)]
-       
-        # Voltear la imagen si mira a la izquierda
         if not self.facing_right:
             base_image = pygame.transform.flip(base_image, True, False)
-       
-        # Efecto de parpadeo durante invulnerabilidad
         if self.invulnerable and self.invulnerable_timer % 10 < 5:
             temp_image = base_image.copy()
             temp_image.set_alpha(128)
             self.image = temp_image
         else:
             self.image = base_image
+
 
 
 class Tile(pygame.sprite.Sprite):# Bloque solido basico
@@ -336,7 +318,7 @@ class HeartPowerUp(pygame.sprite.Sprite):# power - up que permite al personaje p
 class Coin(pygame.sprite.Sprite): # moneda coleccionable por el personaje
     def __init__(self, pos):
         super().__init__()
-        self.image = load_img("assets/items/zanahoria.png", TILE//2)
+        self.image = load_img("assets/items/zanahoria.png", int(TILE * 0.6))
         self.rect = self.image.get_rect(center=(pos[0]+TILE//2, pos[1]+TILE//2))
 
 
@@ -548,7 +530,7 @@ class Fireball(pygame.sprite.Sprite):
 
     def __init__(self, x, y, direction, solids, grasses, enemies):
         super().__init__()
-        self.image = load_img("assets/items/Jalapeño.png", TILE // 2)
+        self.image = load_img("assets/items/Jalapeño.png", int(TILE * 0.65))
         self.rect = self.image.get_rect(center=(x, y))
        
         # Física
