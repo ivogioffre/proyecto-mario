@@ -9,31 +9,19 @@ from entities import Player, COIN_POP_EFFECTS, load_img
 from puntaje_nivel import main_puntaje, perdiste
 from ejecutar_nivel_1_2 import ejecutar_nivel
 
-
-
-
 # Frames por segundo (FPS)
 FPS = 60
-
-
-
 
 def main():# Es la función principal del juego, la que se encarga de iniciar todo y controlar el flujo general
     #Inicializa Pygame y la ventana del juego
     # Llama a la función ejecutar_nivel() para jugar nivel 1 y 2
     pygame.init()
 
-
-
-
     # Ventana pantalla completa
     screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
     WIDTH, HEIGHT = screen.get_size()
     clock = pygame.time.Clock()
     pygame.display.set_caption("Mario Bros")
-
-
-
 
     # Música
     try:
@@ -44,9 +32,6 @@ def main():# Es la función principal del juego, la que se encarga de iniciar to
     except Exception as e:
         print(f"No se pudo iniciar el audio: {e}")
 
-
-
-
     # Ejecutamos nivel 1
     vidas, monedas = ejecutar_nivel(screen, WIDTH, HEIGHT, clock, 1)
     #Si aun quedan vidas al terminar nivel 1 pasamos al 2
@@ -54,37 +39,12 @@ def main():# Es la función principal del juego, la que se encarga de iniciar to
         # Ejecutamos nivel 2
         vidas, monedas = ejecutar_nivel(screen, WIDTH, HEIGHT, clock, 2, vidas, monedas)
 
-
-
-
         if vidas > 0:  # Si completaste nivel 2
             guardar_record(monedas)
             main_puntaje(monedas)
 
-
-
-
     pygame.quit()
     sys.exit()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 if __name__ == "__main__":
     main_menu()

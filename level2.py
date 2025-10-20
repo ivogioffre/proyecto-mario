@@ -1,5 +1,4 @@
-from entities import Player, TileLevel2, GrassLevel2, Coin, Enemy, Plant, LuckyBlock, VerticalEnemy, Flag, cloud_level2, HeartPowerUp ,TuboArriba, TuboAbajo
-
+from entities import Player, TileLevel2, GrassLevel2, Coin, Enemy, Plant, LuckyBlock, VerticalEnemy, Flag, cloud_level2, HeartPowerUp ,TuboArriba, TuboAbajo, FirePowerUp
 
 
 
@@ -82,19 +81,9 @@ def load_level_2():
                 fire_powers.append(FirePowerUp((x, y)))
 
 
-
-
-
-
-
-
-
-
     # para que los enemigos choquen entre sí
     for enemy in enemies:
         enemy.enemies_group = enemies
-
-
 
 
     return player, solids, coins, enemies, plants, clouds, grasses, flags, hearts, fire_powers

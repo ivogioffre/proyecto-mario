@@ -24,8 +24,6 @@ LEVEL_MAP = [
 ]
 
 
-
-
 def load_level():
     hearts = []
     fire_powers = []  
