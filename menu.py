@@ -16,21 +16,28 @@ def main_menu():
     fondo = pygame.transform.scale(fondo, (WIDTH, HEIGHT))
 
     # --- Botones ---
-    button_width, button_height = 300, 200
+    button_width, button_height = 180, 96
 
     # Play button
     play_btn_img = pygame.image.load("assets/menu/boton_play_menu.png").convert_alpha()
     play_btn_hover = pygame.image.load("assets/menu/boton_play_menu_2.png").convert_alpha()
     play_btn_img = pygame.transform.scale(play_btn_img, (button_width, button_height))
     play_btn_hover = pygame.transform.scale(play_btn_hover, (button_width, button_height))
-    play_btn_rect = play_btn_img.get_rect(center=(WIDTH // 2, HEIGHT // 2))
+    play_btn_rect = play_btn_img.get_rect(center=(WIDTH // 2 , HEIGHT // 2))
 
     # Quit button
     quit_btn_img = pygame.image.load("assets/menu/boton_quit_menu.png").convert_alpha()
     quit_btn_hover = pygame.image.load("assets/menu/boton_quit_menu_2.png").convert_alpha()
     quit_btn_img = pygame.transform.scale(quit_btn_img, (button_width, button_height))
     quit_btn_hover = pygame.transform.scale(quit_btn_hover, (button_width, button_height))
-    quit_btn_rect = quit_btn_img.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 120))
+    quit_btn_rect = quit_btn_img.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 240))
+
+    # Top button
+    top_btn_img = pygame.image.load("assets/menu/boton_top_menu.png").convert_alpha()
+    top_btn_hover = pygame.image.load("assets/menu/boton_top_menu_2.png").convert_alpha()
+    top_btn_img = pygame.transform.scale(top_btn_img, (button_width, button_height))
+    top_btn_hover = pygame.transform.scale(top_btn_hover, (button_width, button_height))
+    top_btn_rect = top_btn_img.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 120))
 
     # Cargar y escalar el título
     titulo_img = pygame.image.load("assets/menu/mariano_bros.png").convert_alpha()
@@ -70,6 +77,12 @@ def main_menu():
             screen.blit(quit_btn_hover, quit_btn_rect)
         else:
             screen.blit(quit_btn_img, quit_btn_rect)
+        
+        # Top
+        if top_btn_rect.collidepoint(mouse_pos):
+            screen.blit(top_btn_hover, top_btn_rect)
+        else:
+            screen.blit(top_btn_img, top_btn_rect)
 
         # Eventos
         for event in pygame.event.get():
