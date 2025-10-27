@@ -146,6 +146,7 @@
  Fecha y hora : 2025-10-22 11:27:52 - Monedas Obtenidas: 22/ 84  
  Fecha y hora : 2025-10-22 11:36:17 - Monedas Obtenidas: 0/ 84  
  Fecha y hora : 2025-10-22 11:41:18 - Monedas Obtenidas: 4/ 84  
+<<<<<<< Updated upstream
  Fecha y hora : 2025-10-27 07:53:52 - Monedas Obtenidas: 2/ 84  
  Fecha y hora : 2025-10-27 07:54:41 - Monedas Obtenidas: 13/ 84  
  Fecha y hora : 2025-10-27 07:58:08 - Monedas Obtenidas: 21/ 84  
@@ -153,3 +154,18 @@
  Fecha y hora : 2025-10-27 08:01:37 - Monedas Obtenidas: 26/ 84  
  Fecha y hora : 2025-10-27 08:43:25 - Monedas Obtenidas: 46/ 84  
  Fecha y hora : 2025-10-27 08:45:29 - Monedas Obtenidas: 59/ 84  
+=======
+ Fecha y hora : 2025-10-27 08:39:30 - Monedas Obtenidas: 630/ 84  
+Fecha y hora: 2025-10-27 08:42:11 - Monedas: 19/84 - Tiempo Total: 0:36 - Puntaje Total: 595
+Fecha y hora: 2025-10-27 09:08:25 - Monedas: 26/84 - Tiempo Total: 0:42 - Puntaje Total: 630
+Fecha y hora: 2025-10-27 09:09:43 - Monedas: 142/84 - Tiempo Total: 1:40 - Puntaje Total: 1210
+Fecha y hora: 2025-10-27 10:01:11 - Monedas: 0/84 - Tiempo Total: 0:35 - Puntaje Total: 610
+Fecha y hora: 2025-10-27 10:04:56 - Monedas: 14/84 - Tiempo Total: 0:34 - Puntaje Total: 580
+Fecha y hora: 2025-10-27 10:05:49 - Monedas: 29/84 - Tiempo Total: 1:22 - Puntaje Total: 585
+Fecha y hora: 2025-10-27 10:15:06 - Monedas: 19/84 - Tiempo Total: 0:56 - Puntaje Total: 625
+Fecha y hora: 2025-10-27 10:15:06 - Monedas: 19/84 - Tiempo Total: 0:56 - Puntaje Total: 625
+Fecha y hora: 2025-10-27 10:15:48 - Monedas: 30/84 - Tiempo Total: 1:35 - Puntaje Total: 565
+Fecha y hora: 2025-10-27 10:15:48 - Monedas: 30/84 - Tiempo Total: 1:35 - Puntaje Total: 565
+Fecha y hora: 2025-10-27 10:21:12 - Monedas: 24/84 - Tiempo Total: 0:35 - Puntaje Total: 660
+Fecha y hora: 2025-10-27 10:21:12 - Monedas: 24/84 - Tiempo Total: 0:35 - Puntaje Total: 660
+>>>>>>> Stashed changes
