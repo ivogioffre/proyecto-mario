@@ -19,7 +19,7 @@ LEVEL_MAP_2 =[
     "                                                    XX        XX   X    XX          MMMMMM                                                                              ",
     "                                         X          XX        XX   X    XX                                                                   M             XXX          ",
     "                                       X X  X X     XX        XX   X    XX          XXXXXX                                                  XXX                         ",
-    "                             V         X X HX X     XX      MMXX   XM   XX    E     XXXXXX                                 M                       E                    ",
+    "                             V         X X QX X     XX H    MMXX   XM   XX    E     XXXXXX                                 M                       E                    ",
     "                       XXX M           XXX  XXX     XXXX  XXXXXX   XXX  XX  XXXXXX                            T           XX            XX       XXXXXX               F ",
     "                     X XXX X   X                      BX     B                                          T     t     T     XX           XXX                      XXXXXXXX",
     "                   X X XXX X   X X                                                                      t     t     t     XX          XXXX                      XXXXXXXX",
@@ -77,7 +77,7 @@ def load_level_2():
                 solids.append(TuboArriba((x, y)))
             elif ch == "t":
                 solids.append(TuboAbajo((x, y)))
-            elif ch == "Q":  # NUEVA ENTIDAD
+            elif ch == "Q":  
                 fire_powers.append(FirePowerUp((x, y)))
 
 

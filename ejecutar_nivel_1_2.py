@@ -150,10 +150,10 @@ def ejecutar_nivel(screen, WIDTH, HEIGHT, clock, nivel, vidas_iniciales=3, moned
 
         # Mostrar vida extra
         if player.current_hits >= 2:
-            extra_player = pygame.transform.scale(player.images["idle"][0], (30, 30))
-            screen.blit(extra_player, (20 + max_vidas * 35, 85))
-            status_txt = font.render("x1", True, (255, 255, 0))
-            screen.blit(status_txt, (25 + (max_vidas + 1) * 35, 95))
+            heart_small = pygame.transform.scale(heart_powerup,(30, 30))
+            screen.blit(heart_small, (20 + max_vidas * 35, 90))
+            extra_txt = font.render("x1", True, (255, 255, 0))
+            screen.blit(extra_txt, (25 + (max_vidas + 1) * 35, 95))
 
         # Indicador de poder de fuego
         if player.has_fire_power:
