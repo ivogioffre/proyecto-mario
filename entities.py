@@ -1,10 +1,8 @@
 import pygame  
 import os
-global player
 
 TILE = 48  # Resolución de cada entidad
 COIN_POP_EFFECTS = []  # Efectos de monedas
-
 
 def load_img(path, scale=TILE, keep_aspect=False):
     """Carga una imagen con manejo de errores y opción para mantener proporciones."""
@@ -33,13 +31,10 @@ def load_img(path, scale=TILE, keep_aspect=False):
         return img
 
 
-
-
 class Player(pygame.sprite.Sprite):
-    def __init__(self, pos, solids, coins, enemies, plants, clouds, grasses, flags, hearts, fire_powers):
+    def __init__(self, pos, solids, coins, enemies, plants, clouds, grasses, flags):
         super().__init__()
-        self.monedas = 0
-        self.score=0
+       
         # Sistema de vidas
         self.total_lives = 3
         self.current_hits = 1
@@ -53,15 +48,12 @@ class Player(pygame.sprite.Sprite):
        
         SCALE_PLAYER = int(TILE * 0.85)  # 85% del tamaño base
 
-
         self.images = {
             "idle": [load_img("assets/player/mariano/marioidle.png", SCALE_PLAYER, keep_aspect=True)],
             "walk": [load_img("assets/player/mariano/mario1.png", SCALE_PLAYER, keep_aspect=True),
              load_img("assets/player/mariano/mario2.png", SCALE_PLAYER, keep_aspect=True)],
             "jump": [load_img("assets/player/mariano/mariojump.png", SCALE_PLAYER, keep_aspect=True)]
 }
-
-
 
 
         self.anim_state = "idle"
@@ -161,9 +153,6 @@ class Player(pygame.sprite.Sprite):
            
         self.animate()
    
-    # En la clase Player, modificar el método move_and_collide:
-
-
     def move_and_collide(self, dx, dy):
         JUMP_VEL = -15.5
         self.rect.x += dx
@@ -174,7 +163,7 @@ class Player(pygame.sprite.Sprite):
                     self.rect.right = tile.rect.left
                 elif dx < 0:
                     self.rect.left = tile.rect.right
-   
+       
         self.rect.y += dy
         self.on_ground = False
         for tile in tiles:
@@ -188,24 +177,20 @@ class Player(pygame.sprite.Sprite):
                     self.vy = 0
                     if hasattr(tile, "hit"):
                         tile.hit(self)
-   
-        # Monedas dan 5 puntos cada una
+       
         for coin in self.coins.copy():
             if self.rect.colliderect(coin.rect):
                 self.coins.remove(coin)
-                self.monedas += 1
-                self.score += 5  
-
+                self.score += 1
+       
         if not self.invulnerable:
             for enemy in self.enemies.copy():
                 if self.rect.colliderect(enemy.rect):
                     if self.vy > 0 and self.rect.bottom - self.vy <= enemy.rect.top + 10:
                         self.enemies.remove(enemy)
-                        self.score += 10  # Añadir 10 puntos por matar enemigo
                         self.vy = JUMP_VEL * 0.7
                     else:
                         self.take_hit()
-
 
         for flag in self.flags:
             if self.rect.colliderect(flag.rect):
@@ -217,7 +202,6 @@ class Player(pygame.sprite.Sprite):
             self.activate_invulnerability()
         else:
             self.alive = False
-
 
     def activate_invulnerability(self):
         self.invulnerable = True
@@ -237,21 +221,18 @@ class Player(pygame.sprite.Sprite):
     def shoot_fireball(self):
         if self.fire_shots_remaining <= 0:
             return
-   
+       
         direction = 1 if self.facing_right else -1
         fireball = Fireball(self.rect.centerx, self.rect.centery, direction,
-                            self.solids, self.grasses, self.enemies, owner=self)  # 👈 agregado
+                            self.solids, self.grasses, self.enemies)
         self.fireballs.append(fireball)
-   
+       
         self.fire_shots_remaining -= 1
         print(f"Disparos restantes: {self.fire_shots_remaining}")
-   
+       
         if self.fire_shots_remaining <= 0:
             self.has_fire_power = False
             print("¡Poder de fuego agotado!")
-
-
-
 
     def animate(self):
         frames = self.images[self.anim_state]
@@ -270,16 +251,11 @@ class Player(pygame.sprite.Sprite):
 
 
 
-
-
-
 class Tile(pygame.sprite.Sprite):# Bloque solido basico
     def __init__(self, pos):
         super().__init__()
         self.image = load_img("assets/tiles/grassCenter.png")
         self.rect = self.image.get_rect(topleft=pos)
-
-
 
 
 class Grass(pygame.sprite.Sprite): #Bloque solido de pasto
@@ -289,15 +265,11 @@ class Grass(pygame.sprite.Sprite): #Bloque solido de pasto
         self.rect = self.image.get_rect(topleft=pos)
 
 
-
-
 class TileLevel2(pygame.sprite.Sprite):#bloque solido para el nivel 2
     def __init__(self, pos):
         super().__init__()
         self.image = load_img("assets/Tiles/piedra.png")
         self.rect = self.image.get_rect(topleft=pos)
-
-
 
 
 class GrassLevel2(pygame.sprite.Sprite):# vendria siendo como el pasto pero en el nivel 2
@@ -307,8 +279,6 @@ class GrassLevel2(pygame.sprite.Sprite):# vendria siendo como el pasto pero en e
         self.rect = self.image.get_rect(topleft=pos)
 
 
-
-
 class Flag(pygame.sprite.Sprite):# bandera donde finaliza el nivel
     def __init__(self, pos):
         super().__init__()
@@ -316,9 +286,7 @@ class Flag(pygame.sprite.Sprite):# bandera donde finaliza el nivel
         self.rect = self.image.get_rect(topleft=pos)
 
 
-
-
-class LuckyBlock(pygame.sprite.Sprite):
+class LuckyBlock(pygame.sprite.Sprite): #luckyblock que suelta monedas si le pegas de abajo
     def __init__(self, pos):
         super().__init__()
         self.full_img = load_img("assets/tiles/boxItem.png")
@@ -327,13 +295,13 @@ class LuckyBlock(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft=pos)
         self.used = False
    
-    def hit(self, player):
+    def hit(self, player):# se activa cuando el jugador le pega de abajo
+       
         if self.used:
             return
         self.used = True
         self.image = self.empty_img
-        player.score += 5  # Cambiado de 1 a 5
-        player.monedas += 1
+        player.score += 1
         COIN_POP_EFFECTS.append(CoinPopEffect(self.rect.centerx, self.rect.top - 4))
 
 
@@ -347,15 +315,11 @@ class HeartPowerUp(pygame.sprite.Sprite):# power - up que permite al personaje p
         player.give_powerup()
 
 
-
-
 class Coin(pygame.sprite.Sprite): # moneda coleccionable por el personaje
     def __init__(self, pos):
         super().__init__()
         self.image = load_img("assets/items/zanahoria.png", int(TILE * 0.6))
         self.rect = self.image.get_rect(center=(pos[0]+TILE//2, pos[1]+TILE//2))
-
-
 
 
 class CoinPopEffect(pygame.sprite.Sprite): # effecto visual de la moneda cuando sale del luckyblock
@@ -373,15 +337,11 @@ class CoinPopEffect(pygame.sprite.Sprite): # effecto visual de la moneda cuando 
         return self.life > 0
 
 
-
-
 class Plant(pygame.sprite.Sprite): # decoracion de planta
     def __init__(self, pos):
         super().__init__()
         self.image = load_img("assets/items/plant.png")
         self.rect = self.image.get_rect(center=(pos[0]+TILE//2, pos[1]+TILE//2))
-
-
 
 
 class cloud(pygame.sprite.Sprite):#Decoración de nube
@@ -391,15 +351,11 @@ class cloud(pygame.sprite.Sprite):#Decoración de nube
         self.rect = self.image.get_rect(center=(pos[0]+TILE//2, pos[1]+TILE//2))
 
 
-
-
 class cloud_level2(pygame.sprite.Sprite): # decoracion de nube nivel 2
     def __init__(self, pos):
         super().__init__()
         self.image = load_img("assets/items/nube_violeta.png")
         self.rect = self.image.get_rect(center=(pos[0]+TILE//2, pos[1]+TILE//2))
-
-
 
 
 class Enemy(pygame.sprite.Sprite):
@@ -408,8 +364,6 @@ class Enemy(pygame.sprite.Sprite):
    
     def __init__(self, pos, solids, grasses, enemies_group=None, scale_factor=1.3):
         super().__init__()
-
-
 
 
         #  Cargar imágenes (load_img devuelve por defecto tamaño TILE)
@@ -422,21 +376,15 @@ class Enemy(pygame.sprite.Sprite):
         self.images_left = [pygame.transform.flip(img, True, False) for img in self.images_right]
 
 
-
-
         # Hitbox de colisión Fija en tamaño TILE
         # pos viene como topleft de la celda  usamos esa posicion para la hitbox
         self.collision_rect = pygame.Rect(pos[0], pos[1], TILE, TILE)
-
-
 
 
         # Rect / image para dibujado
         # Alineamos la imagen escalada de modo que su midbottom coincida con la base de la hitbox
         self.image = self.images_right[0]
         self.rect = self.image.get_rect(midbottom=self.collision_rect.midbottom)
-
-
 
 
         # Movimiento / grupos
@@ -446,13 +394,9 @@ class Enemy(pygame.sprite.Sprite):
         self.enemies_group = enemies_group
 
 
-
-
         # Animación
         self.anim_frame = 0.0
         self.anim_forward = True
-
-
 
 
     def update(self):
@@ -460,8 +404,6 @@ class Enemy(pygame.sprite.Sprite):
        
         # Calculamos la posicion tentativa (en coordenadas de la hitbox)
         attempted_x = self.collision_rect.x + self.vx
-
-
 
 
         # ground_check basado en la hitbox (TILE)   asi no depende del tamaño visual
@@ -473,15 +415,11 @@ class Enemy(pygame.sprite.Sprite):
         )
 
 
-
-
         has_ground = False
         for tile in self.solids + self.grasses:
             if ground_check.colliderect(tile.rect):
                 has_ground = True
                 break
-
-
 
 
         # Si no hay suelo  gira (no nos movemos hacia adelante)
@@ -491,13 +429,9 @@ class Enemy(pygame.sprite.Sprite):
         # Si hay suelo attempted_x mantiene el avance
 
 
-
-
         # Comprobacion de colision lateral contra bloques
         new_hitbox = self.collision_rect.copy()
         new_hitbox.x = attempted_x
-
-
 
 
         collided = False
@@ -505,8 +439,6 @@ class Enemy(pygame.sprite.Sprite):
             if new_hitbox.colliderect(tile.rect):
                 collided = True
                 break
-
-
 
 
         # Colisión con otros enemigos (usar su collision_rect si existe)
@@ -520,8 +452,6 @@ class Enemy(pygame.sprite.Sprite):
                     break
 
 
-
-
         # Si colisiono giramos y no aplicamos movimiento; sino, aplicamos movimiento
         if collided:
             self.vx *= -1
@@ -530,13 +460,9 @@ class Enemy(pygame.sprite.Sprite):
             self.collision_rect.x = attempted_x
 
 
-
-
         #  Ajuste visual: bajar un poco la imagen para que parezca tocar el suelo
         self.rect = self.image.get_rect(midbottom=(self.collision_rect.midbottom[0],
                                            self.collision_rect.midbottom[1] + 11))
-
-
 
 
         # Animación suave
@@ -550,15 +476,11 @@ class Enemy(pygame.sprite.Sprite):
                 self.anim_forward = True
 
 
-
-
         # Seleccionar sprite segun direccion
         if self.vx > 0:
             self.image = self.images_right[int(self.anim_frame)]
         else:
             self.image = self.images_left[int(self.anim_frame)]
-
-
 
 
 class VerticalEnemy(pygame.sprite.Sprite):# enemigo con movimiento vertical
@@ -576,15 +498,11 @@ class VerticalEnemy(pygame.sprite.Sprite):# enemigo con movimiento vertical
             self.vy *= -1
 
 
-
-
 class TuboArriba(pygame.sprite.Sprite):#parte de arriba del tubo
     def __init__(self, pos):
         super().__init__()
         self.image = load_img("assets/items/tubos/tubo1.png")
         self.rect = self.image.get_rect(topleft=pos)
-
-
 
 
 class TuboAbajo(pygame.sprite.Sprite):#parte de abajo del tubo
@@ -594,8 +512,6 @@ class TuboAbajo(pygame.sprite.Sprite):#parte de abajo del tubo
         self.rect = self.image.get_rect(topleft=pos)
 
 
-
-
 class FirePowerUp(pygame.sprite.Sprite):
     """Power-up que otorga el poder de disparar bolas de fuego"""
     def __init__(self, pos):
@@ -603,25 +519,23 @@ class FirePowerUp(pygame.sprite.Sprite):
         self.image = load_img("assets/items/Morron.png", TILE)
         self.rect = self.image.get_rect(center=(pos[0] + TILE // 2, pos[1] + TILE // 2))
 
-
     def apply(self, player):
         """Aplica el poder de fuego al jugador"""
         player.give_fire_power()
 
 
 
-
-
-
 class Fireball(pygame.sprite.Sprite):
-    def __init__(self, x, y, direction, solids, grasses, enemies, owner=None):
+
+
+    def __init__(self, x, y, direction, solids, grasses, enemies):
         super().__init__()
         self.image = load_img("assets/items/Jalapeño.png", int(TILE * 0.65))
         self.rect = self.image.get_rect(center=(x, y))
        
         # Física
-        self.vx = 8 * direction
-        self.vy = -3
+        self.vx = 8 * direction  # Velocidad horizontal
+        self.vy = -3  # Velocidad inicial hacia arriba
         self.gravity = 0.3
         self.direction = direction
        
@@ -629,15 +543,15 @@ class Fireball(pygame.sprite.Sprite):
         self.solids = solids
         self.grasses = grasses
         self.enemies = enemies
-        self.owner = owner  # <--- jugador que disparó la bola
        
         # Estado
         self.alive = True
         self.bounces = 0
         self.max_bounces = 3
+       
+        # Animación de rotación
         self.rotation = 0
-
-
+   
     def update(self):
         """Actualiza movimiento, colisiones y animación de la bola de fuego"""
         if not self.alive:
@@ -646,8 +560,10 @@ class Fireball(pygame.sprite.Sprite):
         # Aplicar gravedad
         self.vy += self.gravity
        
-        # Movimiento
+        # Movimiento horizontal
         self.rect.x += self.vx
+       
+        # Movimiento vertical
         self.rect.y += self.vy
        
         # Rotación visual
@@ -657,19 +573,19 @@ class Fireball(pygame.sprite.Sprite):
             self.rotation
         )
        
-        # Colisión con bloques
+        # Colisión con bloques (rebote)
         tiles = self.solids + self.grasses
         for tile in tiles:
             if self.rect.colliderect(tile.rect):
                 # Rebote en el suelo
                 if self.vy > 0:
                     self.rect.bottom = tile.rect.top
-                    self.vy = -6
+                    self.vy = -6  # Rebote
                     self.bounces += 1
                     if self.bounces >= self.max_bounces:
                         self.alive = False
                         return
-                # Choque lateral
+                # Choque con pared lateral
                 elif self.vx > 0:
                     self.rect.right = tile.rect.left
                     self.alive = False
@@ -683,7 +599,5 @@ class Fireball(pygame.sprite.Sprite):
         for enemy in self.enemies[:]:
             if self.rect.colliderect(enemy.rect):
                 self.enemies.remove(enemy)
-                if self.owner:
-                    self.owner.score += 10  
                 self.alive = False
                 return

@@ -55,7 +55,7 @@ def load_level_2():
             elif ch == "G":
                 grasses.append(GrassLevel2((x, y)))
             elif ch == "P":
-                player = Player((x, y), solids, coins, enemies, plants, clouds, grasses, flags, hearts, fire_powers)
+                player = Player((x, y), solids, coins, enemies, plants, clouds, grasses, flags)
             elif ch == "M":
                 coins.append(Coin((x, y)))
             elif ch == "E":
