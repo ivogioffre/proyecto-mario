@@ -3,8 +3,9 @@ from level import load_level
 from level2 import load_level_2
 from camera import Camera
 from entities import Player, COIN_POP_EFFECTS, load_img
-from puntaje_nivel import perdiste
+import puntaje_nivel
 from puntaje import guardar_record
+import time
 
 def ejecutar_nivel(screen, WIDTH, HEIGHT, clock, nivel, vidas_iniciales=3, monedas_iniciales=0):
     FPS = 60
@@ -34,6 +35,8 @@ def ejecutar_nivel(screen, WIDTH, HEIGHT, clock, nivel, vidas_iniciales=3, moned
         player, solids, coins, enemies, plants, clouds, grasses, flags, hearts, fire_powers = load_level_2()
 
     camera = Camera()
+    # Temporizador por nivel
+    tiempo_inicio = time.time()
     player.score = monedas_iniciales
     player.total_lives = vidas_iniciales
     player.current_hits = 1
@@ -80,7 +83,7 @@ def ejecutar_nivel(screen, WIDTH, HEIGHT, clock, nivel, vidas_iniciales=3, moned
                 player.current_hits = 1
             else:
                 guardar_record(player.score)
-                perdiste()
+                puntaje_nivel.perdiste()
                 return 0, player.score
 
         # Manejar power-ups de corazón
@@ -96,7 +99,27 @@ def ejecutar_nivel(screen, WIDTH, HEIGHT, clock, nivel, vidas_iniciales=3, moned
                 fire_powers.remove(fire_power)
 
         if player.level_completed:
-            print(f"¡Nivel {nivel} completado!")
+            # Calcular tiempo total del nivel
+            tiempo_total = time.time() - tiempo_inicio
+            # Calcular bonus por tiempo según reglas del enunciado
+            puntaje_tiempo = calcular_bonus_tiempo(tiempo_total)
+
+            # Guardar desglose del puntaje del nivel en el módulo de puntaje
+            try:
+                puntaje_nivel.guardar_puntaje_nivel(
+                    nivel,
+                    player.puntos_nivel,
+                    player.puntos_por_monedas,
+                    player.puntos_por_enemigos,
+                    puntaje_tiempo,
+                    tiempo_total,
+                    getattr(player, 'monedas', player.score),
+                )
+            except Exception:
+                # fallback: intentar usar la función perdiste si no existe
+                pass
+
+            print(f"¡Nivel {nivel} completado! Puntos nivel: {player.puntos_nivel}, bonus tiempo: {puntaje_tiempo}")
             return vidas, player.score
 
         # Renderizado
@@ -136,24 +159,49 @@ def ejecutar_nivel(screen, WIDTH, HEIGHT, clock, nivel, vidas_iniciales=3, moned
                 screen.blit(effect.image, camera.apply(effect.rect))
 
         # UI
-        score_txt = font.render(f"Monedas: {player.score}", True, (255, 255, 255))
+        # Tiempo del nivel
+        tiempo_actual = time.time() - tiempo_inicio
+        minutos = int(tiempo_actual // 60)
+        segundos = int(tiempo_actual % 60)
+        tiempo_txt = font.render(f"Tiempo: {minutos}:{segundos:02d}", True, (255, 255, 255))
+
+        # Puntos del nivel y puntaje total acumulado (niveles completados + actual)
+        puntos_actual_nivel = getattr(player, 'puntos_nivel', 0)
+        puntos_previos = 0
+        try:
+            for k, v in puntaje_nivel.puntajes_acumulados.items():
+                puntos_previos += v.get('puntos_nivel', 0) + v.get('bonus_tiempo', 0)
+        except Exception:
+            puntos_previos = 0
+        puntaje_total_actual = puntos_previos + puntos_actual_nivel
+
+        puntos_nivel_txt = font.render(f"Puntos Nivel: {puntos_actual_nivel}", True, (255, 255, 255))
+        puntaje_total_txt = font.render(f"Puntaje Total: {puntaje_total_actual}", True, (255, 215, 0))
+        monedas_txt = font.render(f"Monedas: {player.score}", True, (255, 215, 0))
         nivel_txt = font.render(f"Nivel: {nivel}", True, (255, 255, 255))
-        screen.blit(score_txt, (20, 20))
-        screen.blit(nivel_txt, (20, 50))
 
-        # Mostrar vidas
+        screen.blit(puntos_nivel_txt, (20, 20))
+        screen.blit(puntaje_total_txt, (20, 50))
+        screen.blit(monedas_txt, (20, 80))
+        screen.blit(nivel_txt, (20, 110))
+        screen.blit(tiempo_txt, (20, 140))
+
+        # Mostrar vidas (bajadas para no tapar el HUD)
+        hearts_y = HEIGHT - 90
         for i in range(max_vidas):
+            x_pos = 20 + i * 35
             if i < vidas:
-                screen.blit(heart_full, (20 + i * 35, 90))
+                screen.blit(heart_full, (x_pos, hearts_y))
             else:
-                screen.blit(heart_broken, (20 + i * 35, 90))
+                screen.blit(heart_broken, (x_pos, hearts_y))
 
-        # Mostrar vida extra
+        # Mostrar vida extra (si tiene power-up)
         if player.current_hits >= 2:
             heart_small = pygame.transform.scale(heart_powerup,(30, 30))
-            screen.blit(heart_small, (20 + max_vidas * 35, 90))
+            extra_x = 20 + max_vidas * 35
+            screen.blit(heart_small, (extra_x, hearts_y))
             extra_txt = font.render("x1", True, (255, 255, 0))
-            screen.blit(extra_txt, (25 + (max_vidas + 1) * 35, 95))
+            screen.blit(extra_txt, (extra_x + 5, hearts_y + 35))
 
         # Indicador de poder de fuego
         if player.has_fire_power:
@@ -165,3 +213,17 @@ def ejecutar_nivel(screen, WIDTH, HEIGHT, clock, nivel, vidas_iniciales=3, moned
         pygame.display.flip()
 
     return vidas, player.score
+
+
+def calcular_bonus_tiempo(tiempo_segundos):
+    """Calcula bonificación por tiempo según:
+    <1 min: +100, 1-2 min: +50, 2-3 min: +25, >3 min: 0
+    """
+    if tiempo_segundos < 60:
+        return 100
+    elif tiempo_segundos < 120:
+        return 50
+    elif tiempo_segundos < 180:
+        return 25
+    else:
+        return 0

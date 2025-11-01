@@ -36,6 +36,12 @@ def main():# Es la función principal del juego, la que se encarga de iniciar to
     vidas, monedas = ejecutar_nivel(screen, WIDTH, HEIGHT, clock, 1)
     #Si aun quedan vidas al terminar nivel 1 pasamos al 2
     if vidas > 0:  
+        # Mostrar pantalla de transición al segundo nivel
+        try:
+            from puntaje_nivel import pantalla_transicion_nivel
+            pantalla_transicion_nivel(screen, WIDTH, HEIGHT, nivel=2, duracion_ms=1500)
+        except Exception:
+            pass
         # Ejecutamos nivel 2
         vidas, monedas = ejecutar_nivel(screen, WIDTH, HEIGHT, clock, 2, vidas, monedas)
 

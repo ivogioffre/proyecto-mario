@@ -32,9 +32,15 @@ def load_img(path, scale=TILE, keep_aspect=False):
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, pos, solids, coins, enemies, plants, clouds, grasses, flags):
+    def __init__(self, pos, solids, coins, enemies, plants, clouds, grasses, flags, hearts=None, fire_powers=None):
         super().__init__()
        
+        # Contadores de puntuación y monedas
+        self.monedas = 0                    # monedas recolectadas en total
+        self.puntos_nivel = 0               # puntos obtenidos solo en el nivel actual
+        self.puntos_por_monedas = 0         # puntos dentro del nivel provenientes de monedas
+        self.puntos_por_enemigos = 0        # puntos dentro del nivel provenientes de enemigos
+
         # Sistema de vidas
         self.total_lives = 3
         self.current_hits = 1
@@ -78,6 +84,9 @@ class Player(pygame.sprite.Sprite):
         self.plants = plants
         self.clouds = clouds
         self.flags = flags
+        # Opcionales: corazones (power-ups) y power-ups de fuego
+        self.hearts = hearts if hearts is not None else []
+        self.fire_powers = fire_powers if fire_powers is not None else []
        
         # Estado general
         self.score = 0
@@ -181,13 +190,27 @@ class Player(pygame.sprite.Sprite):
         for coin in self.coins.copy():
             if self.rect.colliderect(coin.rect):
                 self.coins.remove(coin)
-                self.score += 1
+                # Recolectar moneda: +1 moneda real y +5 puntos al nivel
+                try:
+                    self.monedas += 1
+                except Exception:
+                    pass
+                # Mantener compatibilidad: incrementar el contador 'score' (usado como monedas en el código base)
+                try:
+                    self.score += 1
+                except Exception:
+                    pass
+                self.puntos_por_monedas += 5
+                self.puntos_nivel += 5
        
         if not self.invulnerable:
             for enemy in self.enemies.copy():
                 if self.rect.colliderect(enemy.rect):
                     if self.vy > 0 and self.rect.bottom - self.vy <= enemy.rect.top + 10:
+                        # Matar enemigo con salto: +10 puntos al nivel (no monedas)
                         self.enemies.remove(enemy)
+                        self.puntos_por_enemigos += 10
+                        self.puntos_nivel += 10
                         self.vy = JUMP_VEL * 0.7
                     else:
                         self.take_hit()
@@ -225,6 +248,11 @@ class Player(pygame.sprite.Sprite):
         direction = 1 if self.facing_right else -1
         fireball = Fireball(self.rect.centerx, self.rect.centery, direction,
                             self.solids, self.grasses, self.enemies)
+        # asignar owner para que la fireball pueda otorgar puntos al jugador al eliminar enemigos
+        try:
+            fireball.owner = self
+        except Exception:
+            pass
         self.fireballs.append(fireball)
        
         self.fire_shots_remaining -= 1
@@ -301,7 +329,26 @@ class LuckyBlock(pygame.sprite.Sprite): #luckyblock que suelta monedas si le peg
             return
         self.used = True
         self.image = self.empty_img
-        player.score += 1
+        # Lucky block da 5 puntos al nivel y suelta una moneda
+        try:
+            # puntos por acción (luckyblock)
+            player.puntos_nivel += 5
+            # contabilizar esa moneda como puntos por monedas dentro del nivel
+            player.puntos_por_monedas += 5
+        except Exception:
+            pass
+
+        # Incrementar el contador real de monedas y mantener compatibilidad con 'score'
+        try:
+            player.monedas += 1
+        except Exception:
+            pass
+        try:
+            player.score += 1
+        except Exception:
+            pass
+
+        # Efecto visual de moneda que sale del bloque
         COIN_POP_EFFECTS.append(CoinPopEffect(self.rect.centerx, self.rect.top - 4))
 
 
@@ -599,5 +646,15 @@ class Fireball(pygame.sprite.Sprite):
         for enemy in self.enemies[:]:
             if self.rect.colliderect(enemy.rect):
                 self.enemies.remove(enemy)
+                # Si la bola tiene un propietario (jugador), sumar puntos al nivel por enemigo
+                # La referencia al owner no existe en esta versión de Fireball; intentar sumar al último jugador
+                try:
+                    # intentar acceder al objeto jugador si fue pasado (compatibilidad)
+                    owner = getattr(self, 'owner', None)
+                    if owner:
+                        owner.puntos_por_enemigos += 10
+                        owner.puntos_nivel += 10
+                except Exception:
+                    pass
                 self.alive = False
                 return
