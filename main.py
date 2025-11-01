@@ -12,8 +12,8 @@ from ejecutar_nivel_1_2 import ejecutar_nivel
 # Frames por segundo (FPS)
 FPS = 60
 
-def main():# Es la función principal del juego, la que se encarga de iniciar todo y controlar el flujo general
-    #Inicializa Pygame y la ventana del juego
+def main():  # Es la función principal del juego, la que se encarga de iniciar todo y controlar el flujo general
+    # Inicializa Pygame y la ventana del juego
     # Llama a la función ejecutar_nivel() para jugar nivel 1 y 2
     pygame.init()
 
@@ -34,20 +34,32 @@ def main():# Es la función principal del juego, la que se encarga de iniciar to
 
     # Ejecutamos nivel 1
     vidas, monedas = ejecutar_nivel(screen, WIDTH, HEIGHT, clock, 1)
-    #Si aun quedan vidas al terminar nivel 1 pasamos al 2
-    if vidas > 0:  
+
+    # Si aún quedan vidas al terminar nivel 1 pasamos al 2
+    if vidas > 0:
         # Mostrar pantalla de transición al segundo nivel
         try:
             from puntaje_nivel import pantalla_transicion_nivel
             pantalla_transicion_nivel(screen, WIDTH, HEIGHT, nivel=2, duracion_ms=1500)
         except Exception:
             pass
+
         # Ejecutamos nivel 2
         vidas, monedas = ejecutar_nivel(screen, WIDTH, HEIGHT, clock, 2, vidas, monedas)
 
         if vidas > 0:  # Si completaste nivel 2
-            guardar_record(monedas)
-            main_puntaje(monedas)
+            try:
+                from puntaje_nivel import pantalla_transicion_nivel
+                pantalla_transicion_nivel(screen, WIDTH, HEIGHT, nivel=3, duracion_ms=1500)
+            except Exception:
+                pass
+
+            # Ejecutamos nivel 3
+            vidas, monedas = ejecutar_nivel(screen, WIDTH, HEIGHT, clock, 3, vidas, monedas)
+
+            if vidas > 0:  # Si completaste nivel 3
+                guardar_record(monedas)
+                main_puntaje(monedas)
 
     pygame.quit()
     sys.exit()

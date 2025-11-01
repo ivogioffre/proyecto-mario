@@ -1,13 +1,10 @@
 import pygame, sys, os
+from entities import Player
 
-# Guardamos el desglose de puntos por nivel para mostrar el resumen final
 puntajes_acumulados = {}
 
 def guardar_puntaje_nivel(nivel, puntos_nivel, puntos_por_monedas, puntos_por_enemigos, bonus_tiempo, tiempo_total, monedas):
-    """Guardar el desglose de puntaje para un nivel concreto.
-
-    Se usa luego en la pantalla final para mostrar el resumen.
-    """
+    """Guardar el desglose de puntaje para un nivel concreto."""
     puntajes_acumulados[f"nivel_{nivel}"] = {
         "puntos_nivel": int(puntos_nivel),
         "puntos_por_monedas": int(puntos_por_monedas),
@@ -18,77 +15,69 @@ def guardar_puntaje_nivel(nivel, puntos_nivel, puntos_por_monedas, puntos_por_en
     }
 
 
-def main_puntaje(monedas_total=0):
-    """Muestra el resumen final cuando se completa el juego.
-
-    Si `puntajes_acumulados` contiene datos de niveles, se muestra el detalle
-    por nivel (puntos por monedas, enemigos, bonus por tiempo) y el total final.
-    """
+def main_puntaje(score):
+    """Pantalla final al completar el juego."""
     pygame.init()
     screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
     WIDTH, HEIGHT = screen.get_size()
-    pygame.display.set_caption("Mariano bross - Puntaje Final")
+    pygame.display.set_caption("¡Ganaste!")
     clock = pygame.time.Clock()
 
-    font = pygame.font.SysFont(None, 48)
-    small_font = pygame.font.SysFont(None, 32)
+    font = pygame.font.SysFont(None, 72)
+    small_font = pygame.font.SysFont(None, 36)
 
-    fondo = pygame.image.load("assets/menu/fondo.png").convert()
-    fondo = pygame.transform.scale(fondo, (WIDTH, HEIGHT))
+    try:
+        fondo = pygame.image.load("assets/menu/fondo.png").convert()
+        fondo = pygame.transform.scale(fondo, (WIDTH, HEIGHT))
+    except:
+        fondo = pygame.Surface((WIDTH, HEIGHT))
+        fondo.fill((20, 20, 40))
 
     # Calcular totales
-    total_por_niveles = 0
-    total_por_monedas = 0
-    total_por_enemigos = 0
-    total_bonus = 0
-    for k, v in puntajes_acumulados.items():
-        total_por_niveles += v.get("puntos_nivel", 0)
-        total_por_monedas += v.get("puntos_por_monedas", 0)
-        total_por_enemigos += v.get("puntos_por_enemigos", 0)
-        total_bonus += v.get("bonus_tiempo", 0)
+    total_puntos = sum(v.get("puntos_nivel",0)+v.get("bonus_tiempo",0) for v in puntajes_acumulados.values())
+    total_monedas = sum(v.get("monedas",0) for v in puntajes_acumulados.values())
+    total_tiempo = sum(v.get("tiempo_total",0) for v in puntajes_acumulados.values())
+    minutos = int(total_tiempo // 60)
+    segundos = int(total_tiempo % 60)
 
-    puntaje_final = total_por_niveles + total_bonus
+    # Música (igual que antes)
+    musica = True
+    if not pygame.mixer.get_init():
+        musica = False
+        os.environ["SDL_AUDIODRIVER"] = "dummy"
+    if musica:
+        try:
+            pygame.mixer.music.load("assets/musica/10 Shop.mp3")
+            pygame.mixer.music.play(-1)
+            pygame.mixer.music.set_volume(0.5)
+        except Exception as e:
+            print(f"No se pudo iniciar el audio en el menú. Continuando sin sonido. Error: {e}")
 
     while True:
-        screen.blit(fondo, (0, 0))
+        screen.blit(fondo, (0,0))
 
-        title = font.render("Resumen Final", True, (255, 215, 0))
-        screen.blit(title, (WIDTH//2 - title.get_width()//2, 40))
+        # Mensaje central
+        titulo = font.render("¡GANASTE!", True, (255, 215, 0))
+        screen.blit(titulo, (WIDTH//2 - titulo.get_width()//2, HEIGHT//2 - 100))
 
-        y = 120
-        # Mostrar por nivel
-        for nivel in sorted(puntajes_acumulados.keys()):
-            v = puntajes_acumulados[nivel]
-            line = f"{nivel}: Puntos Nivel={v['puntos_nivel']}  (Monedas={v['puntos_por_monedas']}, Enemigos={v['puntos_por_enemigos']}, Bonus={v['bonus_tiempo']})  Tiempo={int(v['tiempo_total'])}s  MonedasRecolectadas={v['monedas']}"
-            txt = small_font.render(line, True, (255, 255, 255))
-            screen.blit(txt, (40, y))
-            y += 40
+        instru = small_font.render("Presiona ESC para salir", True, (255,255,255))
+        screen.blit(instru, (WIDTH//2 - instru.get_width()//2, HEIGHT//2 + 50))
 
-        # Totales
-        y += 20
-        txt_totales = small_font.render(f"Total Puntos por Niveles: {total_por_niveles}", True, (255, 255, 0))
-        screen.blit(txt_totales, (40, y)); y += 30
-        txt_monedas = small_font.render(f"Total Puntos por Monedas: {total_por_monedas}", True, (255, 255, 0))
-        screen.blit(txt_monedas, (40, y)); y += 30
-        txt_enemigos = small_font.render(f"Total Puntos por Enemigos: {total_por_enemigos}", True, (255, 255, 0))
-        screen.blit(txt_enemigos, (40, y)); y += 30
-        txt_bonus = small_font.render(f"Bonificación por Tiempo Total: {total_bonus}", True, (255, 255, 0))
-        screen.blit(txt_bonus, (40, y)); y += 30
+        # Totales arriba a la derecha
+        txt_puntos = small_font.render(f"Puntaje: {total_puntos}", True, (255, 255, 0))
+        txt_monedas = small_font.render(f"Monedas: {total_monedas}", True, (255, 215, 0))
+        txt_tiempo = small_font.render(f"Tiempo: {minutos}:{segundos:02d}", True, (255, 255, 255))
 
-        txt_final = font.render(f"Puntaje Final: {puntaje_final}", True, (255, 215, 0))
-        screen.blit(txt_final, (WIDTH//2 - txt_final.get_width()//2, y + 20))
-
-        instru = small_font.render("Presiona ENTER para salir, ESC para cerrar", True, (255, 255, 255))
-        screen.blit(instru, (WIDTH//2 - instru.get_width()//2, HEIGHT - 80))
+        screen.blit(txt_puntos, (WIDTH - txt_puntos.get_width() - 20, 20))
+        screen.blit(txt_monedas, (WIDTH - txt_monedas.get_width() - 20, 50))
+        screen.blit(txt_tiempo, (WIDTH - txt_tiempo.get_width() - 20, 80))
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RETURN:
-                    return
-                elif event.key == pygame.K_ESCAPE:
+                if event.key == pygame.K_ESCAPE:
                     pygame.quit()
                     sys.exit()
 
@@ -100,20 +89,16 @@ def perdiste():
     pygame.init()
     screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
     WIDTH, HEIGHT = screen.get_size()
+    pygame.display.set_caption("Perdiste")
     clock = pygame.time.Clock()
     font = pygame.font.SysFont(None, 72)
-    small_font = pygame.font.SysFont(None, 40)
-
-    fondo = pygame.image.load("assets/menu/fondo.png").convert()
-    fondo = pygame.transform.scale(fondo, (WIDTH, HEIGHT))
-
+    small_font = pygame.font.SysFont(None, 36)
     while True:
-        screen.blit(fondo, (0, 0))
-        titulo = font.render("¡PERDISTE!", True, (255, 0, 0))
-        salir = small_font.render("Presiona ESC para salir", True, (0, 0, 0))
-
-        screen.blit(titulo, (WIDTH//2 - titulo.get_width()//2, HEIGHT//2 - 100))
-        screen.blit(salir, (WIDTH//2 - salir.get_width()//2, HEIGHT//2 + 40))
+        screen.fill((0,0,0))
+        txt = font.render("PERDISTE", True, (255,0,0))
+        screen.blit(txt, (WIDTH//2 - txt.get_width()//2, HEIGHT//2 - 50))
+        instru = small_font.render("Presiona ESC para salir", True, (255,255,255))
+        screen.blit(instru, (WIDTH//2 - instru.get_width()//2, HEIGHT//2 + 50))
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -129,12 +114,7 @@ def perdiste():
 
 
 def pantalla_transicion_nivel(screen=None, WIDTH=None, HEIGHT=None, nivel=2, duracion_ms=1500):
-    """Muestra una pantalla de transición indicando que se pasó al siguiente nivel.
-
-    Si se pasa una superficie `screen` y sus dimensiones, la usa. Si no, crea
-    una pantalla fullscreen temporal (comportamiento similar a otras funciones
-    en este módulo).
-    """
+    """Muestra una pantalla de transición indicando que se pasó al siguiente nivel."""
     creada_local = False
     if screen is None:
         pygame.init()
@@ -161,7 +141,6 @@ def pantalla_transicion_nivel(screen=None, WIDTH=None, HEIGHT=None, nivel=2, dur
                     pygame.quit()
                 sys.exit()
             if event.type == pygame.KEYDOWN:
-                # salir antes si el jugador presiona una tecla
                 if creada_local:
                     pygame.event.clear()
                 return
@@ -174,7 +153,3 @@ def pantalla_transicion_nivel(screen=None, WIDTH=None, HEIGHT=None, nivel=2, dur
 
         pygame.display.flip()
         clock.tick(60)
-
-    # Si creamos la pantalla localmente, no la cerramos aquí porque el flujo
-    # superior puede querer seguir usando pygame; simplemente retornamos.
-    return

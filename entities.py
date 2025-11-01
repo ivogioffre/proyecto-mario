@@ -4,8 +4,7 @@ import os
 TILE = 48  # Resolución de cada entidad
 COIN_POP_EFFECTS = []  # Efectos de monedas
 
-def load_img(path, scale=TILE, keep_aspect=False):
-    """Carga una imagen con manejo de errores y opción para mantener proporciones."""
+def load_img(path, scale=TILE, keep_aspect=False):# funcion para manejos de errores al cargar una imagen
     full_path = os.path.join(os.path.dirname(__file__), path)
    
     if not os.path.isfile(full_path):
@@ -190,12 +189,12 @@ class Player(pygame.sprite.Sprite):
         for coin in self.coins.copy():
             if self.rect.colliderect(coin.rect):
                 self.coins.remove(coin)
-                # Recolectar moneda: +1 moneda real y +5 puntos al nivel
+                # Recolectar moneda: +1 moneda  y +5 puntos al nivel
                 try:
                     self.monedas += 1
                 except Exception:
                     pass
-                # Mantener compatibilidad: incrementar el contador 'score' (usado como monedas en el código base)
+                # Mantener compatibilidad incrementar el contador score (usado como monedas en el codigo base)
                 try:
                     self.score += 1
                 except Exception:
@@ -239,7 +238,7 @@ class Player(pygame.sprite.Sprite):
     def give_fire_power(self):
         self.has_fire_power = True
         self.fire_shots_remaining = 3  
-        print("¡Poder de fuego obtenido!")
+        print("Poder de fuego obtenido")
    
     def shoot_fireball(self):
         if self.fire_shots_remaining <= 0:
@@ -260,7 +259,7 @@ class Player(pygame.sprite.Sprite):
        
         if self.fire_shots_remaining <= 0:
             self.has_fire_power = False
-            print("¡Poder de fuego agotado!")
+            print("Poder de fuego agotado")
 
     def animate(self):
         frames = self.images[self.anim_state]
