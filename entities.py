@@ -281,28 +281,28 @@ class Player(pygame.sprite.Sprite):
 class Tile(pygame.sprite.Sprite):# Bloque solido basico
     def __init__(self, pos):
         super().__init__()
-        self.image = load_img("assets/tiles/tierra_baja_3.png")
+        self.image = load_img("assets/tiles/grassCenter.png")
         self.rect = self.image.get_rect(topleft=pos)
 
 
 class Grass(pygame.sprite.Sprite): #Bloque solido de pasto
     def __init__(self, pos):
         super().__init__()
-        self.image = load_img("assets/tiles/tierra_2.png")
+        self.image = load_img("assets/tiles/grassMid.png")
         self.rect = self.image.get_rect(topleft=pos)
 
 
 class TileLevel2(pygame.sprite.Sprite):#bloque solido para el nivel 2
     def __init__(self, pos):
         super().__init__()
-        self.image = load_img("assets/Tiles/piedra_baja.png")
+        self.image = load_img("assets/Tiles/piedra.png")
         self.rect = self.image.get_rect(topleft=pos)
 
 
 class GrassLevel2(pygame.sprite.Sprite):# vendria siendo como el pasto pero en el nivel 2
     def __init__(self, pos):
         super().__init__()
-        self.image = load_img("assets/Tiles/piedra.png")
+        self.image = load_img("assets/Tiles/piedra2.png")
         self.rect = self.image.get_rect(topleft=pos)
 
 
