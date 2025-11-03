@@ -4,6 +4,12 @@ from level2 import load_level_2
 from level3 import load_level_3  # ✅ Nuevo nivel 3
 from camera import Camera
 from entities import Player, COIN_POP_EFFECTS, load_img
+# Para recargar keymap dinámicamente
+try:
+    from config_menu import load_config
+except Exception:
+    def load_config():
+        return {}
 import puntaje_nivel
 from puntaje import guardar_record
 import time
@@ -80,6 +86,23 @@ def ejecutar_nivel(screen, WIDTH, HEIGHT, clock, nivel, vidas_iniciales=3, moned
                 return 0, player.score
 
         keys = pygame.key.get_pressed()
+
+        # Recargar configuración cada frame (ligero JSON). Si cambió en el menú, lo aplicamos al player.
+        try:
+            cfg = load_config() or {}
+            new_keys = cfg.get('keys') if isinstance(cfg, dict) else None
+            if new_keys and hasattr(player, 'keymap'):
+                # Convertir valores a int por si vienen como strings
+                for k, v in list(new_keys.items()):
+                    try:
+                        new_keys[k] = int(v)
+                    except Exception:
+                        pass
+                # actualizar in-place conservando defaults si faltan
+                player.keymap.update(new_keys)
+        except Exception:
+            pass
+
         player.update(keys)
 
         for enemy in enemies:
