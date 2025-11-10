@@ -1,6 +1,13 @@
 import pygame
 import sys
 import os
+# Integración del menú de configuración
+try:
+    from Menu_config import open_config_menu
+except Exception:
+    # Si por alguna razón no está disponible, definimos un stub para evitar crashes
+    def open_config_menu():
+        print('No se pudo abrir el menú de configuración (config_menu no disponible)')
 
 def main_menu():
     pygame.init()
@@ -38,6 +45,31 @@ def main_menu():
     top_btn_img = pygame.transform.scale(top_btn_img, (button_width, button_height))
     top_btn_hover = pygame.transform.scale(top_btn_hover, (button_width, button_height))
     top_btn_rect = top_btn_img.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 120))
+     # Options button (integración del menú de configuración)
+    # Ahora más pequeño y ubicado arriba a la derecha
+    options_img = None
+    options_hover = None
+    try:
+        options_w, options_h = 120, 64
+        opt_path = "assets/menu/boton_options_menu.png"
+        opt_hover_path = "assets/menu/boton_options_menu_2.png"
+        if os.path.exists(opt_path) and os.path.exists(opt_hover_path):
+            options_img = pygame.image.load(opt_path).convert_alpha()
+            options_hover = pygame.image.load(opt_hover_path).convert_alpha()
+            options_img = pygame.transform.scale(options_img, (options_w, options_h))
+            options_hover = pygame.transform.scale(options_hover, (options_w, options_h))
+            options_btn_rect = options_img.get_rect(topright=(WIDTH - 40, 40))
+        else:
+            options_img = None
+            options_hover = None
+            # rect for drawn button in top-right
+            options_btn_rect = pygame.Rect(0, 0, options_w, options_h)
+            options_btn_rect.topright = (WIDTH - 40, 40)
+    except Exception:
+        options_img = None
+        options_hover = None
+        options_btn_rect = pygame.Rect(0, 0, 120, 64)
+        options_btn_rect.topright = (WIDTH - 40, 40)
 
     # Cargar y escalar el título
     titulo_img = pygame.image.load("assets/menu/mariano_bros.png").convert_alpha()
@@ -83,7 +115,21 @@ def main_menu():
             screen.blit(top_btn_hover, top_btn_rect)
         else:
             screen.blit(top_btn_img, top_btn_rect)
-
+        # Options (pequeño, arriba a la derecha)
+        if options_img is not None:
+            if options_btn_rect.collidepoint(mouse_pos):
+                screen.blit(options_hover, options_btn_rect)
+            else:
+                screen.blit(options_img, options_btn_rect)
+        else:
+            # dibujar botón simple con texto más pequeño
+            opt_color = (150, 150, 170) if not options_btn_rect.collidepoint(mouse_pos) else (56, 217, 222)
+            pygame.draw.rect(screen, (30, 30, 40), options_btn_rect, border_radius=8)
+            pygame.draw.rect(screen, opt_color, options_btn_rect, 2, border_radius=8)
+            font = pygame.font.SysFont('dejavusansmono', 20)
+            txt = font.render('Opciones', True, (220, 230, 240))
+            trect = txt.get_rect(center=options_btn_rect.center)
+            screen.blit(txt, trect)
         # Eventos
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -97,6 +143,31 @@ def main_menu():
                     elif quit_btn_rect.collidepoint(event.pos):
                         pygame.quit()
                         sys.exit()
+                    elif options_btn_rect.collidepoint(event.pos):
+                        # Abrir menú de configuración
+                        try:
+                            open_config_menu()
+                        except Exception as e:
+                            print(f'Error al abrir menú de configuración: {e}')
 
+            elif event.type == pygame.KEYDOWN:
+                # Atajo para abrir opciones con la tecla O o C
+                if event.key in (pygame.K_o, pygame.K_c):
+                    try:
+                        open_config_menu()
+                    except Exception as e:
+                        print(f'Error al abrir menú de configuración: {e}')
+                        try:
+                            open_config_menu()
+                        except Exception as e:
+                            print(f'Error al abrir menú de configuración: {e}')
+
+            elif event.type == pygame.KEYDOWN:
+                # Atajo para abrir opciones con la tecla O o C
+                if event.key in (pygame.K_o, pygame.K_c):
+                    try:
+                        open_config_menu()
+                    except Exception as e:
+                        print(f'Error al abrir menú de configuración: {e}')
         pygame.display.flip()
         clock.tick(60)
