@@ -316,8 +316,8 @@ class Flag(pygame.sprite.Sprite):# bandera donde finaliza el nivel
 class LuckyBlock(pygame.sprite.Sprite): #luckyblock que suelta monedas si le pegas de abajo
     def __init__(self, pos):
         super().__init__()
-        self.full_img = load_img("assets/tiles/boxItem.png")
-        self.empty_img = load_img("assets/tiles/boxItem_disabled.png")
+        self.full_img = load_img("assets/tiles/box_item_1.png")
+        self.empty_img = load_img("assets/tiles/box_item_2.png")
         self.image = self.full_img
         self.rect = self.image.get_rect(topleft=pos)
         self.used = False

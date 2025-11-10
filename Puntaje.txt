@@ -171,3 +171,9 @@
  Fecha y hora : 2025-11-03 11:25:02 - Monedas Obtenidas: 29/ 84  
  Fecha y hora : 2025-11-03 11:34:05 - Monedas Obtenidas: 24/ 84  
  Fecha y hora : 2025-11-03 11:39:00 - Monedas Obtenidas: 58/ 84  
+ Fecha y hora : 2025-11-10 07:57:34 - Monedas Obtenidas: 34/ 84  
+ Fecha y hora : 2025-11-10 07:59:27 - Monedas Obtenidas: 16/ 84  
+ Fecha y hora : 2025-11-10 08:21:31 - Monedas Obtenidas: 11/ 84  
+ Fecha y hora : 2025-11-10 08:24:50 - Monedas Obtenidas: 4/ 84  
+ Fecha y hora : 2025-11-10 08:27:47 - Monedas Obtenidas: 0/ 84  
+ Fecha y hora : 2025-11-10 08:29:27 - Monedas Obtenidas: 32/ 84  
