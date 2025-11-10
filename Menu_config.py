@@ -6,7 +6,7 @@ import time
 CONFIG_PATH = os.path.join(os.path.dirname(__file__), "config.json")
 
 DEFAULT_CONFIG = {
-    "volume": 80,
+    "volume": 100,
     "keys": {
         "up": pygame.K_w,
         "down": pygame.K_s,
