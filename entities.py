@@ -532,7 +532,7 @@ class Enemy(pygame.sprite.Sprite):
 class VerticalEnemy(pygame.sprite.Sprite):# enemigo con movimiento vertical
     def __init__(self, pos, min_y, max_y, speed=3): # speed=3 (igual al horizontal)
         super().__init__()
-        self.image = load_img("assets/enemies/Papaenem.png")
+        self.image = load_img("assets/enemies/papa.png")
         self.rect = self.image.get_rect(topleft=pos)
         self.vy = speed  # Ahora speed=3
         self.min_y = min_y
