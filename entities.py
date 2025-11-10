@@ -31,7 +31,7 @@ def load_img(path, scale=TILE, keep_aspect=False):# funcion para manejos de erro
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, pos, solids, coins, enemies, plants, clouds, grasses, flags, hearts=None, fire_powers=None):
+    def __init__(self, pos, solids, coins, enemies, plants, clouds, grasses, flags, hearts=None, fire_powers=None, keymap=None):
         super().__init__()
        
         # Contadores de puntuación y monedas
@@ -87,6 +87,35 @@ class Player(pygame.sprite.Sprite):
         self.hearts = hearts if hearts is not None else []
         self.fire_powers = fire_powers if fire_powers is not None else []
        
+        # Key mapping: cargar desde config.json si no se proporciona
+        if keymap is None:
+            # intentar leer config.json en la raíz del proyecto
+            try:
+                cfg_path = os.path.join(os.path.dirname(__file__), 'config.json')
+                if os.path.exists(cfg_path):
+                    import json
+                    with open(cfg_path, 'r', encoding='utf-8') as f:
+                        data = json.load(f)
+                    self.keymap = data.get('keys', {})
+                else:
+                    self.keymap = {}
+            except Exception:
+                self.keymap = {}
+        else:
+            self.keymap = keymap
+
+        # valores por defecto si faltan en keymap
+        defaults = {
+            'up': pygame.K_w,
+            'down': pygame.K_s,
+            'left': pygame.K_a,
+            'right': pygame.K_d,
+            'jump': pygame.K_SPACE,
+            'fire': pygame.K_LCTRL
+        }
+        for k, v in defaults.items():
+            if k not in self.keymap:
+                self.keymap[k] = v
         # Estado general
         self.score = 0
         self.alive = True
@@ -112,9 +141,18 @@ class Player(pygame.sprite.Sprite):
         if self.fire_cooldown > 0:
             self.fire_cooldown -= 1
        
-        # Movimiento horizontal
-        self.vx = ((keys[pygame.K_RIGHT] or keys[pygame.K_d]) -
-                   (keys[pygame.K_LEFT] or keys[pygame.K_a])) * SPEED
+        # Helper seguro para evitar IndexError si la constante de tecla excede la longitud
+        def is_pressed(k):
+            try:
+                return keys[k]
+            except Exception:
+                # keys is a sequence; if index invalid, return False
+                return False
+
+        # Movimiento horizontal usando el mapeo configurable
+        right_key = int(self.keymap.get('right', pygame.K_d))
+        left_key = int(self.keymap.get('left', pygame.K_a))
+        self.vx = ((1 if is_pressed(right_key) else 0) - (1 if is_pressed(left_key) else 0)) * SPEED
        
         # Dirección
         if self.vx > 0:
@@ -122,13 +160,16 @@ class Player(pygame.sprite.Sprite):
         elif self.vx < 0:
             self.facing_right = False
        
-        # Disparo (Ctrl o R)
-        if (keys[pygame.K_LCTRL] or keys[pygame.K_r]) and self.has_fire_power:
+        # Disparo (tecla configurable, mantiene compatibilidad con Ctrl or R)
+        fire_key = int(self.keymap.get('fire', pygame.K_LCTRL))
+        if (is_pressed(fire_key) or is_pressed(pygame.K_r) or is_pressed(pygame.K_LCTRL)) and self.has_fire_power:
             if self.fire_cooldown == 0:
                 self.shoot_fireball()
                 self.fire_cooldown = self.fire_cooldown_max
        
-        want_jump = keys[pygame.K_SPACE] or keys[pygame.K_UP] or keys[pygame.K_w]
+        # Salto (tecla configurable, mantiene compatibilidad con SPACE/UP/W)
+        jump_key = int(self.keymap.get('jump', pygame.K_SPACE))
+        want_jump = is_pressed(jump_key) or is_pressed(pygame.K_SPACE) or is_pressed(pygame.K_UP) or is_pressed(pygame.K_w)
         if want_jump and self.on_ground:
             self.vy = JUMP_VEL
             self.on_ground = False
@@ -316,8 +357,8 @@ class Flag(pygame.sprite.Sprite):# bandera donde finaliza el nivel
 class LuckyBlock(pygame.sprite.Sprite): #luckyblock que suelta monedas si le pegas de abajo
     def __init__(self, pos):
         super().__init__()
-        self.full_img = load_img("assets/tiles/box_item_1.png")
-        self.empty_img = load_img("assets/tiles/box_item_2.png")
+        self.full_img = load_img("assets/tiles/boxItem.png")
+        self.empty_img = load_img("assets/tiles/boxItem_disabled.png")
         self.image = self.full_img
         self.rect = self.image.get_rect(topleft=pos)
         self.used = False

@@ -15,11 +15,11 @@ LEVEL_MAP = [
     "                                                                                                                                                                                          GXX   MM      ",
     "                                                                                                 MM                                              MM                                      GXXX           ",
     "                      H                      M                 B             Q                                                                                                          GXXXX           ",
-    "                B   GBGBG                    T          T                   GBG            G    GB     B  B  B     G      MMM     GG                                   GGBG            GXXXXX           ",
+    "                B   GBGBG                    T          T                   GBG            G    XB     B  B  B     G      MMM     GG                                   GGBG            GXXXXX           ",
     "                            T        T       t          t        MM                                                                     G  G         GG  G       M                    GXXXXXX           ",
     "           V                t        t       t          t                V                         V                 V                 GX  XG       GXX  XG      T                 T GXXXXXXX      F    ",
     " P                   E      t  MM    t  E    t      E M t                     MM              E           MMM               E  E      GXX  XXG     GXXX  XXG     t           E     tGXXXXXXXX     GGG   ",
-    "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG GGGGGGGGGGGGGGG   GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGXXX  XXXGGGGGXXXX  XXXGGGGGGGGGGGGGGGGGGGGGGGGXXXXXXXXXGGGGGXXXGGG",
+    "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG GGGGGGGGGGGGGGG   GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGXXX  XXXGGGGGXXXX  XXXGGGGGXXGGGGGGGGGGGGGGGGGXXXXXXXXXGGGGGXXXGGG",
     "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX XXXXXXXXXXXXXXX   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  XXXXXXXXXXXX  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
 ]
 
