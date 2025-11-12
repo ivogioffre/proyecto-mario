@@ -122,14 +122,26 @@ def main_menu():
             else:
                 screen.blit(options_img, options_btn_rect)
         else:
-            # dibujar botón simple con texto más pequeño
-            opt_color = (150, 150, 170) if not options_btn_rect.collidepoint(mouse_pos) else (56, 217, 222)
-            pygame.draw.rect(screen, (30, 30, 40), options_btn_rect, border_radius=8)
-            pygame.draw.rect(screen, opt_color, options_btn_rect, 2, border_radius=8)
-            font = pygame.font.SysFont('dejavusansmono', 20)
-            txt = font.render('Opciones', True, (220, 230, 240))
-            trect = txt.get_rect(center=options_btn_rect.center)
-            screen.blit(txt, trect)
+            # Mostrar el logo 'logohuergo.png' si está disponible en assets/menu
+            logo_path = "assets/menu/logohuergo.png"
+            try:
+                logo_img = pygame.image.load(logo_path).convert_alpha()
+                # escalar el logo al tamaño del botón manteniendo aspecto
+                logo_w, logo_h = options_btn_rect.width, options_btn_rect.height
+                logo_img = pygame.transform.smoothscale(logo_img, (logo_w, logo_h))
+                screen.blit(logo_img, options_btn_rect)
+                # dibujar un borde al pasar el mouse
+                if options_btn_rect.collidepoint(mouse_pos):
+                    pygame.draw.rect(screen, (56, 217, 222), options_btn_rect, 3, border_radius=8)
+            except Exception:
+                # Si no se encuentra el logo, volver al fallback con texto 'Opciones'
+                opt_color = (150, 150, 170) if not options_btn_rect.collidepoint(mouse_pos) else (56, 217, 222)
+                pygame.draw.rect(screen, (30, 30, 40), options_btn_rect, border_radius=8)
+                pygame.draw.rect(screen, opt_color, options_btn_rect, 2, border_radius=8)
+                font = pygame.font.SysFont('dejavusansmono', 20)
+                txt = font.render('Opciones', True, (220, 230, 240))
+                trect = txt.get_rect(center=options_btn_rect.center)
+                screen.blit(txt, trect)
         # Eventos
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
