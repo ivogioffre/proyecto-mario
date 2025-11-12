@@ -1,11 +1,11 @@
 {
-  "volume": 80,
+  "volume": 79,
   "keys": {
     "up": 119,
     "down": 115,
-    "left": 97,
-    "right": 100,
-    "jump": 32,
-    "fire": 1073742048
+    "left": 106,
+    "right": 108,
+    "jump": 105,
+    "fire": 107
   }
 }

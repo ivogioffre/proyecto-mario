@@ -107,11 +107,10 @@ class Player(pygame.sprite.Sprite):
         # valores por defecto si faltan en keymap
         defaults = {
             'up': pygame.K_w,
-            'down': pygame.K_s,
             'left': pygame.K_a,
-            'right': pygame.K_d,
+            'right': pygame.K_d ,
             'jump': pygame.K_SPACE,
-            'fire': pygame.K_LCTRL
+            'fire': pygame.K_r
         }
         for k, v in defaults.items():
             if k not in self.keymap:
@@ -152,7 +151,9 @@ class Player(pygame.sprite.Sprite):
         # Movimiento horizontal usando el mapeo configurable
         right_key = int(self.keymap.get('right', pygame.K_d))
         left_key = int(self.keymap.get('left', pygame.K_a))
-        self.vx = ((1 if is_pressed(right_key) else 0) - (1 if is_pressed(left_key) else 0)) * SPEED
+        move_right = is_pressed(right_key) or is_pressed(pygame.K_RIGHT)
+        move_left = is_pressed(left_key) or is_pressed(pygame.K_LEFT)
+        self.vx = ((1 if move_right else 0) - (1 if move_left else 0)) * SPEED
        
         # Dirección
         if self.vx > 0:
@@ -454,7 +455,7 @@ class Enemy(pygame.sprite.Sprite):
 
 
         #  Cargar imágenes (load_img devuelve por defecto tamaño TILE)
-        raw_imgs = [load_img(f"assets/enemies/{i}.png") for i in range(1, 4)] # nombre de imagen 1 - 2 - 3
+        raw_imgs = [load_img(f"assets/enemies/a{i}.png") for i in range(1, 4)] # nombre de imagen 1 - 2 - 3
         # Escaladas para dibujado (visual)
         self.images_right = [
             pygame.transform.scale(img, (int(img.get_width()*scale_factor), int(img.get_height()*scale_factor)))
@@ -573,7 +574,7 @@ class Enemy(pygame.sprite.Sprite):
 class VerticalEnemy(pygame.sprite.Sprite):# enemigo con movimiento vertical
     def __init__(self, pos, min_y, max_y, speed=3): # speed=3 (igual al horizontal)
         super().__init__()
-        self.image = load_img("assets/enemies/papa.png")
+        self.image = load_img("assets/enemies/papa1.png")
         self.rect = self.image.get_rect(topleft=pos)
         self.vy = speed  # Ahora speed=3
         self.min_y = min_y

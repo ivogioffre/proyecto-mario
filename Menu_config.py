@@ -8,12 +8,11 @@ CONFIG_PATH = os.path.join(os.path.dirname(__file__), "config.json")
 DEFAULT_CONFIG = {
     "volume": 100,
     "keys": {
-        "up": pygame.K_w,
-        "down": pygame.K_s,
+        "up": pygame.K_w ,
         "left": pygame.K_a,
         "right": pygame.K_d,
         "jump": pygame.K_SPACE,
-        "fire": pygame.K_LCTRL
+        "fire": pygame.K_r
     }
 }
 
