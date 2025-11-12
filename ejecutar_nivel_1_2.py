@@ -128,7 +128,9 @@ def ejecutar_nivel(screen, WIDTH, HEIGHT, clock, nivel, vidas_iniciales=3, moned
                 player.current_hits = 1
             else:
                 guardar_record(player.score)
-                puntaje_nivel.perdiste()
+                resultado = puntaje_nivel.perdiste()
+                if resultado == "menu":
+                    return 0, player.score, "menu"
                 return 0, player.score
 
         # --------------------------

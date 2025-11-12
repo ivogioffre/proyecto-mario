@@ -33,7 +33,13 @@ def main():  # Es la función principal del juego, la que se encarga de iniciar 
         print(f"No se pudo iniciar el audio: {e}")
 
     # Ejecutamos nivel 1
-    vidas, monedas = ejecutar_nivel(screen, WIDTH, HEIGHT, clock, 1)
+    resultado = ejecutar_nivel(screen, WIDTH, HEIGHT, clock, 1)
+    vidas, monedas = resultado[0], resultado[1]
+    
+    # Verificar si el usuario pidió volver al menú
+    if len(resultado) > 2 and resultado[2] == "menu":
+        pygame.quit()
+        return "menu"
 
     # Si aún quedan vidas al terminar nivel 1 pasamos al 2
     if vidas > 0:
@@ -45,7 +51,13 @@ def main():  # Es la función principal del juego, la que se encarga de iniciar 
             pass
 
         # Ejecutamos nivel 2
-        vidas, monedas = ejecutar_nivel(screen, WIDTH, HEIGHT, clock, 2, vidas, monedas)
+        resultado = ejecutar_nivel(screen, WIDTH, HEIGHT, clock, 2, vidas, monedas)
+        vidas, monedas = resultado[0], resultado[1]
+        
+        # Verificar si el usuario pidió volver al menú
+        if len(resultado) > 2 and resultado[2] == "menu":
+            pygame.quit()
+            return "menu"
 
         if vidas > 0:  # Si completaste nivel 2
             try:
@@ -55,15 +67,27 @@ def main():  # Es la función principal del juego, la que se encarga de iniciar 
                 pass
 
             # Ejecutamos nivel 3
-            vidas, monedas = ejecutar_nivel(screen, WIDTH, HEIGHT, clock, 3, vidas, monedas)
+            resultado = ejecutar_nivel(screen, WIDTH, HEIGHT, clock, 3, vidas, monedas)
+            vidas, monedas = resultado[0], resultado[1]
+            
+            # Verificar si el usuario pidió volver al menú
+            if len(resultado) > 2 and resultado[2] == "menu":
+                pygame.quit()
+                return "menu"
 
             if vidas > 0:  # Si completaste nivel 3
                 guardar_record(monedas)
-                main_puntaje(monedas)
+                resultado = main_puntaje(monedas)
+                if resultado == "menu":
+                    pygame.quit()
+                    return "menu"
 
     pygame.quit()
     sys.exit()
 
 if __name__ == "__main__":
-    main_menu()
-    main()
+    while True:
+        main_menu()
+        resultado = main()
+        if resultado != "menu":
+            break
