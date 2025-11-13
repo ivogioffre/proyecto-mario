@@ -17,6 +17,7 @@ def guardar_puntaje_nivel(nivel, puntos_nivel, puntos_por_monedas, puntos_por_en
 
 def main_puntaje(score):
     """Pantalla final al completar el juego."""
+    global puntajes_acumulados
     pygame.init()
     screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
     WIDTH, HEIGHT = screen.get_size()
@@ -100,19 +101,24 @@ def main_puntaje(score):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     if menu_btn_rect.collidepoint(event.pos):
-                        return "menu"
+                        # Reiniciar puntajes acumulados al regresar al menú
+                        puntajes_acumulados = {}
+                        return ("menu", total_puntos)
                     elif exit_btn_rect.collidepoint(event.pos):
                         pygame.quit()
                         sys.exit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    return "menu"
+                    # Reiniciar puntajes acumulados al regresar al menú
+                    puntajes_acumulados = {}
+                    return ("menu", total_puntos)
 
         pygame.display.flip()
         clock.tick(60)
 
 
 def perdiste():
+    global puntajes_acumulados
     pygame.init()
     screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
     WIDTH, HEIGHT = screen.get_size()
@@ -177,12 +183,16 @@ def perdiste():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     if menu_btn_rect.collidepoint(event.pos):
+                        # Reiniciar puntajes acumulados al regresar al menú
+                        puntajes_acumulados = {}
                         return "menu"
                     elif exit_btn_rect.collidepoint(event.pos):
                         pygame.quit()
                         sys.exit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
+                    # Reiniciar puntajes acumulados al regresar al menú
+                    puntajes_acumulados = {}
                     return "menu"
 
         pygame.display.flip()

@@ -201,11 +201,8 @@ def open_config_menu():
                             play_click()
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                mx, my = event.pos
-                # compute button rectangles like below and detect clicks
-                # We'll handle by computing positions each frame; mark clicks by setting actions
                 if event.button == 1:
-                    # We'll capture clicks in main loop using rects
+                    # Los clics se manejarán después de calcular las posiciones de los botones
                     pass
 
         # Draw background
@@ -244,7 +241,29 @@ def open_config_menu():
             if is_sel:
                 pygame.draw.rect(panel, color, btn.inflate(6, 6), 3, border_radius=10)
             draw_text_pixel(panel, name, base_font, LIGHT, (btn.centerx, btn.centery - 8), scale=2, center=True)
-            option_rects.append((btn.move(panel_x, panel_y)))
+            option_rects.append({"rect": btn.move(panel_x, panel_y), "index": i, "name": name})
+        
+        # Detectar clics en los botones del menú
+        mouse_pos = pygame.mouse.get_pos()
+        for btn_info in option_rects:
+            if btn_info["rect"].collidepoint(mouse_pos):
+                selection_index = btn_info["index"]
+                # Detectar clic
+                if pygame.mouse.get_pressed()[0]:
+                    play_click()
+                    current = panes[selection_index]
+                    if current == 'Volver':
+                        # fade out effect
+                        for a in range(0, 260, fade_speed):
+                            s = pygame.Surface((WIDTH, HEIGHT))
+                            s.fill((0, 0, 0))
+                            s.set_alpha(a)
+                            screen.blit(bg, (0, 0))
+                            screen.blit(s, (0, 0))
+                            pygame.display.flip()
+                            clock.tick(60)
+                        running = False
+                    time.sleep(0.2)  # Debounce para evitar múltiples clics
 
         # Right side content
         content_x = panel_w // 3 + 80

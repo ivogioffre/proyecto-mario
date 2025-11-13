@@ -78,7 +78,11 @@ def main():  # Es la función principal del juego, la que se encarga de iniciar 
             if vidas > 0:  # Si completaste nivel 3
                 guardar_record(monedas)
                 resultado = main_puntaje(monedas)
-                if resultado == "menu":
+                if isinstance(resultado, tuple) and resultado[0] == "menu":
+                    puntaje_final = resultado[1] if len(resultado) > 1 else 0
+                    pygame.quit()
+                    return "menu"
+                elif resultado == "menu":
                     pygame.quit()
                     return "menu"
 

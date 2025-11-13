@@ -9,6 +9,13 @@ except Exception:
     def open_config_menu():
         print('No se pudo abrir el menú de configuración (config_menu no disponible)')
 
+# Integración del podio
+try:
+    from podio import podio
+except Exception:
+    def podio():
+        print('No se pudo abrir el podio')
+
 def main_menu():
     pygame.init()
 
@@ -155,6 +162,12 @@ def main_menu():
                     elif quit_btn_rect.collidepoint(event.pos):
                         pygame.quit()
                         sys.exit()
+                    elif top_btn_rect.collidepoint(event.pos):
+                        # Abrir podio
+                        try:
+                            podio()
+                        except Exception as e:
+                            print(f'Error al abrir el podio: {e}')
                     elif options_btn_rect.collidepoint(event.pos):
                         # Abrir menú de configuración
                         try:
