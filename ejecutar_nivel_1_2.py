@@ -1,7 +1,7 @@
 import pygame
 from level import load_level
 from level2 import load_level_2
-from level3 import load_level_3  # ✅ Nuevo nivel 3
+from level3 import load_level_3  #  Nuevo nivel 3
 from camera import Camera
 from entities import Player, COIN_POP_EFFECTS, load_img
 # Para recargar keymap dinámicamente
@@ -49,7 +49,14 @@ def ejecutar_nivel(screen, WIDTH, HEIGHT, clock, nivel, vidas_iniciales=3, moned
         player, solids, coins, enemies, plants, clouds, grasses, flags, hearts, fire_powers = load_level_2()
 
     else:
-        # ✅ Nivel 3 nuevo
+        #  Nivel 3 nuevo
+        try:
+            fondo_img = pygame.image.load("assets/ciudad.png").convert()
+            fondo_img = pygame.transform.scale(fondo_img, (WIDTH, HEIGHT))
+        except:
+            print("No se pudo cargar ciudad.png se usará color de fondo")
+            fondo_img = None
+
         color_fondo = (255, 200, 150)
         player, solids, coins, enemies, plants, clouds, grasses, flags, hearts, fire_powers = load_level_3()
 

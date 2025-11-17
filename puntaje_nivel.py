@@ -101,7 +101,6 @@ def main_puntaje(score):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     if menu_btn_rect.collidepoint(event.pos):
-                        # Reiniciar puntajes acumulados al regresar al menú
                         puntajes_acumulados = {}
                         return ("menu", total_puntos)
                     elif exit_btn_rect.collidepoint(event.pos):
@@ -109,7 +108,6 @@ def main_puntaje(score):
                         sys.exit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    # Reiniciar puntajes acumulados al regresar al menú
                     puntajes_acumulados = {}
                     return ("menu", total_puntos)
 
