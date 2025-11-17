@@ -1,4 +1,5 @@
 import pygame, os, sys
+from entities import Player
 
 def podio():
     screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
@@ -36,7 +37,7 @@ def podio():
                                 records.append({
                                     "fecha": fecha_str,
                                     "monedas": monedas,
-                                    "puntos": monedas * 10  # Suponiendo 10 puntos por moneda
+                                    "puntos": Player.score
                                 })
                             except:
                                 pass
