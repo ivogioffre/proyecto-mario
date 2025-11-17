@@ -2,19 +2,16 @@ import pygame
 import sys
 from puntaje import guardar_record
 from menu import main_menu
-from level import load_level
-from level2 import load_level_2
-from camera import Camera
-from entities import Player, COIN_POP_EFFECTS, load_img
 from puntaje_nivel import main_puntaje, perdiste
 from ejecutar_nivel_1_2 import ejecutar_nivel
 
 # Frames por segundo (FPS)
 FPS = 60
 
-def main():  # Es la función principal del juego, la que se encarga de iniciar todo y controlar el flujo general
-    # Inicializa Pygame y la ventana del juego
-    # Llama a la función ejecutar_nivel() para jugar nivel 1 y 2
+def main():
+    """
+    Función principal del juego que inicializa todo y controla el flujo entre niveles.
+    """
     pygame.init()
 
     # Ventana pantalla completa
@@ -41,7 +38,7 @@ def main():  # Es la función principal del juego, la que se encarga de iniciar 
         pygame.quit()
         return "menu"
 
-    # Si aún quedan vidas al terminar nivel 1 pasamos al 2
+    # Si aún quedan vidas al terminar nivel 1, pasamos al 2
     if vidas > 0:
         # Mostrar pantalla de transición al segundo nivel
         try:
@@ -59,7 +56,8 @@ def main():  # Es la función principal del juego, la que se encarga de iniciar 
             pygame.quit()
             return "menu"
 
-        if vidas > 0:  # Si completaste nivel 2
+        # Si completaste nivel 2, pasamos al 3
+        if vidas > 0:
             try:
                 from puntaje_nivel import pantalla_transicion_nivel
                 pantalla_transicion_nivel(screen, WIDTH, HEIGHT, nivel=3, duracion_ms=1500)
@@ -75,19 +73,42 @@ def main():  # Es la función principal del juego, la que se encarga de iniciar 
                 pygame.quit()
                 return "menu"
 
-            if vidas > 0:  # Si completaste nivel 3
+            # Si completaste nivel 3 - JUEGO GANADO
+            if vidas > 0:
+                # Guardar récord con todos los datos de puntajes_acumulados
                 guardar_record(monedas)
+                
+                # Mostrar pantalla de puntaje final
                 resultado = main_puntaje(monedas)
+                
                 if isinstance(resultado, tuple) and resultado[0] == "menu":
-                    puntaje_final = resultado[1] if len(resultado) > 1 else 0
                     pygame.quit()
                     return "menu"
                 elif resultado == "menu":
                     pygame.quit()
                     return "menu"
+            else:
+                # Perdiste en nivel 3
+                resultado = perdiste()
+                if resultado == "menu":
+                    pygame.quit()
+                    return "menu"
+        else:
+            # Perdiste en nivel 2
+            resultado = perdiste()
+            if resultado == "menu":
+                pygame.quit()
+                return "menu"
+    else:
+        # Perdiste en nivel 1
+        resultado = perdiste()
+        if resultado == "menu":
+            pygame.quit()
+            return "menu"
 
     pygame.quit()
     sys.exit()
+
 
 if __name__ == "__main__":
     while True:
