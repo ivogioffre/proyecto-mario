@@ -326,6 +326,40 @@ class Tile(pygame.sprite.Sprite):# Bloque solido basico
         self.image = load_img("assets/tiles/tierra_baja_3.png")
         self.rect = self.image.get_rect(topleft=pos)
 
+class bloque(pygame.sprite.Sprite):# Bloque solido basico del nivel 3
+    def __init__(self, pos):
+        super().__init__()
+        self.image = load_img("assets/tiles/bloque.png")
+        self.rect = self.image.get_rect(topleft=pos)
+
+class vidrio1(pygame.sprite.Sprite):
+    def __init__(self, pos):
+        super().__init__()
+        self.image = load_img("assets/tiles/vidrio1.png")
+        self.rect = self.image.get_rect(topleft=pos)
+
+class vidrio2(pygame.sprite.Sprite):
+    def __init__(self, pos):
+        super().__init__()
+        self.image = load_img("assets/tiles/vidrio2.png")
+        self.rect = self.image.get_rect(topleft=pos)
+
+class vidrio3(pygame.sprite.Sprite):
+    def __init__(self, pos):
+        super().__init__()
+        self.image = load_img("assets/tiles/vidrio3.png")
+        self.rect = self.image.get_rect(topleft=pos)
+
+class vidrio4(pygame.sprite.Sprite):
+    def __init__(self, pos):
+        super().__init__()
+        self.image = load_img("assets/tiles/vidrio4.png")
+        self.rect = self.image.get_rect(topleft=pos)
+class cornisa(pygame.sprite.Sprite):
+    def __init__(self, pos):
+        super().__init__()
+        self.image = load_img("assets/tiles/cornisa.png")
+        self.rect = self.image.get_rect(topleft=pos)
 
 class Grass(pygame.sprite.Sprite): #Bloque solido de pasto
     def __init__(self, pos):

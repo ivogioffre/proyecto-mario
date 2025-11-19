@@ -49,7 +49,7 @@ def ejecutar_nivel(screen, WIDTH, HEIGHT, clock, nivel, vidas_iniciales=3, moned
         player, solids, coins, enemies, plants, clouds, grasses, flags, hearts, fire_powers = load_level_2()
 
     else:
-        #  Nivel 3 nuevo
+        #  Nivel 3 
         try:
             fondo_img = pygame.image.load("assets/ciudad.png").convert()
             fondo_img = pygame.transform.scale(fondo_img, (WIDTH, HEIGHT))
@@ -179,13 +179,26 @@ def ejecutar_nivel(screen, WIDTH, HEIGHT, clock, nivel, vidas_iniciales=3, moned
         # ==========================
         # DIBUJADO
         # ==========================
-        if fondo_img:
-            screen.blit(fondo_img, (0, 0))
-        else:
-            screen.fill((0, 0, 0) if nivel == 2 else color_fondo)
+        if nivel == 3:
+            # Color del cielo de la imagen (para que no haya diferencia)
+            cielo_color = (173, 216, 255)
 
-        if luna_img:
-            screen.blit(luna_img, (luna_rect.x - camera.offset.x * 0.05, luna_rect.y))
+            # Relleno del cielo arriba
+            screen.fill(cielo_color)
+
+            # Fondo bajado un poco
+            if fondo_img:
+                screen.blit(fondo_img, (0, 80))
+        else:
+            # Otros niveles funcionan igual que antes
+            if fondo_img:
+                screen.blit(fondo_img, (0, 0))
+            else:
+                screen.fill((0, 0, 0) if nivel == 2 else color_fondo)
+
+
+                if luna_img:
+                    screen.blit(luna_img, (luna_rect.x - camera.offset.x * 0.05, luna_rect.y))
 
         for sprite_list in [solids, grasses, coins, enemies, plants, clouds, flags]:
             for sprite in sprite_list:
